@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <div id="player"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+      // YouTube iframe API를 로드하는 콜백 함수
+      function onYouTubeIframeAPIReady() {
+        // 재생할 YouTube 비디오 ID
+        var videoId = ""; // 비디오 ID를 여기에 입력하세요
+
+        // YouTube Player 인스턴스 생성
+        var player = new YT.Player("player", {
+          height: "360",
+          width: "640",
+          videoId: videoId,
+          events: {
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange,
+          },
+        });
+      }
+
+      // 플레이어가 준비된 경우 호출되는 함수
+      function onPlayerReady(event) {
+        // 재생 버튼 클릭시 재생
+        event.target.playVideo();
+      }
+
+      // 플레이어 상태 변경시 호출되는 함수
+      function onPlayerStateChange(event) {
+        // 비디오가 종료된 경우 다시 재생
+        if (event.data == YT.PlayerState.ENDED) {
+          event.target.playVideo();
+        }
+      }
+    </script>
+  </body>
+</html>
