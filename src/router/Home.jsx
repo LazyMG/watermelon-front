@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import YoutubePlayer from "../components/YoutubePlayer";
 import { useState } from "react";
+import YoutubePlayer from "../components/YoutubePlayer";
 
 const HomeWrapper = styled.div`
   padding-top: 30px;
@@ -125,12 +125,17 @@ const RecommandItem = styled.div`
 `;
 
 const Home = () => {
-  const [ytId, setYtId] = useState("jia05SIv73M");
-  const onClick = () => {
+  const [ytId, setYtId] = useState("");
+  const [pause, setPause] = useState(false);
+
+  const onClickFirstVideo = () => {
     setYtId("5_eOnNPzEII");
-    console.log("click");
-    console.log(ytId);
   };
+
+  const onClickSecondVideo = () => {
+    setPause((prev) => !prev);
+  };
+
   return (
     <HomeWrapper>
       <HomeHeader>
@@ -191,8 +196,10 @@ const Home = () => {
           </RecommandColum>
         </RecommandContainer>
       </HomeRecommandSection>
-      <button onClick={onClick}>Click</button>
-      <YoutubePlayer videoId={ytId} />
+      <button onClick={onClickFirstVideo}>First</button>
+      <button onClick={onClickSecondVideo}>Second</button>
+
+      <YoutubePlayer ytId={ytId} pause={pause} />
     </HomeWrapper>
   );
 };

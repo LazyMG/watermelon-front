@@ -1,46 +1,57 @@
-import { useCallback, useEffect } from "react";
+import { useEffect, useState } from "react";
+import YouTube from "react-youtube";
 
-const YoutubePlayer = ({ videoId }) => {
-  useEffect(() => {
-    // YouTube iframe API 로드
-    const tag = document.createElement("script");
-    tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName("script")[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+const YoutubePlayer = ({ ytId, pause }) => {
+  const [player, setPlayer] = useState();
 
-    // YouTube iframe API 로드 후 호출되는 콜백 함수
-    window.onYouTubeIframeAPIReady = () => {
-      // YouTube 플레이어 생성
-      new window.YT.Player("player", {
-        height: "360",
-        width: "640",
-        videoId: videoId,
-        events: {
-          onReady: onPlayerReady,
-          onStateChange: onPlayerStateChange,
-        },
-      });
-    };
-
-    // 컴포넌트가 마운트 해제될 때 호출되는 함수
-    return () => {
-      window.onYouTubeIframeAPIReady = null;
-    };
-  }, [videoId]);
-
-  // 플레이어가 준비되면 실행되는 함수
-  function onPlayerReady(event) {
-    event.target.playVideo();
-  }
-
-  // 플레이어 상태가 변경될 때 실행되는 함수
-  function onPlayerStateChange(event) {
-    if (event.data === window.YT.PlayerState.ENDED) {
+  const onPlayerReady = (event) => {
+    if (ytId) {
+      console.log("ready!");
       event.target.playVideo();
+      setPlayer(event.target);
     }
-  }
 
-  return <div id="player"></div>;
+    if (pause) {
+      //console.log(pause);
+      player.pauseVideo();
+    }
+
+    //console.log(event.target);
+  };
+
+  const onPlayerStateChange = (event) => {
+    // event.data 값 => 1 재생 중, 2 일시중지, 0 종료 https://developers.google.com/youtube/iframe_api_reference?hl=ko#onPlaybackRateChange
+    //console.log(event.data);
+    if (!event.data) {
+      const player = event.target;
+      player.seekTo(5);
+      player.playVideo();
+    }
+    //event.target.playVideo();
+  };
+
+  useEffect(() => {
+    console.log("player", player);
+    if (!player) return;
+    player?.playVideo();
+  }, [player, pause, ytId]);
+
+  const opts = {
+    height: "300",
+    width: "600",
+    // playerVars: {
+    //   autoPlay: 1,
+    // },
+  };
+
+  return (
+    <YouTube
+      videoId={ytId}
+      opts={opts}
+      onReady={onPlayerReady}
+      onStateChange={onPlayerStateChange}
+    />
+  );
 };
 
 export default YoutubePlayer;
