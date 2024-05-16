@@ -166,6 +166,17 @@ const Home = () => {
     return () => clearInterval(updateTimer);
   }, [playerState]);
 
+  const getMuscis = async () => {
+    const musics = await fetch("http://localhost:3000/").then((res) =>
+      res.json()
+    );
+    console.log(musics);
+  };
+
+  useEffect(() => {
+    getMuscis();
+  }, []);
+
   // 비디오 변경 이벤트 핸들러
   const handleVideoChange = (videoId) => {
     setPlayerState({
