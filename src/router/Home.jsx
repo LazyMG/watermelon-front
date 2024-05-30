@@ -148,6 +148,7 @@ const Home = () => {
   const playerRef = useRef(null);
 
   useEffect(() => {
+    console.log(playerRef.current);
     const player = playerRef.current.internalPlayer;
     let updateTimer;
     if (playerState.isPlaying) {

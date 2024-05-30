@@ -44,13 +44,13 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
   body{
-    background-color: black;
+    //background-color: black;
     color: white;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   }
-  ::-webkit-scrollbar {
+  /* ::-webkit-scrollbar {
     display:none;
-  }
+  } */
   input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

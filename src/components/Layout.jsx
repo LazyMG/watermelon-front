@@ -1,99 +1,89 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
-  background-color: #edefe5;
-  height: 100vh;
-  width: 100vw;
-  display: grid;
-  grid-template-columns: 1fr 3.5fr;
+  //width: 100vw;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+`;
+
+const NavWrapper = styled.div`
+  position: fixed;
+  background-color: yellow;
+  top: 0;
+  width: 100%;
+  height: 70px;
+  z-index: 10;
+  color: yellow;
+  font-weight: 800;
+`;
+
+const ContentWrapper = styled.div`
+  flex: 1;
+  background-color: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 100px;
+  padding-top: 40px;
+  width: calc(100% - ${({ $open }) => ($open ? "230px" : "0")});
+  margin-left: ${({ $open }) => ($open ? "230px" : "0")};
+  overflow: hidden;
+  //height: calc(100vh - 70px);
+  //box-sizing: border-box;
 `;
 
 const MenuWrapper = styled.div`
-  //background-color: blue;
-  padding: 25px;
-  padding-block: 20px;
-`;
-
-const Menu = styled.div`
-  width: 100%;
-  height: 100%;
-  background-color: #d9dbd1;
-  border-radius: 20px;
-  display: grid;
-  grid-template-rows: 1fr 2.5fr;
-`;
-
-const MenuHeader = styled.div`
-  //background-color: green;
-  padding: 35px;
-  padding-top: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-`;
-
-const Title = styled.h1`
-  color: black;
-  font-size: 30px;
-  font-weight: 600;
-  margin-bottom: 10px;
-`;
-
-const LinkDiv = styled.div`
-  cursor: pointer;
-  width: 100%;
-  //background-color: red;
-  font-size: 25px;
-  padding-inline: 30px;
-  padding-block: 10px;
-  border-radius: 15px;
-  color: black;
-
-  &:hover {
-    opacity: 0.7;
-  }
-`;
-
-const MenuListContainer = styled.div`
-  //background-color: black;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 15px;
-`;
-
-const MusicListLine = styled.div`
-  width: 65%;
-  height: 1px;
   background-color: black;
-  align-self: center;
+  position: fixed;
+  height: 100%;
+  width: 230px;
+  top: 0;
+  left: 0;
+  display: ${({ $open }) => ($open ? "block" : "none")};
 `;
 
-const MusicList = styled.div`
-  //background-color: tomato;
-  width: 85%;
-  height: 100%;
-  align-self: center;
+const Temp = styled.div`
+  margin-top: 70px;
+  background-color: blue;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-x: hidden;
+  width: 100%;
 `;
+
+const Component = styled.div`
+  width: 100%;
+  height: 600px;
+  background-color: white;
+`;
+
+const Player = styled.div``;
 
 const Layout = () => {
+  const [open, setOpen] = useState(true);
+
+  const handleClick = () => setOpen(!open);
   return (
     <Wrapper>
-      <MenuWrapper>
-        <Menu>
-          <MenuHeader>
-            <Title>🎶Watermelon</Title>
-            <LinkDiv>Home</LinkDiv>
-            <LinkDiv>Profile</LinkDiv>
-          </MenuHeader>
-          <MenuListContainer>
-            <MusicListLine />
-            <MusicList></MusicList>
-          </MenuListContainer>
-        </Menu>
-      </MenuWrapper>
-      <Outlet />
+      <NavWrapper>Logo</NavWrapper>
+      <MenuWrapper $open={open}></MenuWrapper>
+      <ContentWrapper $open={open}>
+        {/* <Outlet /> */}
+        <Temp>
+          <Component onClick={handleClick} />
+          <Component />
+          <Component />
+          <Component />
+          <Component />
+          <Component />
+          <Component />
+        </Temp>
+      </ContentWrapper>
+      <Player />
     </Wrapper>
   );
 };
