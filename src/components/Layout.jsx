@@ -3,7 +3,6 @@ import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
-  //width: 100vw;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -11,7 +10,7 @@ const Wrapper = styled.div`
 
 const NavWrapper = styled.div`
   position: fixed;
-  background-color: yellow;
+  //background-color: yellow;
   top: 0;
   width: 100%;
   height: 70px;
@@ -22,12 +21,12 @@ const NavWrapper = styled.div`
 `;
 
 const NavMenu = styled.div`
-  background-color: blue;
+  //background-color: blue;
   width: ${({ $open }) => ($open ? "230px" : "100px")};
 `;
 
 const NavContentContainer = styled.div`
-  background-color: red;
+  //background-color: red;
   width: calc(100% - ${({ $open }) => ($open ? "230px" : "100px")});
   padding-left: 100px;
   display: flex;
@@ -37,12 +36,12 @@ const NavContentContainer = styled.div`
 
 const NavSearchContainer = styled.div`
   width: 100px;
-  background-color: green;
+  //background-color: green;
 `;
 
 const NavProfileContainer = styled.div`
   width: 80px;
-  background-color: purple;
+  //background-color: purple;
 `;
 
 const ContentWrapper = styled.div`
@@ -72,7 +71,7 @@ const MenuWrapper = styled.div`
 
 const Temp = styled.div`
   margin-top: 70px;
-  //background-color: blue;
+  background-color: yellow;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -101,6 +100,7 @@ const Layout = () => {
   const [open, setOpen] = useState(true);
 
   const handleClick = () => setOpen(!open);
+
   return (
     <Wrapper>
       <NavWrapper>
@@ -112,8 +112,8 @@ const Layout = () => {
       </NavWrapper>
       <MenuWrapper $open={open}></MenuWrapper>
       <ContentWrapper $open={open}>
-        {/* <Outlet /> */}
-        <Temp>
+        <Outlet />
+        {/* <Temp>
           <Component onClick={handleClick} />
           <Component />
           <Component />
@@ -121,7 +121,7 @@ const Layout = () => {
           <Component />
           <Component />
           <Component />
-        </Temp>
+        </Temp> */}
       </ContentWrapper>
       <Player />
     </Wrapper>

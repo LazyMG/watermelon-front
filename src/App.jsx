@@ -2,11 +2,18 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
 import Layout from "./components/Layout";
-import Home from "./router/Home";
-import Profile from "./router/Profile";
-import Search from "./router/Search";
-import Login from "./router/Login";
-import Upload from "./router/Upload";
+import Home from "./page/Home";
+import Search from "./page/Search";
+import Upload from "./page/Upload";
+import GoogleLogin from "./page/GoogleLogin";
+import Explore from "./page/Explore";
+import Watch from "./page/Watch";
+import Login from "./page/Login";
+import CreateAccount from "./page/CreateAccount";
+import ProtectedRoute from "./ProtectedRoute";
+import Library from "./page/Library";
+import PlayList from "./page/PlayList";
+import Channel from "./page/Channel";
 
 const router = createBrowserRouter([
   {
@@ -18,18 +25,52 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "profile",
-        element: <Profile />,
+        path: "explore",
+        element: <Explore />,
       },
       {
         path: "search",
-        element: <Search />,
+        element: <Search />, //param 예외처리 필요
+      },
+      {
+        path: "watch",
+        element: <Watch />, //param 예외처리 필요
+      },
+      {
+        path: "playlist",
+        element: <PlayList />, //param 예외처리 필요
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "google-login",
+        element: <GoogleLogin />,
+      },
+      {
+        path: "create-account",
+        element: <CreateAccount />,
       },
     ],
   },
   {
-    path: "/google-login",
-    element: <Login />,
+    path: "/",
+    element: (
+      <ProtectedRoute>
+        <Layout />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: "library",
+        element: <Library />,
+      },
+      {
+        path: "channel/:channelId",
+        element: <Channel />, //channelId 예외처리 필요
+      },
+    ],
   },
   {
     path: "/upload",
