@@ -1,17 +1,19 @@
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, Outlet, useMatch } from "react-router-dom";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  background: #181818;
+  background: #030303;
 `;
 
 const NavWrapper = styled.div`
   position: fixed;
-  background-color: transparent;
+  background-color: ${({ $show }) => ($show ? "black" : "transparent")};
+  border-bottom: ${({ $show }) => ($show ? "1px solid #232323" : "none")};
+  box-sizing: content-box;
   top: 0;
   width: 100%;
   height: 70px;
@@ -162,7 +164,7 @@ const MenuWrapper = styled.div`
 `;
 
 const MenuTopContainer = styled.div`
-  margin-top: 70px;
+  margin-top: 75px;
 
   width: 100%;
   padding: 0 10px;
@@ -174,7 +176,9 @@ const MenuTopItem = styled.div`
   width: 100%;
   height: 50px;
   border-radius: 10px;
-  background-color: transparent;
+  background-color: ${({ $match }) =>
+    $match === "match" ? "#232323" : "transparent"};
+
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -325,15 +329,36 @@ const Player = styled.div`
 
 const Layout = () => {
   const [open, setOpen] = useState(true);
+  const homeMatch = useMatch("/");
+  const exploreMatch = useMatch("/explore");
+  const libraryMatch = useMatch("/library");
+
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const handleScroll = () => {
+    if (window.scrollY > 30) {
+      setShow(true);
+    } else {
+      setShow(false);
+    }
+  };
 
   const handleClick = () => setOpen(!open);
 
   return (
     <Wrapper>
-      <NavWrapper>
+      <NavWrapper $show={show}>
         <NavMenu $open={open}>
           <NavButtonWrapper>
-            <NavButton>
+            <NavButton onClick={handleClick}>
               <svg
                 fill="currentColor"
                 viewBox="0 0 20 20"
@@ -389,63 +414,72 @@ const Layout = () => {
       </NavWrapper>
       <MenuWrapper $open={open}>
         <MenuTopContainer>
-          <MenuTopItem>
-            <MenuTopIcon>
-              <svg
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  clipRule="evenodd"
-                  fillRule="evenodd"
-                  d="M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z"
-                />
-              </svg>
-            </MenuTopIcon>
-            <MenuTopTitle>홈</MenuTopTitle>
-          </MenuTopItem>
-          <MenuTopItem>
-            <MenuTopIcon>
-              <svg
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  clipRule="evenodd"
-                  fillRule="evenodd"
-                  d="M4.606 12.97a.75.75 0 0 1-.134 1.051 2.494 2.494 0 0 0-.93 2.437 2.494 2.494 0 0 0 2.437-.93.75.75 0 1 1 1.186.918 3.995 3.995 0 0 1-4.482 1.332.75.75 0 0 1-.461-.461 3.994 3.994 0 0 1 1.332-4.482.75.75 0 0 1 1.052.134Z"
-                />
-                <path
-                  clipRule="evenodd"
-                  fillRule="evenodd"
-                  d="M5.752 12A13.07 13.07 0 0 0 8 14.248v4.002c0 .414.336.75.75.75a5 5 0 0 0 4.797-6.414 12.984 12.984 0 0 0 5.45-10.848.75.75 0 0 0-.735-.735 12.984 12.984 0 0 0-10.849 5.45A5 5 0 0 0 1 11.25c.001.414.337.75.751.75h4.002ZM13 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
-                />
-              </svg>
-            </MenuTopIcon>
-            <MenuTopTitle>둘러보기</MenuTopTitle>
-          </MenuTopItem>
-          <MenuTopItem>
-            <MenuTopIcon>
-              <svg
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path d="M2 3a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H2Z" />
-                <path
-                  clipRule="evenodd"
-                  fillRule="evenodd"
-                  d="M2 7.5h16l-.811 7.71a2 2 0 0 1-1.99 1.79H4.802a2 2 0 0 1-1.99-1.79L2 7.5ZM7 11a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2H8a1 1 0 0 1-1-1Z"
-                />
-              </svg>
-            </MenuTopIcon>
-            <MenuTopItem>보관함</MenuTopItem>
-          </MenuTopItem>
+          <Link to={"/"}>
+            <MenuTopItem $match={homeMatch && "match"}>
+              <MenuTopIcon>
+                <svg
+                  fill={homeMatch ? "currentColor" : ""}
+                  stroke={homeMatch ? "" : "currentColor"}
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    clipRule="evenodd"
+                    fillRule="evenodd"
+                    d="M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z"
+                  />
+                </svg>
+              </MenuTopIcon>
+              <MenuTopTitle>홈</MenuTopTitle>
+            </MenuTopItem>
+          </Link>
+          <Link to={"/explore"}>
+            <MenuTopItem $match={exploreMatch && "match"}>
+              <MenuTopIcon>
+                <svg
+                  fill={exploreMatch ? "currentColor" : ""}
+                  stroke={exploreMatch ? "" : "currentColor"}
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    clipRule="evenodd"
+                    fillRule="evenodd"
+                    d="M4.606 12.97a.75.75 0 0 1-.134 1.051 2.494 2.494 0 0 0-.93 2.437 2.494 2.494 0 0 0 2.437-.93.75.75 0 1 1 1.186.918 3.995 3.995 0 0 1-4.482 1.332.75.75 0 0 1-.461-.461 3.994 3.994 0 0 1 1.332-4.482.75.75 0 0 1 1.052.134Z"
+                  />
+                  <path
+                    clipRule="evenodd"
+                    fillRule="evenodd"
+                    d="M5.752 12A13.07 13.07 0 0 0 8 14.248v4.002c0 .414.336.75.75.75a5 5 0 0 0 4.797-6.414 12.984 12.984 0 0 0 5.45-10.848.75.75 0 0 0-.735-.735 12.984 12.984 0 0 0-10.849 5.45A5 5 0 0 0 1 11.25c.001.414.337.75.751.75h4.002ZM13 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
+                  />
+                </svg>
+              </MenuTopIcon>
+              <MenuTopTitle>둘러보기</MenuTopTitle>
+            </MenuTopItem>
+          </Link>
+          <Link to={"/library"}>
+            <MenuTopItem $match={libraryMatch && "match"}>
+              <MenuTopIcon>
+                <svg
+                  fill={libraryMatch ? "currentColor" : ""}
+                  stroke={libraryMatch ? "" : "currentColor"}
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path d="M2 3a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H2Z" />
+                  <path
+                    clipRule="evenodd"
+                    fillRule="evenodd"
+                    d="M2 7.5h16l-.811 7.71a2 2 0 0 1-1.99 1.79H4.802a2 2 0 0 1-1.99-1.79L2 7.5ZM7 11a1 1 0 0 1 1-1h4a1 1 0 1 1 0 2H8a1 1 0 0 1-1-1Z"
+                  />
+                </svg>
+              </MenuTopIcon>
+              <MenuTopItem>보관함</MenuTopItem>
+            </MenuTopItem>
+          </Link>
         </MenuTopContainer>
         <MenuBorder />
         <MenuBottomContainer>

@@ -23,6 +23,12 @@ const Explore = () => {
       <ExploreContentContainer>
         <BigMusics />
       </ExploreContentContainer>
+      <ExploreContentContainer>
+        <BigMusics />
+      </ExploreContentContainer>
+      <ExploreContentContainer>
+        <BigMusics />
+      </ExploreContentContainer>
     </ExploreWrapper>
   );
 };
