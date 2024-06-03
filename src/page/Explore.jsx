@@ -9,6 +9,9 @@ const ExploreWrapper = styled.div`
   gap: 50px;
   overflow-x: hidden;
   width: 100%;
+
+  //플레이될 때 추가
+  margin-bottom: 70px;
 `;
 
 const ExploreContentContainer = styled.div`

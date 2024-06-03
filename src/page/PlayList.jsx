@@ -8,6 +8,9 @@ const PlayListWrapper = styled.div`
   //overflow-x: hidden;
   width: 100%;
   padding-top: 20px;
+
+  //플레이될 때 추가
+  margin-bottom: 70px;
 `;
 
 const PlayListContentContainer = styled.div`
@@ -119,7 +122,7 @@ const PlayList = () => {
           </PlayListContentHeaderInfo>
         </PlayListContentHeader>
         <PlayListContentList>
-          {Array.from({ length: 6 }).map((_, idx) => (
+          {Array.from({ length: 10 }).map((_, idx) => (
             <PlayListContentListItem key={idx}>
               <PlayListContentListItemNum>1</PlayListContentListItemNum>
               <PlayListContentListItemTitle>Blue</PlayListContentListItemTitle>

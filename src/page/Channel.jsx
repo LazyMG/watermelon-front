@@ -8,6 +8,9 @@ const ChannelWrapper = styled.div`
   gap: 50px;
   //overflow-x: hidden;
   width: 100%;
+
+  //플레이될 때 추가
+  margin-bottom: 80px;
 `;
 
 const ChannelContentContainer = styled.div`
