@@ -45,10 +45,6 @@ const router = createBrowserRouter([
         element: <Login />,
       },
       {
-        path: "google-login",
-        element: <GoogleLogin />,
-      },
-      {
         path: "create-account",
         element: <CreateAccount />,
       },
@@ -75,6 +71,10 @@ const router = createBrowserRouter([
   {
     path: "/upload",
     element: <Upload />,
+  },
+  {
+    path: "/google-login",
+    element: <GoogleLogin />,
   },
 ]);
 

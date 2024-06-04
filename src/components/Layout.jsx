@@ -327,9 +327,9 @@ const PlayBarWrapper = styled.div`
   height: 70px;
   z-index: 10;
 
-  //display: none;
+  display: none;
 
-  display: flex;
+  //display: flex;
   flex-direction: column;
   align-items: center;
 `;
@@ -454,11 +454,11 @@ const Layout = () => {
   const [menuOpen, setMenuOpen] = useState(true);
   const [navShow, setNavShow] = useState(false);
   const [createPlaylist, setCreatePlaylist] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
 
   const homeMatch = useMatch("/");
   const exploreMatch = useMatch("/explore");
   const libraryMatch = useMatch("/library");
-  const watchMatch = useMatch("/watch");
 
   const navigate = useNavigate();
 
@@ -484,6 +484,14 @@ const Layout = () => {
 
   const gotoWatchMusic = () => navigate("/watch");
 
+  const gotoLogout = () => console.log("logout");
+
+  const gotoLogin = () => navigate("/login");
+
+  const gotoPlayList = () => navigate("/playlist");
+
+  const gotoHome = () => navigate("/");
+
   return (
     <Wrapper>
       <NavWrapper $navShow={navShow}>
@@ -504,7 +512,7 @@ const Layout = () => {
               </svg>
             </NavButton>
           </NavButtonWrapper>
-          <NavTitle>Title</NavTitle>
+          <NavTitle onClick={gotoHome}>Title</NavTitle>
         </NavMenu>
         <NavContentContainer $menuOpen={menuOpen}>
           <NavSearchContainer>
@@ -527,19 +535,34 @@ const Layout = () => {
               placeholder="노래, 앨범, 아티스트, 팟캐스트 검색"
             />
           </NavSearchContainer>
-          <NavProfileContainer>
-            <svg
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                clipRule="evenodd"
-                fillRule="evenodd"
-                d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
-              />
-            </svg>
+          <NavProfileContainer onClick={isLogin ? gotoLogout : gotoLogin}>
+            {isLogin ? (
+              <svg
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  clipRule="evenodd"
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
+                />
+              </svg>
+            ) : (
+              <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  clipRule="evenodd"
+                  fillRule="evenodd"
+                  d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z"
+                />
+              </svg>
+            )}
           </NavProfileContainer>
         </NavContentContainer>
       </NavWrapper>
@@ -629,28 +652,30 @@ const Layout = () => {
           </MenuBottomCreateContainer>
           {/* 컴포넌트로 빼기 */}
           <MenuBottomListContainer>
-            <MenuBottomListItem>
-              <MenuBottomListItemText>
-                <MenuBottomListItemTitle>
-                  좋아요 표시한 음악
-                </MenuBottomListItemTitle>
-                <MenuBottomListItemUser>이마가</MenuBottomListItemUser>
-              </MenuBottomListItemText>
-              <MenuBottomListItemIcon>
-                <svg
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    clipRule="evenodd"
-                    fillRule="evenodd"
-                    d="M2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm6.39-2.908a.75.75 0 0 1 .766.027l3.5 2.25a.75.75 0 0 1 0 1.262l-3.5 2.25A.75.75 0 0 1 8 12.25v-4.5a.75.75 0 0 1 .39-.658Z"
-                  />
-                </svg>
-              </MenuBottomListItemIcon>
-            </MenuBottomListItem>
+            {Array.from({ length: 5 }).map((_, idx) => (
+              <MenuBottomListItem key={idx} onClick={gotoPlayList}>
+                <MenuBottomListItemText>
+                  <MenuBottomListItemTitle>
+                    좋아요 표시한 음악
+                  </MenuBottomListItemTitle>
+                  <MenuBottomListItemUser>이마가</MenuBottomListItemUser>
+                </MenuBottomListItemText>
+                <MenuBottomListItemIcon>
+                  <svg
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      clipRule="evenodd"
+                      fillRule="evenodd"
+                      d="M2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm6.39-2.908a.75.75 0 0 1 .766.027l3.5 2.25a.75.75 0 0 1 0 1.262l-3.5 2.25A.75.75 0 0 1 8 12.25v-4.5a.75.75 0 0 1 .39-.658Z"
+                    />
+                  </svg>
+                </MenuBottomListItemIcon>
+              </MenuBottomListItem>
+            ))}
           </MenuBottomListContainer>
         </MenuBottomContainer>
       </MenuWrapper>

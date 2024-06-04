@@ -1,3 +1,4 @@
+import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -83,15 +84,37 @@ const CreateAccountBottom = styled.div`
 `;
 
 const CreateAccount = () => {
+  const { register, handleSubmit } = useForm();
+
+  const onValid = (data) => {
+    console.log(data);
+  };
+
   return (
     <CreateAccountWrapper>
       <CreateAccountFormContainer>
         <CreateAccountFormHeader>Create Account</CreateAccountFormHeader>
-        <CreateAccountForm>
-          <CreateAccountInput placeholder="Email" />
-          <CreateAccountInput placeholder="Name" />
-          <CreateAccountInput placeholder="Password" />
-          <CreateAccountInput placeholder="Password Confirm" />
+        <CreateAccountForm onSubmit={handleSubmit(onValid)}>
+          <CreateAccountInput
+            {...register("email")}
+            type="email"
+            placeholder="Email"
+          />
+          <CreateAccountInput
+            {...register("name")}
+            type="text"
+            placeholder="Name"
+          />
+          <CreateAccountInput
+            {...register("password")}
+            type="password"
+            placeholder="Password"
+          />
+          <CreateAccountInput
+            {...register("passwordConfirm")}
+            type="password"
+            placeholder="Password Confirm"
+          />
           <CreateAccountButtonContainer>
             <CreateAccountButton>CREATE</CreateAccountButton>
           </CreateAccountButtonContainer>

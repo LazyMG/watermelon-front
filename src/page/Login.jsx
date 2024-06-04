@@ -1,3 +1,4 @@
+import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -66,8 +67,11 @@ const LoginButton = styled.button`
 
 const LoginBottomContainer = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  gap: 15px;
 `;
 
 const LoginBottom = styled.div`
@@ -82,14 +86,30 @@ const LoginBottom = styled.div`
   }
 `;
 
+const googleId =
+  "160948580580-q23l6mhjes0pqcto03d45quvmfr8sj9l.apps.googleusercontent.com";
+const googleRedirectionUrl = "http://localhost:5173/google-login";
+const url = `https://accounts.google.com/o/oauth2/auth?client_id=${googleId}&redirect_uri=${googleRedirectionUrl}&response_type=token&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
+
 const Login = () => {
+  const { register, handleSubmit } = useForm();
+
+  const onValid = (data) => {
+    console.log(data);
+    //백엔드로 로그인 정보 전달
+  };
+
   return (
     <LoginWrapper>
       <LoginFormContainer>
         <LoginFormHeader>Login to WaterMelon</LoginFormHeader>
-        <LoginForm>
-          <LoginInput placeholder="Email" />
-          <LoginInput placeholder="Password" />
+        <LoginForm onSubmit={handleSubmit(onValid)}>
+          <LoginInput {...register("email")} placeholder="Email" type="email" />
+          <LoginInput
+            {...register("password")}
+            placeholder="Password"
+            type="password"
+          />
           <LoginButtonContainer>
             <LoginButton>LOGIN</LoginButton>
           </LoginButtonContainer>
@@ -99,6 +119,12 @@ const Login = () => {
           <LoginBottom>
             아직 계정이 없다면 &rarr;{" "}
             <Link to="/create-account">계정 생성</Link>
+          </LoginBottom>
+          <LoginBottom>
+            구글 계정으로 로그인 &rarr;{" "}
+            <span onClick={() => (window.location.href = url)}>
+              구글 로그인
+            </span>
           </LoginBottom>
         </LoginBottomContainer>
       </LoginFormContainer>
