@@ -1,3 +1,4 @@
+import { useForm } from "react-hook-form";
 import styled from "styled-components";
 
 const UploadWrapper = styled.div`
@@ -33,7 +34,7 @@ const UploadInputContainer = styled.div`
   font-size: 20px;
 `;
 
-const UploadInputLabel = styled.div``;
+const UploadInputLabel = styled.label``;
 
 const UploadInput = styled.input`
   font-size: 20px;
@@ -64,32 +65,15 @@ const UploadFormButton = styled.button`
   }
 `;
 
-const Upload = () => {
+const Upload = ({ children }) => {
+  const { register, handleSubmit } = useForm();
+
+  const onValid = (data) => {
+    console.log(data);
+  };
   return (
     <UploadWrapper>
-      <UploadFormContainer>
-        <UploadForm>
-          <UploadInputContainer>
-            <UploadInputLabel>노래 제목:</UploadInputLabel>
-            <UploadInput />
-          </UploadInputContainer>
-          <UploadInputContainer>
-            <UploadInputLabel>가수 이름:</UploadInputLabel>
-            <UploadInput />
-          </UploadInputContainer>
-          <UploadInputContainer>
-            <UploadInputLabel>앨범 이름:</UploadInputLabel>
-            <UploadInput />
-          </UploadInputContainer>
-          <UploadInputContainer>
-            <UploadInputLabel>이미지 주소:</UploadInputLabel>
-            <UploadInput />
-          </UploadInputContainer>
-          <UploadFormBottom>
-            <UploadFormButton>업로드</UploadFormButton>
-          </UploadFormBottom>
-        </UploadForm>
-      </UploadFormContainer>
+      <UploadFormContainer>{children}</UploadFormContainer>
     </UploadWrapper>
   );
 };

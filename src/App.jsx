@@ -4,7 +4,6 @@ import reset from "styled-reset";
 import Layout from "./components/Layout";
 import Home from "./page/Home";
 import Search from "./page/Search";
-import Upload from "./page/Upload";
 import GoogleLogin from "./page/GoogleLogin";
 import Explore from "./page/Explore";
 import Watch from "./page/Watch";
@@ -14,6 +13,15 @@ import ProtectedRoute from "./ProtectedRoute";
 import Library from "./page/Library";
 import PlayList from "./page/PlayList";
 import Channel from "./page/Channel";
+import UploadArtist from "./page/upload/UploadArtist";
+import UploadMusic from "./page/upload/UploadMusic";
+import UploadAlbum from "./page/upload/UploadAlbum";
+import ArtistAlbum from "./page/connect/ArtistAlbum";
+import ArtistMusic from "./page/connect/ArtistMusic";
+import ConnectArtist from "./page/connect/ConnectArtist";
+import ConnectAlbum from "./page/connect/ConnectAlbum";
+import AlbumMusic from "./page/connect/AlbumMusic";
+import AdminLayout from "./components/AdminLayout";
 
 const router = createBrowserRouter([
   {
@@ -69,12 +77,65 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/upload",
-    element: <Upload />,
+    path: "/admin",
+    element: (
+      <ProtectedRoute>
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: "upload",
+        children: [
+          {
+            path: "artist",
+            element: <UploadArtist />,
+          },
+          {
+            path: "music",
+            element: <UploadMusic />,
+          },
+          {
+            path: "album",
+            element: <UploadAlbum />,
+          },
+        ],
+      },
+      {
+        path: "connect",
+        children: [
+          {
+            path: "artist",
+            element: <ConnectArtist />,
+          },
+          {
+            path: "artist/:artistId/artistAlbum",
+            element: <ArtistAlbum />,
+          },
+          {
+            path: "artist/:artistId/artistMusic",
+            element: <ArtistMusic />,
+          },
+          {
+            path: "album",
+            element: <ConnectAlbum />,
+          },
+
+          {
+            path: "album/:albumId/albumMusic",
+            element: <AlbumMusic />,
+          },
+        ],
+      },
+    ],
   },
   {
     path: "/google-login",
     element: <GoogleLogin />,
+  },
+  {
+    path: "*",
+    element: "",
   },
 ]);
 
