@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, Outlet, useMatch, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import CreatePlaylistForm from "./CreatePlaylistForm";
+import YoutubePlayer from "./YoutubePlayer";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { playerState, selectedMusicState, ytIdState } from "../atom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -327,9 +330,7 @@ const PlayBarWrapper = styled.div`
   height: 70px;
   z-index: 10;
 
-  display: none;
-
-  //display: flex;
+  display: ${({ $isPlay }) => ($isPlay ? "flex" : "none")};
   flex-direction: column;
   align-items: center;
 `;
@@ -395,7 +396,8 @@ const PlayBarContentMainImg = styled.div`
   width: 45px;
   height: 45px;
   border-radius: 5px;
-  background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
+  background: ${({ $imgUrl }) => `url(${$imgUrl})`};
+  //background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
   background-size: cover;
   flex-shrink: 0;
 `;
@@ -405,6 +407,7 @@ const PlayBarContentMainInfo = styled.div`
   flex-direction: column;
   gap: 5px;
   width: 300px;
+  line-height: 1.3;
 `;
 
 const PlayBarContentMainInfoTitle = styled.div`
@@ -455,12 +458,23 @@ const Layout = () => {
   const [navShow, setNavShow] = useState(false);
   const [createPlaylist, setCreatePlaylist] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+  const [isPlay, setIsPlay] = useState(false);
+  const selectedMusic = useRecoilValue(selectedMusicState);
+
+  const [ytPlayerState, setYtPlayerState] = useRecoilState(playerState);
+  //const ytId = useRecoilValue(ytIdState);
 
   const homeMatch = useMatch("/");
   const exploreMatch = useMatch("/explore");
   const libraryMatch = useMatch("/library");
 
   const navigate = useNavigate();
+
+  const playerRef = useRef(null);
+
+  useEffect(() => {
+    console.log("render");
+  }, []);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -482,7 +496,8 @@ const Layout = () => {
 
   const createNewPlaylist = () => setCreatePlaylist(true);
 
-  const gotoWatchMusic = () => navigate("/watch");
+  const gotoWatchMusic = () =>
+    navigate(`/watch?v=${selectedMusic.ytId}&list=${selectedMusic._id}`);
 
   const gotoLogout = () => console.log("logout");
 
@@ -491,6 +506,22 @@ const Layout = () => {
   const gotoPlayList = () => navigate("/playlist");
 
   const gotoHome = () => navigate("/");
+
+  // YouTube 플레이어 상태 변경 이벤트 핸들러
+  const handlePlayerStateChange = (event) => {
+    console.log("Player State:", event.data);
+    if (event.data === 1) {
+      setIsPlay(true);
+    }
+  };
+
+  const opts = {
+    height: "0",
+    width: "0",
+    playerVars: {
+      autoplay: ytPlayerState.isPlaying ? 1 : 0,
+    },
+  };
 
   return (
     <Wrapper>
@@ -691,7 +722,7 @@ const Layout = () => {
           <Component />
         </Temp> */}
       </ContentWrapper>
-      <PlayBarWrapper>
+      <PlayBarWrapper $isPlay={isPlay}>
         <PlayBarTimeline />
         <PlayBarContentContainer>
           <PlayBarContentControlContainer>
@@ -778,13 +809,14 @@ const Layout = () => {
             </PlayBarContentControlDuration>
           </PlayBarContentControlContainer>
           <PlayBarContentMainContainer>
-            <PlayBarContentMainImg />
+            <PlayBarContentMainImg $imgUrl={selectedMusic?.coverImg} />
             <PlayBarContentMainInfo>
               <PlayBarContentMainInfoTitle>
-                Accendio
+                {selectedMusic?.title}
               </PlayBarContentMainInfoTitle>
               <PlayBarContentMainInfoOverview>
-                IVE (아이브) • IVE SWITCH • 2024
+                {selectedMusic?.artist.artistName} •{" "}
+                {selectedMusic?.album.title} • 2024
               </PlayBarContentMainInfoOverview>
             </PlayBarContentMainInfo>
             <PlayBarContentMainUtil>
@@ -934,9 +966,18 @@ const Layout = () => {
           </PlayBarContentUtilContainer>
         </PlayBarContentContainer>
       </PlayBarWrapper>
+
       {createPlaylist && (
         <CreatePlaylistForm setCreatePlaylist={setCreatePlaylist} />
       )}
+      <div>
+        <YoutubePlayer
+          videoId={ytPlayerState.ytId}
+          onStateChange={handlePlayerStateChange}
+          opts={opts}
+          playerRef={playerRef}
+        />
+      </div>
     </Wrapper>
   );
 };

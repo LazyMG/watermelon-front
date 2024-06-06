@@ -23,6 +23,15 @@ const ListContainer = styled.div`
   gap: 20px;
 `;
 
+const ListTitle = styled.div`
+  width: 100%;
+  border-radius: 10px;
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+`;
+
 const ListItem = styled.div`
   width: 100%;
   background-color: #707070;
@@ -36,8 +45,8 @@ const ListItem = styled.div`
 `;
 
 const ArtistMusic = () => {
-  const [musics, setMusics] = useState();
-  const [artist, setArtist] = useState();
+  const [musics, setMusics] = useState([]);
+  const [artist, setArtist] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { artistId } = useParams();
 
@@ -78,6 +87,7 @@ const ArtistMusic = () => {
       artistId,
       musicId,
     };
+    //setIsUpdate(true)
     fetch("http://localhost:3000/connect/artistMusic", {
       method: "POST",
       headers: {
@@ -88,7 +98,8 @@ const ArtistMusic = () => {
       .then((response) => {
         const statusCode = response.status;
         if (statusCode === 200) {
-          console.log("ok");
+          alert("완료되었습니다.");
+          getMusics();
         } else alert("falied!");
       })
       .catch((error) => console.error("Error:", error));
@@ -107,11 +118,7 @@ const ArtistMusic = () => {
     <Wrapper>
       {isLoading ? null : (
         <ListContainer>
-          {/* {albumData.map((data) => (
-      <ListItem onClick={() => gotoAlbumMusic(data.id)} key={data.id}>
-        {data.title}
-      </ListItem>
-    ))} */}
+          <ListTitle>{artist?.artistName}</ListTitle>
           {musics?.map((music) => (
             <ListItem onClick={() => clickMusic(music)} key={music._id}>
               {music.title}

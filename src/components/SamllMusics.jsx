@@ -1,4 +1,7 @@
+import { Link } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
+import { playerState, selectedMusicState } from "../atom";
 
 const SmallMusicsContainer = styled.div`
   width: 100%;
@@ -101,17 +104,22 @@ const SmallMusic = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-
-  cursor: pointer;
 `;
 
 const SmallMusicImgContainer = styled.div`
   border-radius: 2px;
   width: 50px;
   height: 50px;
-  background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
+  background: ${({ $imgUrl }) => `url(${$imgUrl})`};
+  //background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
   background-size: cover;
   flex-shrink: 0;
+
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 const SmallMusicText = styled.div`
@@ -129,15 +137,45 @@ const SmallMusicTitle = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  cursor: pointer;
 `;
 
 const SmallMusicDescription = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  a {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
-const SamllMusics = () => {
+const SamllMusics = ({ musics }) => {
+  const setPlayerState = useSetRecoilState(playerState);
+  const setSelectedMusic = useSetRecoilState(selectedMusicState);
+
+  // const setYtId = (ytId) => {
+  //   setPlayerState({
+  //     ...playerState,
+  //     videoId: ytId,
+  //     isPlaying: true,
+  //     isPaused: false,
+  //   });
+  // };
+
+  const handleClick = (music) => {
+    setPlayerState({
+      ...playerState,
+      ytId: music.ytId,
+      isPlaying: true,
+      isPaused: false,
+    });
+    setSelectedMusic(music);
+  };
+
   return (
     <SmallMusicsContainer>
       <SmallMusicsHeader>
@@ -182,14 +220,37 @@ const SamllMusics = () => {
         </SmallMusicsButtons>
       </SmallMusicsHeader>
       <SmallMusicsContent>
-        {/* <SmallMusicsContentScroll /> */}
-        {Array.from({ length: 20 }).map((_, idx) => (
+        {/* {Array.from({ length: 20 }).map((_, idx) => (
           <SmallMusic key={idx}>
             <SmallMusicImgContainer />
             <SmallMusicText>
               <SmallMusicTitle>Accendio</SmallMusicTitle>
               <SmallMusicDescription>
                 IVE(아이브) | IVE SWITCH
+              </SmallMusicDescription>
+            </SmallMusicText>
+          </SmallMusic>
+        ))} */}
+        {musics?.map((music) => (
+          <SmallMusic key={music._id}>
+            <SmallMusicImgContainer $imgUrl={music.coverImg} />
+            <SmallMusicText>
+              <SmallMusicTitle onClick={() => handleClick(music)}>
+                {music.title}
+              </SmallMusicTitle>
+              <SmallMusicDescription>
+                <Link to={`/channel/${music.artist._id}`}>
+                  {music.artist.artistName}
+                </Link>{" "}
+                |{" "}
+                <Link
+                  to={{
+                    pathname: "/playlist",
+                    search: `?list=${music.album._id}`,
+                  }}
+                >
+                  {music.album.title}
+                </Link>
               </SmallMusicDescription>
             </SmallMusicText>
           </SmallMusic>

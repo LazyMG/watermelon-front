@@ -129,6 +129,15 @@ const UploadAlbum = () => {
               placeholder="설명"
             />
           </UploadInputContainer>
+          <UploadInputContainer>
+            <UploadInputLabel htmlFor="totalMusic">곡 수:</UploadInputLabel>
+            <UploadInput
+              id="totalMusic"
+              type="number"
+              {...register("totalMusic")}
+              placeholder="곡 수"
+            />
+          </UploadInputContainer>
           <UploadFormBottom>
             <UploadFormButton>업로드</UploadFormButton>
           </UploadFormBottom>

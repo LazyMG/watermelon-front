@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import SamllMusics from "../components/SamllMusics";
 import BigMusics from "../components/BigMusics";
+import { useEffect, useState } from "react";
 
 const HomeWrapper = styled.div`
   margin-top: 70px;
@@ -47,22 +48,43 @@ const HomeRecommandContainer = styled.div`
 `;
 
 const Home = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [musics, setMusics] = useState([]);
+
+  //data fetch
+  const getMusics = async () => {
+    const result = await fetch(
+      "http://localhost:3000/music/allMusic"
+    ).then((res) => res.json());
+    setMusics(result);
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    getMusics();
+    setIsLoading(false);
+  }, []);
+
   return (
     <HomeWrapper>
-      <HomeNavContainer>
-        <HomeNavItem>집중</HomeNavItem>
-        <HomeNavItem>운동</HomeNavItem>
-      </HomeNavContainer>
-      <HomeContentContainer>
-        <SamllMusics />
-      </HomeContentContainer>
-      <HomeContentContainer>
-        <BigMusics />
-      </HomeContentContainer>
-      {/* <HomeContentContainer>Home</HomeContentContainer> */}
-      <HomeContentContainer>
-        <BigMusics />
-      </HomeContentContainer>
+      {isLoading ? null : (
+        <>
+          <HomeNavContainer>
+            <HomeNavItem>집중</HomeNavItem>
+            <HomeNavItem>운동</HomeNavItem>
+          </HomeNavContainer>
+          <HomeContentContainer>
+            <SamllMusics musics={musics} />
+          </HomeContentContainer>
+          <HomeContentContainer>
+            <BigMusics musics={musics} />
+          </HomeContentContainer>
+          {/* <HomeContentContainer>Home</HomeContentContainer> */}
+          <HomeContentContainer>
+            <BigMusics musics={musics} />
+          </HomeContentContainer>
+        </>
+      )}
     </HomeWrapper>
   );
 };

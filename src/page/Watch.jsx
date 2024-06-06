@@ -1,3 +1,5 @@
+import { useCallback, useEffect, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 
 const WatchWrapper = styled.div`
@@ -66,7 +68,8 @@ const WatchContentDisplayHeaderContent = styled.div`
 const WatchContentImg = styled.div`
   width: 630px;
   height: 630px;
-  background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
+  background: ${({ $imgUrl }) => `url(${$imgUrl})`};
+  //background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
   background-size: cover;
   border-radius: 5px;
   //margin-bottom: 70px;
@@ -197,71 +200,92 @@ const WatchContentInfoContentListItemInfoSinger = styled.div``;
 const WatchContentInfoContentListItemInfoTime = styled.div``;
 
 const Watch = () => {
+  const data = new URLSearchParams(useLocation().search);
+  const currentYtId = data.get("v");
+  const currentList = data.get("list");
+  const [music, setMusic] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getMusic = useCallback(async () => {
+    const result = await fetch(
+      `http://localhost:3000/music/${currentList}`
+    ).then((res) => res.json());
+    setMusic(result);
+  }, [currentList]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    getMusic();
+    setIsLoading(false);
+  }, []);
+
   return (
     <WatchWrapper>
-      <WatchContentContainer>
-        <WatchContentDisplay>
-          <WatchContentDisplayHeader>
-            <WatchContentDisplayHeaderContent $selected={true}>
-              노래
-            </WatchContentDisplayHeaderContent>
-            <WatchContentDisplayHeaderContent>
-              동영상
-            </WatchContentDisplayHeaderContent>
-          </WatchContentDisplayHeader>
-          <WatchContentImg />
-        </WatchContentDisplay>
-        <WatchContentInfo>
-          <WatchContentInfoHeader>
-            <WatchContentInfoHeaderItem>다음 트랙</WatchContentInfoHeaderItem>
-            <WatchContentInfoHeaderItem>가사</WatchContentInfoHeaderItem>
-            <WatchContentInfoHeaderItem>관련 항목</WatchContentInfoHeaderItem>
-          </WatchContentInfoHeader>
-          <WatchContentInfoContentContainer>
-            <WatchContentInfoContentHeader>
-              <WatchContentInfoContentHeaderInfo>
-                <WatchContentInfoContentHeaderInfoSmall>
-                  재생 중인 트랙 출처
-                </WatchContentInfoContentHeaderInfoSmall>
-                <WatchContentInfoContentHeaderInfoBig>
-                  Accendio (Accendio) 뮤직 스테이션
-                </WatchContentInfoContentHeaderInfoBig>
-              </WatchContentInfoContentHeaderInfo>
-              <WatchContentInfoContentHeaderButton>
-                저장
-              </WatchContentInfoContentHeaderButton>
-            </WatchContentInfoContentHeader>
-            <WatchContentInfoContentNav>
-              <WatchContentInfoContentNavItem>
-                All
-              </WatchContentInfoContentNavItem>
-              <WatchContentInfoContentNavItem>
-                친숙한 곡
-              </WatchContentInfoContentNavItem>
-            </WatchContentInfoContentNav>
-            <WatchContentInfoContentList>
-              {Array.from({ length: 20 }).map((_, idx) => (
-                <WatchContentInfoContentListItem key={idx}>
-                  <WatchContentInfoContentListItemImg />
-                  <WatchContentInfoContentListItemInfo>
-                    <WatchContentInfoContentListItemInfoText>
-                      <WatchContentInfoContentListItemInfoTitle>
-                        Accendio
-                      </WatchContentInfoContentListItemInfoTitle>
-                      <WatchContentInfoContentListItemInfoSinger>
-                        IVE (아이브)
-                      </WatchContentInfoContentListItemInfoSinger>
-                    </WatchContentInfoContentListItemInfoText>
-                    <WatchContentInfoContentListItemInfoTime>
-                      3:13
-                    </WatchContentInfoContentListItemInfoTime>
-                  </WatchContentInfoContentListItemInfo>
-                </WatchContentInfoContentListItem>
-              ))}
-            </WatchContentInfoContentList>
-          </WatchContentInfoContentContainer>
-        </WatchContentInfo>
-      </WatchContentContainer>
+      {isLoading ? null : (
+        <WatchContentContainer>
+          <WatchContentDisplay>
+            <WatchContentDisplayHeader>
+              <WatchContentDisplayHeaderContent $selected={true}>
+                노래
+              </WatchContentDisplayHeaderContent>
+              <WatchContentDisplayHeaderContent>
+                동영상
+              </WatchContentDisplayHeaderContent>
+            </WatchContentDisplayHeader>
+            <WatchContentImg $imgUrl={music?.coverImg} />
+          </WatchContentDisplay>
+          <WatchContentInfo>
+            <WatchContentInfoHeader>
+              <WatchContentInfoHeaderItem>다음 트랙</WatchContentInfoHeaderItem>
+              <WatchContentInfoHeaderItem>가사</WatchContentInfoHeaderItem>
+              <WatchContentInfoHeaderItem>관련 항목</WatchContentInfoHeaderItem>
+            </WatchContentInfoHeader>
+            <WatchContentInfoContentContainer>
+              <WatchContentInfoContentHeader>
+                <WatchContentInfoContentHeaderInfo>
+                  <WatchContentInfoContentHeaderInfoSmall>
+                    재생 중인 트랙 출처
+                  </WatchContentInfoContentHeaderInfoSmall>
+                  <WatchContentInfoContentHeaderInfoBig>
+                    {music?.title} {`(${music?.title})`} 뮤직 스테이션
+                  </WatchContentInfoContentHeaderInfoBig>
+                </WatchContentInfoContentHeaderInfo>
+                <WatchContentInfoContentHeaderButton>
+                  저장
+                </WatchContentInfoContentHeaderButton>
+              </WatchContentInfoContentHeader>
+              <WatchContentInfoContentNav>
+                <WatchContentInfoContentNavItem>
+                  All
+                </WatchContentInfoContentNavItem>
+                <WatchContentInfoContentNavItem>
+                  친숙한 곡
+                </WatchContentInfoContentNavItem>
+              </WatchContentInfoContentNav>
+              <WatchContentInfoContentList>
+                {Array.from({ length: 20 }).map((_, idx) => (
+                  <WatchContentInfoContentListItem key={idx}>
+                    <WatchContentInfoContentListItemImg />
+                    <WatchContentInfoContentListItemInfo>
+                      <WatchContentInfoContentListItemInfoText>
+                        <WatchContentInfoContentListItemInfoTitle>
+                          Accendio
+                        </WatchContentInfoContentListItemInfoTitle>
+                        <WatchContentInfoContentListItemInfoSinger>
+                          IVE (아이브)
+                        </WatchContentInfoContentListItemInfoSinger>
+                      </WatchContentInfoContentListItemInfoText>
+                      <WatchContentInfoContentListItemInfoTime>
+                        3:13
+                      </WatchContentInfoContentListItemInfoTime>
+                    </WatchContentInfoContentListItemInfo>
+                  </WatchContentInfoContentListItem>
+                ))}
+              </WatchContentInfoContentList>
+            </WatchContentInfoContentContainer>
+          </WatchContentInfo>
+        </WatchContentContainer>
+      )}
     </WatchWrapper>
   );
 };

@@ -1,4 +1,6 @@
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
+import { playerState, selectedMusicState } from "../atom";
 
 const BigMusicsContainer = styled.div`
   width: 100%;
@@ -120,7 +122,8 @@ const BigMusicImgContainer = styled.div`
   border-radius: 5px;
   width: 190px;
   height: 190px;
-  background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
+  background: ${({ $imgUrl }) => `url(${$imgUrl})`};
+  //background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
   background-size: cover;
   flex-shrink: 0;
 
@@ -150,7 +153,20 @@ const BigMusicDescription = styled.div`
   text-overflow: ellipsis;
 `;
 
-const BigMusics = () => {
+const BigMusics = ({ musics }) => {
+  const setPlayerState = useSetRecoilState(playerState);
+  const setSelectedMusic = useSetRecoilState(selectedMusicState);
+
+  const handleClick = (music) => {
+    setPlayerState({
+      ...playerState,
+      ytId: music.ytId,
+      isPlaying: true,
+      isPaused: false,
+    });
+    setSelectedMusic(music);
+  };
+
   return (
     <BigMusicsContainer>
       <BigMusicsHeader>
@@ -209,7 +225,18 @@ const BigMusics = () => {
         </BigMusicsHeaderButtons>
       </BigMusicsHeader>
       <BigMusicsContent>
-        {Array.from({ length: 20 }).map((_, idx) => (
+        {musics?.map((music) => (
+          <BigMusic key={music._id}>
+            <BigMusicImgContainer $imgUrl={music?.coverImg} />
+            <BigMusicInfo>
+              <BigMusicTitle>{music?.title}</BigMusicTitle>
+              <BigMusicDescription>
+                노래 | {music?.artist.artistName}
+              </BigMusicDescription>
+            </BigMusicInfo>
+          </BigMusic>
+        ))}
+        {/* {Array.from({ length: 20 }).map((_, idx) => (
           <BigMusic key={idx}>
             <BigMusicImgContainer />
             <BigMusicInfo>
@@ -217,7 +244,7 @@ const BigMusics = () => {
               <BigMusicDescription>노래 | IVE(아이브)</BigMusicDescription>
             </BigMusicInfo>
           </BigMusic>
-        ))}
+        ))} */}
         <BigMusicsContentScroll />
       </BigMusicsContent>
     </BigMusicsContainer>
