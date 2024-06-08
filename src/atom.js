@@ -7,7 +7,8 @@ export const playerState = atom({
     isPlaying: false,
     isPaused: false,
     duration: 0,
-    currentTime: 0,
+    currentTime: "",
+    isLoading: false,
   },
 });
 

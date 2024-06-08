@@ -84,10 +84,28 @@ const CreateAccountBottom = styled.div`
 `;
 
 const CreateAccount = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset, setError } = useForm();
 
-  const onValid = (data) => {
-    console.log(data);
+  const onValid = async ({ email, username, password, passwordConfirm }) => {
+    if (password !== passwordConfirm)
+      return setError("password", { message: "비밀번호를 확인해주세요." });
+
+    const result = await fetch("http://localhost:3000/create-account", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, username, password, passwordConfirm }),
+    }).then((response) => {
+      const statusCode = response.status;
+      if (statusCode === 200) {
+        console.log("완료되었습니다.");
+      } else {
+        reset();
+      }
+      return response.json();
+    });
+    console.log(result.message);
   };
 
   return (
@@ -101,7 +119,7 @@ const CreateAccount = () => {
             placeholder="Email"
           />
           <CreateAccountInput
-            {...register("name")}
+            {...register("username")}
             type="text"
             placeholder="Name"
           />

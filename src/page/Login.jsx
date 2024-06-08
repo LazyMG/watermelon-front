@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const LoginWrapper = styled.div`
@@ -84,6 +84,12 @@ const LoginBottom = styled.div`
     font-weight: bold;
     font-size: 20px;
   }
+
+  span {
+    font-weight: bold;
+    font-size: 20px;
+    cursor: pointer;
+  }
 `;
 
 const googleId =
@@ -92,11 +98,33 @@ const googleRedirectionUrl = "http://localhost:5173/google-login";
 const url = `https://accounts.google.com/o/oauth2/auth?client_id=${googleId}&redirect_uri=${googleRedirectionUrl}&response_type=token&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
 
 const Login = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
+  const navigate = useNavigate();
 
-  const onValid = (data) => {
-    console.log(data);
+  const onValid = async ({ email, password }) => {
+    //유효성 검사
     //백엔드로 로그인 정보 전달
+    const result = await fetch("http://localhost:3000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    }).then((response) => {
+      const statusCode = response.status;
+      if (statusCode === 200) {
+        console.log("완료되었습니다.");
+      } else {
+        reset();
+        //에러 세팅
+      }
+      return response.json();
+    });
+    //console.log(result);
+    if (result.user) {
+      localStorage.setItem("userData", JSON.stringify(result.user));
+      navigate("/");
+    }
   };
 
   return (

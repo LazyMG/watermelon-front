@@ -145,6 +145,8 @@ const BigMusicTitle = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  cursor: pointer;
 `;
 
 const BigMusicDescription = styled.div`
@@ -229,7 +231,9 @@ const BigMusics = ({ musics }) => {
           <BigMusic key={music._id}>
             <BigMusicImgContainer $imgUrl={music?.coverImg} />
             <BigMusicInfo>
-              <BigMusicTitle>{music?.title}</BigMusicTitle>
+              <BigMusicTitle onClick={() => handleClick(music)}>
+                {music?.title}
+              </BigMusicTitle>
               <BigMusicDescription>
                 노래 | {music?.artist.artistName}
               </BigMusicDescription>
