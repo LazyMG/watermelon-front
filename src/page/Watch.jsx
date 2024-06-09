@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
+import AddMusicPlaylistForm from "../components/AddMusicPlaylistForm";
 
 const WatchWrapper = styled.div`
   //margin-top: 70px;
@@ -205,6 +206,8 @@ const Watch = () => {
   const currentList = data.get("list");
   const [music, setMusic] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const isLogin = localStorage.getItem("userData") ? true : false;
 
   const getMusic = useCallback(async () => {
     const result = await fetch(
@@ -212,6 +215,10 @@ const Watch = () => {
     ).then((res) => res.json());
     setMusic(result);
   }, [currentList]);
+
+  const clickAddMusicToPlaylist = () => {
+    setAddModalOpen(true);
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -247,10 +254,12 @@ const Watch = () => {
                     재생 중인 트랙 출처
                   </WatchContentInfoContentHeaderInfoSmall>
                   <WatchContentInfoContentHeaderInfoBig>
-                    {music?.title} {`(${music?.title})`} 뮤직 스테이션
+                    {music?.title} 뮤직 스테이션
                   </WatchContentInfoContentHeaderInfoBig>
                 </WatchContentInfoContentHeaderInfo>
-                <WatchContentInfoContentHeaderButton>
+                <WatchContentInfoContentHeaderButton
+                  onClick={clickAddMusicToPlaylist}
+                >
                   저장
                 </WatchContentInfoContentHeaderButton>
               </WatchContentInfoContentHeader>
@@ -285,6 +294,13 @@ const Watch = () => {
             </WatchContentInfoContentContainer>
           </WatchContentInfo>
         </WatchContentContainer>
+      )}
+      {addModalOpen && (
+        <AddMusicPlaylistForm
+          isLogin={isLogin}
+          setAddModalOpen={setAddModalOpen}
+          music={music}
+        />
       )}
     </WatchWrapper>
   );

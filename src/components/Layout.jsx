@@ -346,6 +346,7 @@ const Layout = () => {
 
   const [isPlay, setIsPlay] = useState(false);
   const [isPlayerOn, setIsPlayerOn] = useState(false);
+  const [playlists, setPlaylists] = useState([]);
 
   const [ytPlayerState, setYtPlayerState] = useRecoilState(playerState);
   //const ytId = useRecoilValue(ytIdState);
@@ -359,8 +360,8 @@ const Layout = () => {
   const playerRef = useRef(null);
 
   useEffect(() => {
-    console.log("render");
-  }, []);
+    getUserPlaylist();
+  }, [isLogin]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -380,13 +381,30 @@ const Layout = () => {
 
   const handleClick = () => setMenuOpen(!menuOpen);
 
-  const createNewPlaylist = () => setCreatePlaylist(true);
+  const createNewPlaylist = () => {
+    if (!isLogin) {
+      alert("로그인 필요");
+      return;
+    }
+    setCreatePlaylist(true);
+  };
 
-  const gotoLogout = () => console.log("logout");
+  const gotoLogout = async () => {
+    const result = await fetch("http://localhost:3000/logout").then((res) =>
+      res.json()
+    );
+    if (result.action === "delete") {
+      localStorage.removeItem("userData");
+      setPlaylists([]);
+      navigate("/");
+    }
+  };
 
   const gotoLogin = () => navigate("/login");
 
-  const gotoPlayList = () => navigate("/playlist");
+  const gotoPlayList = (playlistId) => {
+    navigate(`/playlist?list=${playlistId}`);
+  };
 
   const gotoHome = () => navigate("/");
 
@@ -402,6 +420,17 @@ const Layout = () => {
       }));
       setIsPlayerOn(true);
       setIsPlay(true);
+    }
+  };
+
+  const getUserPlaylist = async () => {
+    if (!isLogin) return;
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const result = await fetch(
+      `http://localhost:3000/user/${userData._id}/playlist`
+    ).then((res) => res.json());
+    if (result?.playlists) {
+      setPlaylists(result.playlists);
     }
   };
 
@@ -573,13 +602,42 @@ const Layout = () => {
           </MenuBottomCreateContainer>
           {/* 컴포넌트로 빼기 */}
           <MenuBottomListContainer>
-            {Array.from({ length: 5 }).map((_, idx) => (
+            {/* {Array.from({ length: 5 }).map((_, idx) => (
               <MenuBottomListItem key={idx} onClick={gotoPlayList}>
                 <MenuBottomListItemText>
                   <MenuBottomListItemTitle>
                     좋아요 표시한 음악
                   </MenuBottomListItemTitle>
                   <MenuBottomListItemUser>이마가</MenuBottomListItemUser>
+                </MenuBottomListItemText>
+                <MenuBottomListItemIcon>
+                  <svg
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      clipRule="evenodd"
+                      fillRule="evenodd"
+                      d="M2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm6.39-2.908a.75.75 0 0 1 .766.027l3.5 2.25a.75.75 0 0 1 0 1.262l-3.5 2.25A.75.75 0 0 1 8 12.25v-4.5a.75.75 0 0 1 .39-.658Z"
+                    />
+                  </svg>
+                </MenuBottomListItemIcon>
+              </MenuBottomListItem>
+            ))} */}
+            {playlists?.map((playlist) => (
+              <MenuBottomListItem
+                key={playlist._id}
+                onClick={() => gotoPlayList(playlist._id)}
+              >
+                <MenuBottomListItemText>
+                  <MenuBottomListItemTitle>
+                    {playlist.title}
+                  </MenuBottomListItemTitle>
+                  <MenuBottomListItemUser>
+                    {playlist.owner.username}
+                  </MenuBottomListItemUser>
                 </MenuBottomListItemText>
                 <MenuBottomListItemIcon>
                   <svg
@@ -617,7 +675,11 @@ const Layout = () => {
       </PlayBarWrapper>
 
       {createPlaylist && (
-        <CreatePlaylistForm setCreatePlaylist={setCreatePlaylist} />
+        <CreatePlaylistForm
+          isLogin={isLogin}
+          setCreatePlaylist={setCreatePlaylist}
+          setPlaylists={setPlaylists}
+        />
       )}
       <div>
         <YoutubePlayer

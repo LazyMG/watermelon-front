@@ -57,16 +57,6 @@ const router = createBrowserRouter([
         path: "create-account",
         element: <CreateAccount />,
       },
-    ],
-  },
-  {
-    path: "/",
-    element: (
-      <ProtectedRoute>
-        <Layout />
-      </ProtectedRoute>
-    ),
-    children: [
       {
         path: "library",
         element: <Library />,

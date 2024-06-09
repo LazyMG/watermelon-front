@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import styled from "styled-components";
 import useOnClickOutSide from "../hooks/useOnClickOutSide";
+import { useForm } from "react-hook-form";
 
 const Wrapper = styled.div`
   z-index: 1200;
@@ -82,7 +83,7 @@ const CreateFormBottom = styled.div`
   gap: 10px;
 `;
 
-const CreateFormBottomButton = styled.div`
+const CreateFormBottomButton = styled.button`
   background-color: red;
   padding: 10px 15px;
   border-radius: 15px;
@@ -90,26 +91,67 @@ const CreateFormBottomButton = styled.div`
   cursor: pointer;
 `;
 
-const CreatePlaylistForm = ({ setCreatePlaylist }) => {
+const CreatePlaylistForm = ({ setCreatePlaylist, setPlaylists }) => {
   const ref = useRef();
+  const { register, handleSubmit } = useForm();
 
   useOnClickOutSide(ref, () => {
     setCreatePlaylist(false);
   });
+
+  const onValid = async (data) => {
+    const postData = data;
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const result = await fetch(
+      `http://localhost:3000/user/${userData._id}/create-playlist`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postData),
+      }
+    )
+      .then((response) => {
+        const statusCode = response.status;
+        if (statusCode === 200) {
+          alert("완료되었습니다.");
+          return response.json();
+        } else alert("falied!");
+      })
+      .catch((error) => console.error("Error:", error));
+    setPlaylists((prev) => [
+      ...prev,
+      {
+        title: data.title,
+        owner: { username: userData.username },
+        _id: result.id,
+      },
+    ]);
+    setCreatePlaylist(false);
+  };
 
   return (
     <Wrapper role="presentation">
       <WrapperModal className="wrapper-modal">
         <Modal ref={ref}>
           <ModalContent>
-            <CreateForm>
+            <CreateForm onSubmit={handleSubmit(onValid)}>
               <CreateFormTitle>새 재생목록</CreateFormTitle>
               <CreateFormContent>
                 <CreateFormRow>
-                  <CreateFormInput placeholder="제목" />
+                  <CreateFormInput
+                    {...register("title")}
+                    placeholder="제목"
+                    required
+                  />
                 </CreateFormRow>
                 <CreateFormRow>
-                  <CreateFormInput placeholder="설명" />
+                  <CreateFormInput
+                    {...register("overview")}
+                    placeholder="설명"
+                    required
+                  />
                 </CreateFormRow>
                 <CreateFormRow>
                   <CreateFormSelect />

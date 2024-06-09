@@ -1,4 +1,8 @@
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
+import { playerState, selectedMusicState } from "../atom";
+import { useSetRecoilState } from "recoil";
 
 const PlayListWrapper = styled.div`
   margin-top: 70px;
@@ -91,6 +95,8 @@ const PlayListContentListItemTitle = styled.div`
   font-size: 15px;
   font-weight: bold;
   flex: 10;
+
+  cursor: pointer;
 `;
 
 const PlayListContentListItemPlays = styled.div`
@@ -103,37 +109,87 @@ const PlayListContentListItemTime = styled.div`
 `;
 
 const PlayList = () => {
+  const data = new URLSearchParams(useLocation().search);
+  const currentList = data.get("list");
+  const [playlist, setPlaylist] = useState();
+  const setPlayerState = useSetRecoilState(playerState);
+  const setSelectedMusic = useSetRecoilState(selectedMusicState);
+
+  useEffect(() => {
+    getPlaylist();
+  }, []);
+
+  const getPlaylist = async () => {
+    const result = await fetch(
+      `http://localhost:3000/playlist/${currentList}`
+    ).then((res) => res.json());
+    console.log(result.playlist);
+    setPlaylist(result.playlist);
+  };
+
+  const handleClick = (music) => {
+    setPlayerState({
+      ...playerState,
+      ytId: music.ytId,
+      isPlaying: true,
+      isPaused: false,
+    });
+    setSelectedMusic(music);
+  };
+
   return (
     <PlayListWrapper>
-      <PlayListContentContainer>
-        <PlayListContentHeader>
-          <PlayListContentHeaderImg />
-          <PlayListContentHeaderInfo>
-            <PlayListContentHeaderTitle>Frank</PlayListContentHeaderTitle>
-            <PlayListContentHeaderOverview>
-              EP • Yerin Baek • 2015
-            </PlayListContentHeaderOverview>
-            <PlayListContentHeaderUtils>
-              <PlayListContentHeaderButton>재생</PlayListContentHeaderButton>
-              <PlayListContentHeaderButton>
-                보관함에서 삭제
-              </PlayListContentHeaderButton>
-            </PlayListContentHeaderUtils>
-          </PlayListContentHeaderInfo>
-        </PlayListContentHeader>
-        <PlayListContentList>
-          {Array.from({ length: 10 }).map((_, idx) => (
-            <PlayListContentListItem key={idx}>
-              <PlayListContentListItemNum>1</PlayListContentListItemNum>
-              <PlayListContentListItemTitle>Blue</PlayListContentListItemTitle>
-              <PlayListContentListItemPlays>
-                241만회 재생
-              </PlayListContentListItemPlays>
-              <PlayListContentListItemTime>3:46</PlayListContentListItemTime>
-            </PlayListContentListItem>
-          ))}
-        </PlayListContentList>
-      </PlayListContentContainer>
+      {playlist && (
+        <PlayListContentContainer>
+          <PlayListContentHeader>
+            <PlayListContentHeaderImg />
+            <PlayListContentHeaderInfo>
+              <PlayListContentHeaderTitle>
+                {playlist.title}
+              </PlayListContentHeaderTitle>
+              <PlayListContentHeaderOverview>
+                EP • Yerin Baek • 2015
+              </PlayListContentHeaderOverview>
+              <PlayListContentHeaderUtils>
+                <PlayListContentHeaderButton>재생</PlayListContentHeaderButton>
+                <PlayListContentHeaderButton>
+                  보관함에서 삭제
+                </PlayListContentHeaderButton>
+              </PlayListContentHeaderUtils>
+            </PlayListContentHeaderInfo>
+          </PlayListContentHeader>
+          <PlayListContentList>
+            {/* {Array.from({ length: 10 }).map((_, idx) => (
+              <PlayListContentListItem key={idx}>
+                <PlayListContentListItemNum>1</PlayListContentListItemNum>
+                <PlayListContentListItemTitle>
+                  Blue
+                </PlayListContentListItemTitle>
+                <PlayListContentListItemPlays>
+                  241만회 재생
+                </PlayListContentListItemPlays>
+                <PlayListContentListItemTime>3:46</PlayListContentListItemTime>
+              </PlayListContentListItem>
+            ))} */}
+            {playlist.list?.map((music) => (
+              <PlayListContentListItem key={music._id}>
+                <PlayListContentListItemNum>1</PlayListContentListItemNum>
+                <PlayListContentListItemTitle
+                  onClick={() => handleClick(music)}
+                >
+                  {music.title}
+                </PlayListContentListItemTitle>
+                <PlayListContentListItemPlays>
+                  241만회 재생
+                </PlayListContentListItemPlays>
+                <PlayListContentListItemTime>
+                  {music.duration}
+                </PlayListContentListItemTime>
+              </PlayListContentListItem>
+            ))}
+          </PlayListContentList>
+        </PlayListContentContainer>
+      )}
     </PlayListWrapper>
   );
 };
