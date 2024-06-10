@@ -1,4 +1,8 @@
+import { useCallback, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
+import { playerState, selectedMusicState } from "../atom";
 
 const SeacrhWrapper = styled.div`
   margin-top: 30px;
@@ -67,7 +71,7 @@ const SearchResultList = styled.div`
   flex-direction: column;
 `;
 
-const SearchResultItem = styled.div`
+const SearchResultMusicItem = styled.div`
   display: flex;
   gap: 20px;
   align-items: center;
@@ -76,11 +80,30 @@ const SearchResultItem = styled.div`
   border-bottom: 1px solid #c9c9c91b;
 `;
 
+const SearchResultItem = styled.div`
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 15px 10px;
+
+  border-bottom: 1px solid #c9c9c91b;
+
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
 const SearchResultItemImg = styled.div`
   width: 55px;
   height: 55px;
   border-radius: 5px;
-  background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
+  //background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
+  background: ${({ $imgUrl }) =>
+    $imgUrl
+      ? `url(${$imgUrl})`
+      : `url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989")`};
   background-size: cover;
 
   ${({ $isArtist }) => $isArtist && "border-radius:50%;"}
@@ -96,7 +119,18 @@ const SearchResultItemTitle = styled.div`
   font-size: 17px;
 `;
 
+const SearchResultMusicItemTitle = styled.div`
+  font-size: 17px;
+
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 const SearchResultItemOverview = styled.div`
+  display: flex;
   font-size: 17px;
 `;
 
@@ -119,6 +153,47 @@ const SearchResultButton = styled.div`
 `;
 
 const Search = () => {
+  const data = new URLSearchParams(useLocation().search);
+  const keyword = data.get("q");
+
+  const [artists, setArtists] = useState([]);
+  const [musics, setMusics] = useState([]);
+  const [albums, setAlbums] = useState([]);
+
+  const [playlist, setPlaylist] = useState();
+  const setPlayerState = useSetRecoilState(playerState);
+  const setSelectedMusic = useSetRecoilState(selectedMusicState);
+
+  const navigate = useNavigate();
+
+  const getResults = useCallback(async () => {
+    const result = await fetch(
+      `http://localhost:3000/search?keyword=${keyword}`
+    ).then((res) => res.json());
+    console.log(result);
+    setArtists(result.data.artists);
+    setMusics(result.data.musics);
+    setAlbums(result.data.albums);
+  }, [keyword]);
+
+  useEffect(() => {
+    getResults();
+  }, []);
+
+  const handleClick = (music) => {
+    setPlayerState({
+      ...playerState,
+      ytId: music.ytId,
+      isPlaying: true,
+      isPaused: false,
+    });
+    setSelectedMusic(music);
+  };
+
+  const clickArtist = (artistId) => {
+    navigate(`/channel/${artistId}`);
+  };
+
   return (
     <SeacrhWrapper>
       <SeacrhCategoryContainer>
@@ -130,29 +205,40 @@ const Search = () => {
         <SearchNavItem>아티스트</SearchNavItem>
         <SearchNavItem>앨범</SearchNavItem>
       </SearchNavContainer>
-      <SearchResultContainer>
-        <SearchResultHeader>노래</SearchResultHeader>
-        <SearchResultList>
-          {Array.from({ length: 3 }).map((_, idx) => (
-            <SearchResultItem key={idx}>
-              <SearchResultItemImg $isArtist={false} />
-              <SearchResultItemInfo>
-                <SearchResultItemTitle>비와 당신</SearchResultItemTitle>
-                <SearchResultItemOverview>
-                  럼블피쉬 • Memory For You • 4:08 • 5808만회 재생
-                </SearchResultItemOverview>
-              </SearchResultItemInfo>
-            </SearchResultItem>
-          ))}
-        </SearchResultList>
-        <SearchResultBottom>
-          <SearchResultButton>모두 표시</SearchResultButton>
-        </SearchResultBottom>
-      </SearchResultContainer>
-      <SearchResultContainer>
-        <SearchResultHeader>아티스트</SearchResultHeader>
-        <SearchResultList>
-          {Array.from({ length: 3 }).map((_, idx) => (
+      {musics?.length !== 0 && (
+        <SearchResultContainer>
+          <SearchResultHeader>노래</SearchResultHeader>
+          <SearchResultList>
+            {musics?.map((music) => (
+              <SearchResultMusicItem key={music._id}>
+                <SearchResultItemImg
+                  $isArtist={false}
+                  $imgUrl={music.coverImg}
+                />
+                <SearchResultItemInfo>
+                  <SearchResultMusicItemTitle
+                    onClick={() => handleClick(music)}
+                  >
+                    {music.title}
+                  </SearchResultMusicItemTitle>
+                  <SearchResultItemOverview>
+                    {music.artist.artistName} • {music.album.title} •{" "}
+                    {music.duration} • 5808만회 재생
+                  </SearchResultItemOverview>
+                </SearchResultItemInfo>
+              </SearchResultMusicItem>
+            ))}
+          </SearchResultList>
+          <SearchResultBottom>
+            <SearchResultButton>모두 표시</SearchResultButton>
+          </SearchResultBottom>
+        </SearchResultContainer>
+      )}
+      {artists?.length !== 0 && (
+        <SearchResultContainer>
+          <SearchResultHeader>아티스트</SearchResultHeader>
+          <SearchResultList>
+            {/* {Array.from({ length: 3 }).map((_, idx) => (
             <SearchResultItem key={idx}>
               <SearchResultItemImg $isArtist={true} />
               <SearchResultItemInfo>
@@ -162,13 +248,29 @@ const Search = () => {
                 </SearchResultItemOverview>
               </SearchResultItemInfo>
             </SearchResultItem>
-          ))}
-        </SearchResultList>
-        <SearchResultBottom>
-          <SearchResultButton>모두 표시</SearchResultButton>
-        </SearchResultBottom>
-      </SearchResultContainer>
-      <SearchResultContainer>
+          ))} */}
+            {artists?.map((artist) => (
+              <SearchResultItem
+                key={artist._id}
+                onClick={() => clickArtist(artist._id)}
+                $clickable={true}
+              >
+                <SearchResultItemImg $isArtist={true} $imgUrl={artist.imgUrl} />
+                <SearchResultItemInfo>
+                  <SearchResultItemTitle>
+                    {artist.artistName}
+                  </SearchResultItemTitle>
+                  <SearchResultItemOverview>아티스트</SearchResultItemOverview>
+                </SearchResultItemInfo>
+              </SearchResultItem>
+            ))}
+          </SearchResultList>
+          <SearchResultBottom>
+            <SearchResultButton>모두 표시</SearchResultButton>
+          </SearchResultBottom>
+        </SearchResultContainer>
+      )}
+      {/* <SearchResultContainer>
         <SearchResultHeader>앨범</SearchResultHeader>
         <SearchResultList>
           {Array.from({ length: 3 }).map((_, idx) => (
@@ -186,7 +288,7 @@ const Search = () => {
         <SearchResultBottom>
           <SearchResultButton>모두 표시</SearchResultButton>
         </SearchResultBottom>
-      </SearchResultContainer>
+      </SearchResultContainer> */}
     </SeacrhWrapper>
   );
 };

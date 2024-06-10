@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import useOnClickOutSide from "../hooks/useOnClickOutSide";
+import CreatePlaylistForm from "./CreatePlaylistForm";
 
 const Wrapper = styled.div`
   z-index: 1200;
@@ -130,9 +131,18 @@ const CreateFormBottomButton = styled.div`
 const AddMusicPlaylistForm = ({ setAddModalOpen, isLogin, music }) => {
   const ref = useRef();
   const [playlists, setPlaylists] = useState([]);
+  const [createPlaylist, setCreatePlaylist] = useState(false);
 
-  useOnClickOutSide(ref, () => {
-    setAddModalOpen(false);
+  // useOnClickOutSide(ref, () => {
+  //   setAddModalOpen(false);
+  // });
+
+  useOnClickOutSide(ref, (event) => {
+    if (!createPlaylist) {
+      setAddModalOpen(false);
+    } else {
+      event.stopPropagation(); // 이벤트 전파 중단
+    }
   });
 
   useEffect(() => {
@@ -167,6 +177,14 @@ const AddMusicPlaylistForm = ({ setAddModalOpen, isLogin, music }) => {
         } else alert("falied!");
       })
       .catch((error) => console.error("Error:", error));
+  };
+
+  const createNewPlaylist = () => {
+    if (!isLogin) {
+      alert("로그인 필요");
+      return;
+    }
+    setCreatePlaylist(true);
   };
 
   return (
@@ -212,10 +230,19 @@ const AddMusicPlaylistForm = ({ setAddModalOpen, isLogin, music }) => {
                 </ModalPlaylistItem>
               ))}
             </ModalPlaylistContainer>
-            <CreateFormBottomButton>만들기</CreateFormBottomButton>
+            <CreateFormBottomButton onClick={createNewPlaylist}>
+              만들기
+            </CreateFormBottomButton>
           </ModalContent>
         </Modal>
       </WrapperModal>
+      {createPlaylist && (
+        <CreatePlaylistForm
+          isLogin={isLogin}
+          setCreatePlaylist={setCreatePlaylist}
+          setPlaylists={setPlaylists}
+        />
+      )}
     </Wrapper>
   );
 };

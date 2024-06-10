@@ -97,6 +97,22 @@ const PlayBarContentMainInfoOverview = styled.div`
   text-overflow: ellipsis;
 `;
 
+const PlayBarContentMainInfoOverviewArtist = styled.span`
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const PlayBarContentMainInfoOverviewAlbum = styled.span`
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 const PlayBarContentMainUtil = styled.div`
   display: flex;
   gap: 15px;
@@ -220,6 +236,14 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
     player.seekTo(newTimeline, true);
   };
 
+  const clickMusicArtist = (artistId) => {
+    navigate(`/channel/${artistId}`);
+  };
+
+  const clickAlbumTitle = (albumId) => {
+    navigate(`/playlist?list=${albumId}`);
+  };
+
   return (
     <PlayBarWrapper>
       <PlayBarTimeline
@@ -323,7 +347,17 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
               {selectedMusic?.title}
             </PlayBarContentMainInfoTitle>
             <PlayBarContentMainInfoOverview>
-              {selectedMusic?.artist.artistName} • {selectedMusic?.album.title}{" "}
+              <PlayBarContentMainInfoOverviewArtist
+                onClick={() => clickMusicArtist(selectedMusic?.artist._id)}
+              >
+                {selectedMusic?.artist.artistName}
+              </PlayBarContentMainInfoOverviewArtist>
+              •{" "}
+              <PlayBarContentMainInfoOverviewAlbum
+                onClick={() => clickAlbumTitle(selectedMusic?.album._id)}
+              >
+                {selectedMusic?.album.title}
+              </PlayBarContentMainInfoOverviewAlbum>{" "}
               • 2024
             </PlayBarContentMainInfoOverview>
           </PlayBarContentMainInfo>

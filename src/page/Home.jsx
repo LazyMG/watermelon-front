@@ -50,6 +50,9 @@ const HomeRecommandContainer = styled.div`
 const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [musics, setMusics] = useState([]);
+  const userData = localStorage.getItem("userData")
+    ? JSON.parse(localStorage.getItem("userData"))
+    : null;
 
   //data fetch
   const getMusics = async () => {
@@ -60,6 +63,7 @@ const Home = () => {
   };
 
   useEffect(() => {
+    console.log("render");
     setIsLoading(true);
     getMusics();
     setIsLoading(false);
@@ -76,12 +80,14 @@ const Home = () => {
           <HomeContentContainer>
             <SamllMusics musics={musics} />
           </HomeContentContainer>
-          <HomeContentContainer>
-            <BigMusics musics={musics} />
-          </HomeContentContainer>
+          {userData && (
+            <HomeContentContainer>
+              <BigMusics musics={musics} isCustom={true} title={"다시듣기"} />
+            </HomeContentContainer>
+          )}
           {/* <HomeContentContainer>Home</HomeContentContainer> */}
           <HomeContentContainer>
-            <BigMusics musics={musics} />
+            <BigMusics musics={musics} title={"추천음악"} />
           </HomeContentContainer>
         </>
       )}

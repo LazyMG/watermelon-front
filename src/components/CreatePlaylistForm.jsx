@@ -95,8 +95,13 @@ const CreatePlaylistForm = ({ setCreatePlaylist, setPlaylists }) => {
   const ref = useRef();
   const { register, handleSubmit } = useForm();
 
-  useOnClickOutSide(ref, () => {
+  // useOnClickOutSide(ref, () => {
+  //   setCreatePlaylist(false);
+  // });
+
+  useOnClickOutSide(ref, (event) => {
     setCreatePlaylist(false);
+    event.stopPropagation(); // 이벤트 전파 중단
   });
 
   const onValid = async (data) => {
@@ -125,6 +130,7 @@ const CreatePlaylistForm = ({ setCreatePlaylist, setPlaylists }) => {
       {
         title: data.title,
         owner: { username: userData.username },
+        list: [],
         _id: result.id,
       },
     ]);

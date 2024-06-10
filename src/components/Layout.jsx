@@ -1,5 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { Link, Outlet, useMatch, useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Link,
+  Outlet,
+  useMatch,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import styled from "styled-components";
 import CreatePlaylistForm from "./CreatePlaylistForm";
 import YoutubePlayer from "./YoutubePlayer";
@@ -76,7 +82,7 @@ const NavContentContainer = styled.div`
   justify-content: space-between;
 `;
 
-const NavSearchContainer = styled.div`
+const NavSearchContainer = styled.form`
   //background-color: red;
   display: flex;
   justify-content: start;
@@ -85,7 +91,7 @@ const NavSearchContainer = styled.div`
   width: 500px;
 `;
 
-const NavSearchButtonContainer = styled.div`
+const NavSearchButtonContainer = styled.button`
   //width: 100px;
   //background-color: blue;
   height: 45px;
@@ -122,6 +128,7 @@ const NavSearch = styled.input`
   border-left: none;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
+  color: white;
 
   /* 포커스 시 스타일 */
   &:focus {
@@ -341,9 +348,8 @@ const Layout = () => {
   const [navShow, setNavShow] = useState(false);
   const [createPlaylist, setCreatePlaylist] = useState(false);
 
-  //const [isLogin, setIsLogin] = useState(false);
   const isLogin = localStorage.getItem("userData") ? true : false;
-
+  //const [isLogin, setIsLogin] = useState(initialIsLogin);
   const [isPlay, setIsPlay] = useState(false);
   const [isPlayerOn, setIsPlayerOn] = useState(false);
   const [playlists, setPlaylists] = useState([]);
@@ -356,12 +362,30 @@ const Layout = () => {
   const libraryMatch = useMatch("/library");
 
   const navigate = useNavigate();
+  const params = useParams();
 
   const playerRef = useRef(null);
 
   useEffect(() => {
-    getUserPlaylist();
+    window.scroll({ top: 0 });
+  }, [params]);
+
+  const getUserPlaylist = useCallback(async () => {
+    if (!isLogin) return;
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const result = await fetch(
+      `http://localhost:3000/user/${userData._id}/playlist`
+    ).then((res) => res.json());
+    if (result?.playlists) {
+      setPlaylists(result.playlists);
+    }
+    console.log("comple");
   }, [isLogin]);
+
+  useEffect(() => {
+    console.log("get playlist");
+    getUserPlaylist();
+  }, [getUserPlaylist, params]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -396,7 +420,8 @@ const Layout = () => {
     if (result.action === "delete") {
       localStorage.removeItem("userData");
       setPlaylists([]);
-      navigate("/");
+      //navigate("/");
+      window.location.href = "/";
     }
   };
 
@@ -420,17 +445,6 @@ const Layout = () => {
       }));
       setIsPlayerOn(true);
       setIsPlay(true);
-    }
-  };
-
-  const getUserPlaylist = async () => {
-    if (!isLogin) return;
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    const result = await fetch(
-      `http://localhost:3000/user/${userData._id}/playlist`
-    ).then((res) => res.json());
-    if (result?.playlists) {
-      setPlaylists(result.playlists);
     }
   };
 
@@ -465,7 +479,7 @@ const Layout = () => {
           <NavTitle onClick={gotoHome}>Title</NavTitle>
         </NavMenu>
         <NavContentContainer $menuOpen={menuOpen}>
-          <NavSearchContainer>
+          <NavSearchContainer action="/search">
             <NavSearchButtonContainer>
               <NavSearchButton
                 fill="currentColor"
@@ -481,6 +495,7 @@ const Layout = () => {
               </NavSearchButton>
             </NavSearchButtonContainer>
             <NavSearch
+              name="q"
               type="text"
               placeholder="노래, 앨범, 아티스트, 팟캐스트 검색"
             />

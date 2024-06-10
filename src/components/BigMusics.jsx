@@ -1,6 +1,7 @@
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { playerState, selectedMusicState } from "../atom";
+import { useNavigate } from "react-router-dom";
 
 const BigMusicsContainer = styled.div`
   width: 100%;
@@ -153,11 +154,25 @@ const BigMusicDescription = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 130px;
 `;
 
-const BigMusics = ({ musics }) => {
+const BigMusicDescriptionArtist = styled.span`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const BigMusics = ({ musics, isCustom = false, title }) => {
   const setPlayerState = useSetRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
+  const navigate = useNavigate();
 
   const handleClick = (music) => {
     setPlayerState({
@@ -169,27 +184,41 @@ const BigMusics = ({ musics }) => {
     setSelectedMusic(music);
   };
 
+  const clickArtistName = (artistId) => {
+    navigate(`/channel/${artistId}`);
+  };
+
+  const gotoMyChannel = () => {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    if (!userData._id) return;
+    navigate(`/channel/${userData._id}`);
+  };
+
   return (
     <BigMusicsContainer>
       <BigMusicsHeader>
         <BigMusicsHeaderInfo>
-          <BigMusicsHeaderIcon>
-            <svg
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                clipRule="evenodd"
-                fillRule="evenodd"
-                d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
-              />
-            </svg>
-          </BigMusicsHeaderIcon>
+          {isCustom && (
+            <BigMusicsHeaderIcon onClick={gotoMyChannel}>
+              <svg
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  clipRule="evenodd"
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
+                />
+              </svg>
+            </BigMusicsHeaderIcon>
+          )}
           <BigMusicsHeaderText>
-            <BigMusicsHeaderSubText>이마가</BigMusicsHeaderSubText>
-            <BigMusicsHeaderTitle>다시듣기</BigMusicsHeaderTitle>
+            {isCustom && (
+              <BigMusicsHeaderSubText>이마가</BigMusicsHeaderSubText>
+            )}
+            <BigMusicsHeaderTitle>{title}</BigMusicsHeaderTitle>
           </BigMusicsHeaderText>
         </BigMusicsHeaderInfo>
         <BigMusicsHeaderButtons>
@@ -235,7 +264,12 @@ const BigMusics = ({ musics }) => {
                 {music?.title}
               </BigMusicTitle>
               <BigMusicDescription>
-                노래 | {music?.artist.artistName}
+                노래 |{" "}
+                <BigMusicDescriptionArtist
+                  onClick={() => clickArtistName(music.artist._id)}
+                >
+                  {music?.artist.artistName}
+                </BigMusicDescriptionArtist>
               </BigMusicDescription>
             </BigMusicInfo>
           </BigMusic>

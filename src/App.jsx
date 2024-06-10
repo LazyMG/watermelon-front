@@ -51,11 +51,11 @@ const router = createBrowserRouter([
       },
       {
         path: "login",
-        element: <Login />,
+        element: <Login />, //재생 멈추기
       },
       {
         path: "create-account",
-        element: <CreateAccount />,
+        element: <CreateAccount />, //재생 멈추기
       },
       {
         path: "library",
