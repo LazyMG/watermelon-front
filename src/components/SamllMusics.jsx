@@ -167,12 +167,12 @@ const SamllMusics = ({ musics }) => {
   // };
 
   const handleClick = (music) => {
-    setPlayerState({
-      ...playerState,
+    setPlayerState((prev) => ({
+      ...prev,
       ytId: music.ytId,
       isPlaying: true,
       isPaused: false,
-    });
+    }));
     setSelectedMusic(music);
   };
 

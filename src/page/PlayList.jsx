@@ -144,12 +144,13 @@ const PlayList = () => {
   }, [getPlaylist]);
 
   const handleClick = (music) => {
-    setPlayerState({
-      ...playerState,
+    console.log(music);
+    setPlayerState((prev) => ({
+      ...prev,
       ytId: music.ytId,
       isPlaying: true,
       isPaused: false,
-    });
+    }));
     setSelectedMusic(music);
   };
 

@@ -94,6 +94,7 @@ const NavSearchContainer = styled.form`
 const NavSearchButtonContainer = styled.button`
   //width: 100px;
   //background-color: blue;
+  background-color: transparent;
   height: 45px;
   border: 1px solid #4d4d4d;
   border-right: none;
@@ -109,6 +110,7 @@ const NavSearchButtonContainer = styled.button`
 
 const NavSearchButton = styled.svg`
   width: 28px;
+  color: white;
 `;
 
 const NavSearch = styled.input`
@@ -685,9 +687,6 @@ const Layout = () => {
           <Component />
         </Temp> */}
       </ContentWrapper>
-      <PlayBarWrapper $isPlayerOn={isPlayerOn}>
-        <Player isPlay={isPlay} setIsPlay={setIsPlay} playerRef={playerRef} />
-      </PlayBarWrapper>
 
       {createPlaylist && (
         <CreatePlaylistForm
@@ -696,6 +695,9 @@ const Layout = () => {
           setPlaylists={setPlaylists}
         />
       )}
+      <PlayBarWrapper $isPlayerOn={isPlayerOn}>
+        <Player isPlay={isPlay} setIsPlay={setIsPlay} playerRef={playerRef} />
+      </PlayBarWrapper>
       <div>
         <YoutubePlayer
           videoId={ytPlayerState.ytId}

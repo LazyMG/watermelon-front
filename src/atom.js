@@ -9,6 +9,8 @@ export const playerState = atom({
     duration: 0,
     currentTime: "",
     isLoading: false,
+    isMuted: false,
+    volume: 50,
   },
 });
 

@@ -100,12 +100,12 @@ const RowMusics = ({ musicList, title, subtext, isArtist }) => {
   const navigate = useNavigate();
 
   const handleClick = (music) => {
-    setPlayerState({
-      ...playerState,
+    setPlayerState((prev) => ({
+      ...prev,
       ytId: music.ytId,
       isPlaying: true,
       isPaused: false,
-    });
+    }));
     setSelectedMusic(music);
   };
 

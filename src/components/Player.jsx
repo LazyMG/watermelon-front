@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { playerState, selectedMusicState } from "../atom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { useEffect, useRef, useState } from "react";
 
 const PlayBarWrapper = styled.div`
@@ -137,24 +137,59 @@ const PlayBarContentUtilContainer = styled.div`
   gap: 15px;
 `;
 
-const PlayBarContentUtilButton = styled.div`
-  width: 30px;
+const PlayBarContentUtilVolumeButton = styled.div`
+  width: 25px;
+  position: relative;
 
   cursor: pointer;
+
+  &:hover {
+    input {
+      opacity: 1;
+    }
+  }
+
+  input {
+    position: absolute;
+    right: 30px;
+    top: 3px;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  svg:hover {
+    opacity: 0.6;
+  }
+`;
+
+const PlayBarContentUtilButton = styled.div`
+  width: 25px;
+
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.6;
+  }
 `;
 
 const Player = ({ isPlay, setIsPlay, playerRef }) => {
   const navigate = useNavigate();
   const selectedMusic = useRecoilValue(selectedMusicState);
+  const setPlayer = useSetRecoilState(playerState);
 
   const [timeline, setTimeline] = useState(0);
   const [time, setTime] = useState("00:00");
+  const [isMusicMuted, setMusicIsMuted] = useState(false);
+  const [musicVolume, setMusicVolume] = useState(50);
+
+  const volumeRef = useRef();
 
   const [ytPlayerState, setYtPlayerState] = useRecoilState(playerState);
 
   const gotoWatchMusic = () =>
     navigate(`/watch?v=${selectedMusic.ytId}&list=${selectedMusic._id}`);
 
+  //노래 재생될 때
   useEffect(() => {
     setTime("00:00");
     setTimeline(0);
@@ -221,6 +256,7 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
     }
   };
 
+  //노래 끝났을 때 처리
   const timelineChange = (event) => {
     const player = playerRef.current.internalPlayer;
     const newTimeline = event.target.value;
@@ -242,6 +278,54 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
 
   const clickAlbumTitle = (albumId) => {
     navigate(`/playlist?list=${albumId}`);
+  };
+
+  const clickToggleMute = async () => {
+    const player = playerRef.current.internalPlayer;
+    const volume = await player.getVolume();
+    console.log(volume);
+    const musicIsMuted = await player.isMuted();
+    if (musicIsMuted) {
+      setMusicIsMuted(false);
+      setMusicVolume(volumeRef.current);
+      setPlayer((prev) => ({
+        ...prev,
+        isMuted: false,
+        volume: volumeRef.current,
+      }));
+      player.unMute();
+    } else {
+      setMusicIsMuted(true);
+      volumeRef.current = musicVolume;
+      setMusicVolume(0);
+      setPlayer((prev) => ({
+        ...prev,
+        isMuted: true,
+        volume: 0,
+      }));
+      player.mute();
+    }
+  };
+
+  const changeVolume = (event) => {
+    const player = playerRef.current.internalPlayer;
+    volumeRef.current = event.target.value;
+    setMusicVolume(event.target.value);
+    player.setVolume(event.target.value);
+    setPlayer((prev) => ({
+      ...prev,
+      volume: +event.target.value,
+    }));
+    if (+event.target.value === 0) {
+      setMusicIsMuted(true);
+      setPlayer((prev) => ({
+        ...prev,
+        isMuted: true,
+        volume: 0,
+      }));
+    } else {
+      setMusicIsMuted(false);
+    }
   };
 
   return (
@@ -413,36 +497,47 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
           </PlayBarContentMainUtil>
         </PlayBarContentMainContainer>
         <PlayBarContentUtilContainer>
-          <PlayBarContentUtilButton>
-            <svg
-              fill="none"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"
-              />
-            </svg>
-            {/* <svg
-        fill="none"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M17.25 9.75 19.5 12m0 0 2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6 4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"
-        />
-      </svg> */}
-          </PlayBarContentUtilButton>
+          <PlayBarContentUtilVolumeButton>
+            {isMusicMuted ? (
+              <svg
+                fill="none"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                onClick={clickToggleMute}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17.25 9.75 19.5 12m0 0 2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6 4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"
+                />
+              </svg>
+            ) : (
+              <svg
+                fill="none"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                onClick={clickToggleMute}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"
+                />
+              </svg>
+            )}
+            <input
+              type="range"
+              value={musicVolume}
+              max={100}
+              onChange={changeVolume}
+            />
+          </PlayBarContentUtilVolumeButton>
           <PlayBarContentUtilButton>
             <svg
               fill="none"
