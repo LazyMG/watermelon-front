@@ -23,6 +23,8 @@ import ConnectAlbum from "./page/connect/ConnectAlbum";
 import AlbumMusic from "./page/connect/AlbumMusic";
 import AdminLayout from "./components/AdminLayout";
 import TempHome from "./page/TempHome";
+import { useEffect } from "react";
+import useAuth from "./hooks/useAuth";
 
 const router = createBrowserRouter([
   {
@@ -163,6 +165,10 @@ const Wrapper = styled.div`
 `;
 
 function App() {
+  useAuth();
+
+  //console.log("App render");
+
   return (
     <>
       <Wrapper>

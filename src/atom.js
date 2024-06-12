@@ -1,5 +1,14 @@
 import { atom } from "recoil";
 
+export const authState = atom({
+  key: "authState",
+  default: {
+    isAuthenticated: false,
+    user: null,
+    loading: true,
+  },
+});
+
 export const playerState = atom({
   key: "playerState",
   default: {
@@ -12,11 +21,6 @@ export const playerState = atom({
     isMuted: false,
     volume: 50,
   },
-});
-
-export const ytIdState = atom({
-  key: "ytIdState",
-  default: "",
 });
 
 export const selectedMusicState = atom({

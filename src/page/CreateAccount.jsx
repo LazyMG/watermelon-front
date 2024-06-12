@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const CreateAccountWrapper = styled.div`
@@ -85,6 +85,7 @@ const CreateAccountBottom = styled.div`
 
 const CreateAccount = () => {
   const { register, handleSubmit, reset, setError } = useForm();
+  const navigate = useNavigate();
 
   const onValid = async ({ email, username, password, passwordConfirm }) => {
     if (password !== passwordConfirm)
@@ -105,7 +106,9 @@ const CreateAccount = () => {
       }
       return response.json();
     });
-    console.log(result.message);
+    if (result.ok) {
+      navigate("/login");
+    }
   };
 
   return (

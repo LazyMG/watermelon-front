@@ -2,6 +2,8 @@ import styled from "styled-components";
 import SamllMusics from "../components/SamllMusics";
 import BigMusics from "../components/BigMusics";
 import { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
+import { authState } from "../atom";
 
 const HomeWrapper = styled.div`
   margin-top: 70px;
@@ -54,6 +56,8 @@ const Home = () => {
     ? JSON.parse(localStorage.getItem("userData"))
     : null;
 
+  const auth = useRecoilValue(authState);
+
   //data fetch
   const getMusics = async () => {
     const result = await fetch(
@@ -74,7 +78,16 @@ const Home = () => {
       {isLoading ? null : (
         <>
           <HomeNavContainer>
-            <HomeNavItem>집중</HomeNavItem>
+            <HomeNavItem
+              onClick={async () => {
+                await fetch("http://localhost:3000/user/userCheck", {
+                  method: "GET",
+                  credentials: "include", // 쿠키를 포함하여 요청
+                });
+              }}
+            >
+              집중
+            </HomeNavItem>
             <HomeNavItem>운동</HomeNavItem>
           </HomeNavContainer>
           <HomeContentContainer>

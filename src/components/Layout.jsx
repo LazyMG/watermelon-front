@@ -9,8 +9,8 @@ import {
 import styled from "styled-components";
 import CreatePlaylistForm from "./CreatePlaylistForm";
 import YoutubePlayer from "./YoutubePlayer";
-import { useRecoilState } from "recoil";
-import { playerState } from "../atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { authState, playerState } from "../atom";
 import Player from "./Player";
 
 const Wrapper = styled.div`
@@ -351,13 +351,14 @@ const Layout = () => {
   const [createPlaylist, setCreatePlaylist] = useState(false);
 
   const isLogin = localStorage.getItem("userData") ? true : false;
+  const auth = useRecoilValue(authState);
+
   //const [isLogin, setIsLogin] = useState(initialIsLogin);
   const [isPlay, setIsPlay] = useState(false);
   const [isPlayerOn, setIsPlayerOn] = useState(false);
   const [playlists, setPlaylists] = useState([]);
 
   const [ytPlayerState, setYtPlayerState] = useRecoilState(playerState);
-  //const ytId = useRecoilValue(ytIdState);
 
   const homeMatch = useMatch("/");
   const exploreMatch = useMatch("/explore");
@@ -381,11 +382,11 @@ const Layout = () => {
     if (result?.playlists) {
       setPlaylists(result.playlists);
     }
-    console.log("comple");
+    //console.log("comple");
   }, [isLogin]);
 
   useEffect(() => {
-    console.log("get playlist");
+    //console.log("get playlist");
     getUserPlaylist();
   }, [getUserPlaylist, params]);
 
@@ -416,9 +417,9 @@ const Layout = () => {
   };
 
   const gotoLogout = async () => {
-    const result = await fetch("http://localhost:3000/logout").then((res) =>
-      res.json()
-    );
+    const result = await fetch("http://localhost:3000/logout", {
+      credentials: "include",
+    }).then((res) => res.json());
     if (result.action === "delete") {
       localStorage.removeItem("userData");
       setPlaylists([]);
@@ -502,8 +503,39 @@ const Layout = () => {
               placeholder="노래, 앨범, 아티스트, 팟캐스트 검색"
             />
           </NavSearchContainer>
-          <NavProfileContainer onClick={isLogin ? gotoLogout : gotoLogin}>
+          {/* <NavProfileContainer onClick={isLogin ? gotoLogout : gotoLogin}>
             {isLogin ? (
+              <svg
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  clipRule="evenodd"
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
+                />
+              </svg>
+            ) : (
+              <svg
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  clipRule="evenodd"
+                  fillRule="evenodd"
+                  d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z"
+                />
+              </svg>
+            )}
+          </NavProfileContainer> */}
+          <NavProfileContainer
+            onClick={auth.isAuthenticated ? gotoLogout : gotoLogin}
+          >
+            {auth.isAuthenticated ? (
               <svg
                 fill="currentColor"
                 viewBox="0 0 20 20"

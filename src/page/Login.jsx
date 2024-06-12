@@ -1,6 +1,8 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { authState } from "../atom";
+import { useSetRecoilState } from "recoil";
 
 const LoginWrapper = styled.div`
   margin-top: 140px;
@@ -100,6 +102,7 @@ const url = `https://accounts.google.com/o/oauth2/auth?client_id=${googleId}&red
 const Login = () => {
   const { register, handleSubmit, reset } = useForm();
   const navigate = useNavigate();
+  const setAuth = useSetRecoilState(authState);
 
   const onValid = async ({ email, password }) => {
     //유효성 검사
@@ -110,6 +113,7 @@ const Login = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
+      credentials: "include",
     }).then((response) => {
       const statusCode = response.status;
       if (statusCode === 200) {
@@ -120,8 +124,14 @@ const Login = () => {
       }
       return response.json();
     });
-    //console.log(result);
-    if (result.user) {
+    console.log(result);
+    if (result.ok) {
+      console.log(result?.token);
+      setAuth({
+        isAuthenticated: true,
+        user: result.userId,
+        loading: false,
+      });
       localStorage.setItem("userData", JSON.stringify(result.user));
       navigate("/");
     }
