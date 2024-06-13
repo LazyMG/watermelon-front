@@ -2,6 +2,8 @@ import { useRef } from "react";
 import styled from "styled-components";
 import useOnClickOutSide from "../hooks/useOnClickOutSide";
 import { useForm } from "react-hook-form";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { authState, userPlaylistsState } from "../atom";
 
 const Wrapper = styled.div`
   z-index: 1200;
@@ -32,7 +34,7 @@ const Modal = styled.div`
   width: 600px;
   height: 400px;
 
-  border: 1px solid blue;
+  border: 1px solid #414141;
 
   &::-webkit-scrollbar {
     display: none;
@@ -75,8 +77,6 @@ const CreateFormInput = styled.input`
   font-size: 25px;
 `;
 
-const CreateFormSelect = styled.select``;
-
 const CreateFormBottom = styled.div`
   display: flex;
   justify-content: end;
@@ -84,16 +84,19 @@ const CreateFormBottom = styled.div`
 `;
 
 const CreateFormBottomButton = styled.button`
-  background-color: red;
+  background-color: white;
+  color: black;
   padding: 10px 15px;
   border-radius: 15px;
 
   cursor: pointer;
 `;
 
-const CreatePlaylistForm = ({ setCreatePlaylist, setPlaylists }) => {
+const CreatePlaylistForm = ({ setCreatePlaylist }) => {
   const ref = useRef();
   const { register, handleSubmit } = useForm();
+  const auth = useRecoilValue(authState);
+  const setUserPlaylists = useSetRecoilState(userPlaylistsState);
 
   // useOnClickOutSide(ref, () => {
   //   setCreatePlaylist(false);
@@ -106,9 +109,10 @@ const CreatePlaylistForm = ({ setCreatePlaylist, setPlaylists }) => {
 
   const onValid = async (data) => {
     const postData = data;
-    const userData = JSON.parse(localStorage.getItem("userData"));
+    const userId = auth.user?.userId;
+    if (!userId) return;
     const result = await fetch(
-      `http://localhost:3000/user/${userData._id}/create-playlist`,
+      `http://localhost:3000/user/${userId}/create-playlist`,
       {
         method: "POST",
         headers: {
@@ -120,16 +124,15 @@ const CreatePlaylistForm = ({ setCreatePlaylist, setPlaylists }) => {
       .then((response) => {
         const statusCode = response.status;
         if (statusCode === 200) {
-          alert("완료되었습니다.");
           return response.json();
         } else alert("falied!");
       })
       .catch((error) => console.error("Error:", error));
-    setPlaylists((prev) => [
+    setUserPlaylists((prev) => [
       ...prev,
       {
         title: data.title,
-        owner: { username: userData.username },
+        owner: { username: auth.user?.username },
         list: [],
         _id: result.id,
       },
@@ -158,9 +161,6 @@ const CreatePlaylistForm = ({ setCreatePlaylist, setPlaylists }) => {
                     placeholder="설명"
                     required
                   />
-                </CreateFormRow>
-                <CreateFormRow>
-                  <CreateFormSelect />
                 </CreateFormRow>
               </CreateFormContent>
 

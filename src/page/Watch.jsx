@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import AddMusicPlaylistForm from "../components/AddMusicPlaylistForm";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { playerState, playlistState, selectedMusicState } from "../atom";
 
 const WatchWrapper = styled.div`
   //margin-top: 70px;
@@ -90,8 +92,9 @@ const WatchContentInfoHeader = styled.div`
 
 const WatchContentInfoHeaderItem = styled.div`
   padding: 10px 50px;
-  border-bottom: 1px solid white;
 
+  ${({ $category }) => ($category ? `border-bottom: 1px solid white;` : "")}
+  opacity : ${({ $category }) => ($category ? `1` : "0.6")};
   cursor: pointer;
 
   &:hover {
@@ -130,9 +133,11 @@ const WatchContentInfoContentHeaderInfoBig = styled.div`
 `;
 
 const WatchContentInfoContentHeaderButton = styled.div`
-  background-color: red;
+  background-color: white;
   padding: 10px 15px;
   border-radius: 15px;
+
+  color: black;
 
   cursor: pointer;
 `;
@@ -146,7 +151,8 @@ const WatchContentInfoContentNavItem = styled.div`
   padding: 10px;
   border-radius: 10px;
 
-  background-color: red;
+  background-color: white;
+  color: black;
 
   cursor: pointer;
 `;
@@ -165,6 +171,8 @@ const WatchContentInfoContentListItem = styled.div`
 
   cursor: pointer;
 
+  ${({ $isSelectedMusic }) => $isSelectedMusic && "background-color: #3a3a3a;"}
+
   &:hover {
     background-color: #3a3a3a;
   }
@@ -173,7 +181,7 @@ const WatchContentInfoContentListItem = styled.div`
 const WatchContentInfoContentListItemImg = styled.div`
   width: 30px;
   height: 30px;
-  background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
+  background: ${({ $imgUrl }) => ($imgUrl ? `url(${$imgUrl})` : "")};
   background-size: cover;
   border-radius: 5px;
 `;
@@ -207,7 +215,12 @@ const Watch = () => {
   const [music, setMusic] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [addModalOpen, setAddModalOpen] = useState(false);
-  const isLogin = localStorage.getItem("userData") ? true : false;
+  const isLogin = localStorage.getItem("ytMusicAuth") ? true : false;
+  const [category, setCategory] = useState("NEXT_TRACK");
+  const setPlayerState = useSetRecoilState(playerState);
+  const [selectedMusic, setSelectedMusic] = useRecoilState(selectedMusicState);
+
+  const playlist = useRecoilValue(playlistState);
 
   const getMusic = useCallback(async () => {
     const result = await fetch(
@@ -224,7 +237,17 @@ const Watch = () => {
     setIsLoading(true);
     getMusic();
     setIsLoading(false);
-  }, []);
+  }, [getMusic]);
+
+  const handleClick = (music) => {
+    setPlayerState((prev) => ({
+      ...prev,
+      ytId: music.ytId,
+      isPlaying: true,
+      isPaused: false,
+    }));
+    setSelectedMusic(music);
+  };
 
   return (
     <WatchWrapper>
@@ -243,9 +266,24 @@ const Watch = () => {
           </WatchContentDisplay>
           <WatchContentInfo>
             <WatchContentInfoHeader>
-              <WatchContentInfoHeaderItem>다음 트랙</WatchContentInfoHeaderItem>
-              <WatchContentInfoHeaderItem>가사</WatchContentInfoHeaderItem>
-              <WatchContentInfoHeaderItem>관련 항목</WatchContentInfoHeaderItem>
+              <WatchContentInfoHeaderItem
+                onClick={() => setCategory("NEXT_TRACK")}
+                $category={category === "NEXT_TRACK"}
+              >
+                다음 트랙
+              </WatchContentInfoHeaderItem>
+              <WatchContentInfoHeaderItem
+                onClick={() => setCategory("LYRICS")}
+                $category={category === "LYRICS"}
+              >
+                가사
+              </WatchContentInfoHeaderItem>
+              <WatchContentInfoHeaderItem
+                onClick={() => setCategory("RELATED")}
+                $category={category === "RELATED"}
+              >
+                관련 항목
+              </WatchContentInfoHeaderItem>
             </WatchContentInfoHeader>
             <WatchContentInfoContentContainer>
               <WatchContentInfoContentHeader>
@@ -272,7 +310,7 @@ const Watch = () => {
                 </WatchContentInfoContentNavItem>
               </WatchContentInfoContentNav>
               <WatchContentInfoContentList>
-                {Array.from({ length: 20 }).map((_, idx) => (
+                {/* {Array.from({ length: 20 }).map((_, idx) => (
                   <WatchContentInfoContentListItem key={idx}>
                     <WatchContentInfoContentListItemImg />
                     <WatchContentInfoContentListItemInfo>
@@ -286,6 +324,30 @@ const Watch = () => {
                       </WatchContentInfoContentListItemInfoText>
                       <WatchContentInfoContentListItemInfoTime>
                         3:13
+                      </WatchContentInfoContentListItemInfoTime>
+                    </WatchContentInfoContentListItemInfo>
+                  </WatchContentInfoContentListItem>
+                ))} */}
+                {playlist?.map((listItem) => (
+                  <WatchContentInfoContentListItem
+                    onClick={() => handleClick(listItem)}
+                    key={listItem._id}
+                    $isSelectedMusic={selectedMusic._id === listItem._id}
+                  >
+                    <WatchContentInfoContentListItemImg
+                      $imgUrl={listItem.coverImg}
+                    />
+                    <WatchContentInfoContentListItemInfo>
+                      <WatchContentInfoContentListItemInfoText>
+                        <WatchContentInfoContentListItemInfoTitle>
+                          {listItem.title}
+                        </WatchContentInfoContentListItemInfoTitle>
+                        <WatchContentInfoContentListItemInfoSinger>
+                          {listItem.artist.artistName}
+                        </WatchContentInfoContentListItemInfoSinger>
+                      </WatchContentInfoContentListItemInfoText>
+                      <WatchContentInfoContentListItemInfoTime>
+                        {listItem.duration}
                       </WatchContentInfoContentListItemInfoTime>
                     </WatchContentInfoContentListItemInfo>
                   </WatchContentInfoContentListItem>

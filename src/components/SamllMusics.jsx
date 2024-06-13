@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { playerState, selectedMusicState } from "../atom";
+import { playerState, playlistState, selectedMusicState } from "../atom";
 
 const SmallMusicsContainer = styled.div`
   width: 100%;
@@ -154,8 +154,10 @@ const SmallMusicDescription = styled.div`
 `;
 
 const SamllMusics = ({ musics }) => {
-  const setPlayerState = useSetRecoilState(playerState);
+  //const setPlayerState = useSetRecoilState(playerState);
+  const [player, setPlayer] = useRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
+  const setPlaylist = useSetRecoilState(playlistState);
 
   // const setYtId = (ytId) => {
   //   setPlayerState({
@@ -167,13 +169,20 @@ const SamllMusics = ({ musics }) => {
   // };
 
   const handleClick = (music) => {
-    setPlayerState((prev) => ({
+    setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
       isPlaying: true,
       isPaused: false,
+      timestamp: Date.now(),
     }));
     setSelectedMusic(music);
+    setPlaylist(musics);
+  };
+
+  const clickAddPlaylist = () => {
+    setPlaylist(musics);
+    console.log(musics);
   };
 
   return (
@@ -186,7 +195,9 @@ const SamllMusics = ({ musics }) => {
           <SmallMusicsTitleText>빠른 선곡</SmallMusicsTitleText>
         </SmallMusicsText>
         <SmallMusicsButtons>
-          <SmallMusicsPlayButton>모두 재생</SmallMusicsPlayButton>
+          <SmallMusicsPlayButton onClick={clickAddPlaylist}>
+            모두 재생
+          </SmallMusicsPlayButton>
           <SmallMusicsSliderButtonContainer>
             <SmallMusicsSliderButton>
               <svg

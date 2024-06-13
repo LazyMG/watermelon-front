@@ -10,8 +10,14 @@ import styled from "styled-components";
 import CreatePlaylistForm from "./CreatePlaylistForm";
 import YoutubePlayer from "./YoutubePlayer";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { authState, playerState } from "../atom";
+import {
+  authState,
+  playerState,
+  playlistState,
+  userPlaylistsState,
+} from "../atom";
 import Player from "./Player";
+import PlaylistContainer from "./PlaylistContainer";
 
 const Wrapper = styled.div`
   display: flex;
@@ -141,9 +147,11 @@ const NavSearch = styled.input`
 const NavProfileContainer = styled.div`
   width: 80px;
   display: flex;
+  display: ${({ $authLoading }) => ($authLoading ? "none" : "flex")};
   align-items: center;
   justify-content: end;
   //background-color: purple;
+
   svg {
     width: 40px;
     cursor: pointer;
@@ -233,87 +241,6 @@ const MenuBottomContainer = styled.div`
   gap: 10px;
 `;
 
-const MenuBottomCreateContainer = styled.div`
-  background-color: #232323;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 20px;
-  border-radius: 20px;
-  padding: 5px 0;
-  gap: 5px;
-
-  cursor: pointer;
-
-  &:hover {
-    background-color: #3a3a3a;
-  }
-`;
-
-const MenuBottomCreateIcon = styled.div`
-  svg {
-    width: 25px;
-  }
-`;
-
-const MenuBottomCreateTitle = styled.div`
-  font-size: 14px;
-`;
-
-const MenuBottomListContainer = styled.div`
-  width: 100%;
-
-  //조건부 height 조정 500px -> playbar 있을 때
-  height: 500px;
-  //background-color: yellow;
-  padding: 0 10px;
-  padding-top: 5px;
-  display: flex;
-  flex-direction: column;
-
-  overflow-y: auto;
-`;
-
-const MenuBottomListItem = styled.div`
-  width: 100%;
-  //background-color: blue;
-  border-radius: 10px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 13px 0;
-
-  cursor: pointer;
-
-  &:hover {
-    background-color: #3a3a3a;
-    svg {
-      opacity: 1;
-    }
-  }
-`;
-
-const MenuBottomListItemText = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-`;
-
-const MenuBottomListItemTitle = styled.div`
-  font-size: 14px;
-`;
-
-const MenuBottomListItemUser = styled.div`
-  font-size: 12px;
-`;
-
-const MenuBottomListItemIcon = styled.div`
-  svg {
-    width: 25px;
-    opacity: 0;
-  }
-`;
-
 const Temp = styled.div`
   margin-top: 70px;
   background-color: yellow;
@@ -350,15 +277,19 @@ const Layout = () => {
   const [navShow, setNavShow] = useState(false);
   const [createPlaylist, setCreatePlaylist] = useState(false);
 
-  const isLogin = localStorage.getItem("userData") ? true : false;
   const auth = useRecoilValue(authState);
+  const isLogin = localStorage.getItem("ytMusicAuth") ? true : false;
+  const localAuth = JSON.parse(localStorage.getItem("ytMusicAuth"));
 
   //const [isLogin, setIsLogin] = useState(initialIsLogin);
   const [isPlay, setIsPlay] = useState(false);
+  const [isEnd, setIsEnd] = useState(false);
+  const [isRepeat, setIsRepeat] = useState(false);
   const [isPlayerOn, setIsPlayerOn] = useState(false);
-  const [playlists, setPlaylists] = useState([]);
+  const [userPlaylists, setUserPlaylists] = useRecoilState(userPlaylistsState);
 
   const [ytPlayerState, setYtPlayerState] = useRecoilState(playerState);
+  const playlist = useRecoilValue(playlistState);
 
   const homeMatch = useMatch("/");
   const exploreMatch = useMatch("/explore");
@@ -375,15 +306,15 @@ const Layout = () => {
 
   const getUserPlaylist = useCallback(async () => {
     if (!isLogin) return;
-    const userData = JSON.parse(localStorage.getItem("userData"));
+    const userId = auth?.user?.userId;
+    if (!userId) return;
     const result = await fetch(
-      `http://localhost:3000/user/${userData._id}/playlist`
+      `http://localhost:3000/user/${userId}/playlist`
     ).then((res) => res.json());
     if (result?.playlists) {
-      setPlaylists(result.playlists);
+      setUserPlaylists(result.playlists);
     }
-    //console.log("comple");
-  }, [isLogin]);
+  }, [isLogin, auth]);
 
   useEffect(() => {
     //console.log("get playlist");
@@ -408,31 +339,18 @@ const Layout = () => {
 
   const handleClick = () => setMenuOpen(!menuOpen);
 
-  const createNewPlaylist = () => {
-    if (!isLogin) {
-      alert("로그인 필요");
-      return;
-    }
-    setCreatePlaylist(true);
-  };
-
   const gotoLogout = async () => {
     const result = await fetch("http://localhost:3000/logout", {
       credentials: "include",
     }).then((res) => res.json());
     if (result.action === "delete") {
-      localStorage.removeItem("userData");
-      setPlaylists([]);
-      //navigate("/");
+      localStorage.removeItem("ytMusicAuth");
+      setUserPlaylists([]);
       window.location.href = "/";
     }
   };
 
   const gotoLogin = () => navigate("/login");
-
-  const gotoPlayList = (playlistId) => {
-    navigate(`/playlist?list=${playlistId}`);
-  };
 
   const gotoHome = () => navigate("/");
 
@@ -448,6 +366,38 @@ const Layout = () => {
       }));
       setIsPlayerOn(true);
       setIsPlay(true);
+    }
+    if (event.data === 0) {
+      console.log("end");
+      if (isRepeat) {
+        player.playVideo();
+        return;
+      }
+      if (playlist?.length !== 0) {
+        console.log("real", playlist);
+        //setSelectedMusic(); //음악 선택
+        const currentIndex = playlist.findIndex(
+          (item) => item.ytId === ytPlayerState.ytId
+        );
+        if (currentIndex === playlist.length - 1) {
+          setIsEnd(true);
+          setYtPlayerState((prev) => ({
+            ...prev,
+            isEnd: true,
+            isPaused: false,
+            isPlaying: false,
+          }));
+        }
+      } else {
+        console.log("end | No music");
+        setIsEnd(true);
+        setYtPlayerState((prev) => ({
+          ...prev,
+          isEnd: true,
+          isPaused: false,
+          isPlaying: false,
+        }));
+      }
     }
   };
 
@@ -503,39 +453,15 @@ const Layout = () => {
               placeholder="노래, 앨범, 아티스트, 팟캐스트 검색"
             />
           </NavSearchContainer>
-          {/* <NavProfileContainer onClick={isLogin ? gotoLogout : gotoLogin}>
-            {isLogin ? (
-              <svg
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  clipRule="evenodd"
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
-                />
-              </svg>
-            ) : (
-              <svg
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  clipRule="evenodd"
-                  fillRule="evenodd"
-                  d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z"
-                />
-              </svg>
-            )}
-          </NavProfileContainer> */}
           <NavProfileContainer
-            onClick={auth.isAuthenticated ? gotoLogout : gotoLogin}
+            $authLoading={auth.loading}
+            onClick={
+              localAuth?.isAuthenticated || auth.isAuthenticated
+                ? gotoLogout
+                : gotoLogin
+            }
           >
-            {auth.isAuthenticated ? (
+            {localAuth?.isAuthenticated || auth.isAuthenticated ? (
               <svg
                 fill="currentColor"
                 viewBox="0 0 20 20"
@@ -636,75 +562,7 @@ const Layout = () => {
         </MenuTopContainer>
         <MenuBorder />
         <MenuBottomContainer>
-          <MenuBottomCreateContainer onClick={createNewPlaylist}>
-            <MenuBottomCreateIcon>
-              <svg
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-              </svg>
-            </MenuBottomCreateIcon>
-            <MenuBottomCreateTitle>새 재생목록</MenuBottomCreateTitle>
-          </MenuBottomCreateContainer>
-          {/* 컴포넌트로 빼기 */}
-          <MenuBottomListContainer>
-            {/* {Array.from({ length: 5 }).map((_, idx) => (
-              <MenuBottomListItem key={idx} onClick={gotoPlayList}>
-                <MenuBottomListItemText>
-                  <MenuBottomListItemTitle>
-                    좋아요 표시한 음악
-                  </MenuBottomListItemTitle>
-                  <MenuBottomListItemUser>이마가</MenuBottomListItemUser>
-                </MenuBottomListItemText>
-                <MenuBottomListItemIcon>
-                  <svg
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      clipRule="evenodd"
-                      fillRule="evenodd"
-                      d="M2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm6.39-2.908a.75.75 0 0 1 .766.027l3.5 2.25a.75.75 0 0 1 0 1.262l-3.5 2.25A.75.75 0 0 1 8 12.25v-4.5a.75.75 0 0 1 .39-.658Z"
-                    />
-                  </svg>
-                </MenuBottomListItemIcon>
-              </MenuBottomListItem>
-            ))} */}
-            {playlists?.map((playlist) => (
-              <MenuBottomListItem
-                key={playlist._id}
-                onClick={() => gotoPlayList(playlist._id)}
-              >
-                <MenuBottomListItemText>
-                  <MenuBottomListItemTitle>
-                    {playlist.title}
-                  </MenuBottomListItemTitle>
-                  <MenuBottomListItemUser>
-                    {playlist.owner.username}
-                  </MenuBottomListItemUser>
-                </MenuBottomListItemText>
-                <MenuBottomListItemIcon>
-                  <svg
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      clipRule="evenodd"
-                      fillRule="evenodd"
-                      d="M2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm6.39-2.908a.75.75 0 0 1 .766.027l3.5 2.25a.75.75 0 0 1 0 1.262l-3.5 2.25A.75.75 0 0 1 8 12.25v-4.5a.75.75 0 0 1 .39-.658Z"
-                    />
-                  </svg>
-                </MenuBottomListItemIcon>
-              </MenuBottomListItem>
-            ))}
-          </MenuBottomListContainer>
+          <PlaylistContainer setCreatePlaylist={setCreatePlaylist} />
         </MenuBottomContainer>
       </MenuWrapper>
       <ContentWrapper $menuOpen={menuOpen}>
@@ -724,11 +582,17 @@ const Layout = () => {
         <CreatePlaylistForm
           isLogin={isLogin}
           setCreatePlaylist={setCreatePlaylist}
-          setPlaylists={setPlaylists}
         />
       )}
       <PlayBarWrapper $isPlayerOn={isPlayerOn}>
-        <Player isPlay={isPlay} setIsPlay={setIsPlay} playerRef={playerRef} />
+        <Player
+          isPlay={isPlay}
+          isEnd={isEnd}
+          setIsPlay={setIsPlay}
+          playerRef={playerRef}
+          isRepeat={isRepeat}
+          setIsRepeat={setIsRepeat}
+        />
       </PlayBarWrapper>
       <div>
         <YoutubePlayer

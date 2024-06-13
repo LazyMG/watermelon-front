@@ -25,6 +25,8 @@ import AdminLayout from "./components/AdminLayout";
 import TempHome from "./page/TempHome";
 import { useEffect } from "react";
 import useAuth from "./hooks/useAuth";
+import { useRecoilValue } from "recoil";
+import { authState } from "./atom";
 
 const router = createBrowserRouter([
   {
@@ -165,9 +167,14 @@ const Wrapper = styled.div`
 `;
 
 function App() {
+  const auth = useRecoilValue(authState);
   useAuth();
 
-  //console.log("App render");
+  useEffect(() => {
+    const localAuth = JSON.parse(localStorage.getItem("ytMusicAuth"));
+    //console.log("localstorage", localAuth);
+    //console.log("recoil", auth);
+  }, [auth]);
 
   return (
     <>

@@ -124,15 +124,17 @@ const Login = () => {
       }
       return response.json();
     });
-    console.log(result);
     if (result.ok) {
-      console.log(result?.token);
       setAuth({
         isAuthenticated: true,
-        user: result.userId,
+        user: result.user,
         loading: false,
       });
-      localStorage.setItem("userData", JSON.stringify(result.user));
+      localStorage.setItem(
+        "ytMusicAuth",
+        JSON.stringify({ isAuthenticated: true })
+      );
+      //localStorage.setItem("userData", JSON.stringify(result.user));
       navigate("/");
     }
   };

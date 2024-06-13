@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { playerState, selectedMusicState } from "../atom";
+import { playerState, playlistState, selectedMusicState } from "../atom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { useEffect, useRef, useState } from "react";
 
@@ -127,7 +127,7 @@ const PlayBarContentMainButton = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: red;
+    background-color: #a9a9a9;
   }
 `;
 
@@ -162,6 +162,18 @@ const PlayBarContentUtilVolumeButton = styled.div`
   }
 `;
 
+const PlayBarContentRepeatButton = styled.div`
+  width: 25px;
+
+  cursor: pointer;
+
+  opacity: ${({ $isRepeat }) => ($isRepeat ? "1" : "0.6")};
+
+  &:hover {
+    opacity: ${({ $isRepeat }) => ($isRepeat ? "0.6" : "1")};
+  }
+`;
+
 const PlayBarContentUtilButton = styled.div`
   width: 25px;
 
@@ -172,82 +184,69 @@ const PlayBarContentUtilButton = styled.div`
   }
 `;
 
-const Player = ({ isPlay, setIsPlay, playerRef }) => {
+const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
   const navigate = useNavigate();
-  const selectedMusic = useRecoilValue(selectedMusicState);
-  const setPlayer = useSetRecoilState(playerState);
+  const [selectedMusic, setSelectedMusic] = useRecoilState(selectedMusicState);
+  //const setPlayer = useSetRecoilState(playerState);
+  const [player, setPlayer] = useRecoilState(playerState);
+  const playlist = useRecoilValue(playlistState);
 
   const [timeline, setTimeline] = useState(0);
   const [time, setTime] = useState("00:00");
   const [isMusicMuted, setMusicIsMuted] = useState(false);
   const [musicVolume, setMusicVolume] = useState(50);
+  const [isWatch, setIsWatch] = useState(false);
 
   const volumeRef = useRef();
 
-  const [ytPlayerState, setYtPlayerState] = useRecoilState(playerState);
-
-  const gotoWatchMusic = () =>
-    navigate(`/watch?v=${selectedMusic.ytId}&list=${selectedMusic._id}`);
+  const toggleWatchMusic = () => {
+    if (isWatch) {
+      setIsWatch(false);
+      navigate("/");
+    } else {
+      setIsWatch(true);
+      navigate(`/watch?v=${selectedMusic.ytId}&list=${selectedMusic._id}`);
+    }
+  };
 
   //노래 재생될 때
   useEffect(() => {
     setTime("00:00");
     setTimeline(0);
-  }, [ytPlayerState.ytId]);
+  }, [player.ytId, player.timestamp]);
 
   useEffect(() => {
-    const player = playerRef.current.internalPlayer;
+    const ytPlayer = playerRef.current?.internalPlayer;
 
     let updateTimer;
 
-    if (ytPlayerState.isPlaying) {
+    if (player.isPlaying) {
       updateTimer = setInterval(async () => {
-        const currentTime = await player.getCurrentTime();
+        const currentTime = await ytPlayer.getCurrentTime();
         setTimeline(Math.floor(currentTime));
         const formatedTime = new Date(currentTime * 1000)
           .toISOString()
           .substring(14, 19);
         setTime(formatedTime);
-        // setYtPlayerState((prevState) => ({
-        //   ...prevState,
-        //   currentTime: formatedTime,
-        // }));
       }, 1000);
-
-      // if (ytPlayerState.isPlaying) {
-      //   updateTimer = setInterval(async () => {
-      //     const currentTime = await player.getCurrentTime();
-      //     setTimeline(Math.floor(currentTime));
-      //     const formatedTime = new Date(currentTime * 1000)
-      //       .toISOString()
-      //       .substring(14, 19);
-      //     //duration이 필요할까
-      //     const duration = await player.getDuration();
-      //     setYtPlayerState((prevState) => ({
-      //       ...prevState,
-      //       currentTime: formatedTime,
-      //       duration,
-      //     }));
-      //     //if (currentTime && duration) setLoading(false);
-      //   }, 1000);
     }
     // 매 초마다 업데이트
     return () => clearInterval(updateTimer);
-  }, [time, ytPlayerState]);
+  }, [time, player]);
 
   const handlePlayPauseToggle = () => {
-    const player = playerRef.current.internalPlayer;
-    if (ytPlayerState.isPlaying) {
-      player.pauseVideo();
-      setYtPlayerState((prev) => ({
+    const ytPlayer = playerRef.current?.internalPlayer;
+    if (player.isPlaying) {
+      ytPlayer.pauseVideo();
+      setPlayer((prev) => ({
         ...prev,
         isPlaying: false,
         isPaused: true,
       }));
       setIsPlay((prev) => !prev);
     } else {
-      player.playVideo();
-      setYtPlayerState((prev) => ({
+      ytPlayer.playVideo();
+      setPlayer((prev) => ({
         ...prev,
         isPlaying: true,
         isPaused: false,
@@ -258,7 +257,7 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
 
   //노래 끝났을 때 처리
   const timelineChange = (event) => {
-    const player = playerRef.current.internalPlayer;
+    const ytPlayer = playerRef.current?.internalPlayer;
     const newTimeline = event.target.value;
     setTimeline(newTimeline);
     // setYtPlayerState((prevState) => ({
@@ -269,7 +268,7 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
       .toISOString()
       .substring(14, 19);
     setTime(formatedTime);
-    player.seekTo(newTimeline, true);
+    ytPlayer.seekTo(newTimeline, true);
   };
 
   const clickMusicArtist = (artistId) => {
@@ -281,10 +280,10 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
   };
 
   const clickToggleMute = async () => {
-    const player = playerRef.current.internalPlayer;
-    const volume = await player.getVolume();
+    const ytPlayer = playerRef.current?.internalPlayer;
+    const volume = await ytPlayer.getVolume();
     console.log(volume);
-    const musicIsMuted = await player.isMuted();
+    const musicIsMuted = await ytPlayer.isMuted();
     if (musicIsMuted) {
       setMusicIsMuted(false);
       setMusicVolume(volumeRef.current);
@@ -293,7 +292,7 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
         isMuted: false,
         volume: volumeRef.current,
       }));
-      player.unMute();
+      ytPlayer.unMute();
     } else {
       setMusicIsMuted(true);
       volumeRef.current = musicVolume;
@@ -303,15 +302,15 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
         isMuted: true,
         volume: 0,
       }));
-      player.mute();
+      ytPlayer.mute();
     }
   };
 
   const changeVolume = (event) => {
-    const player = playerRef.current.internalPlayer;
+    const ytPlayer = playerRef.current?.internalPlayer;
     volumeRef.current = event.target.value;
     setMusicVolume(event.target.value);
-    player.setVolume(event.target.value);
+    ytPlayer.setVolume(event.target.value);
     setPlayer((prev) => ({
       ...prev,
       volume: +event.target.value,
@@ -328,18 +327,69 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
     }
   };
 
+  const clickNextMusic = () => {
+    if (!playlist || playlist.length === 0) return;
+    const currentIndex = playlist.findIndex(
+      (item) => item.ytId === player.ytId
+    );
+    console.log("next", currentIndex);
+    if (currentIndex === playlist.length - 1) {
+      return;
+    }
+    setPlayer((prev) => ({
+      ...prev,
+      ytId: playlist[currentIndex + 1].ytId,
+      isPlaying: true,
+      isPaused: false,
+    }));
+    setSelectedMusic(playlist[currentIndex + 1]);
+  };
+
+  const clickPrevMusic = async () => {
+    const ytPlayer = playerRef.current?.internalPlayer;
+    const currentTime = await ytPlayer.getCurrentTime();
+    if (currentTime < 3) {
+      console.log("short");
+      setPlayer((prev) => ({
+        ...prev,
+        ytId: selectedMusic.ytId,
+        isPlaying: true,
+        isPaused: false,
+        timestamp: Date.now(),
+      }));
+      console.log("setting");
+    }
+    setSelectedMusic(selectedMusic);
+    if (!playlist || playlist.length === 0) return;
+
+    const currentIndex = playlist.findIndex(
+      (item) => item.ytId === player.ytId
+    );
+    console.log("prev", currentIndex);
+    if (currentIndex === 0) {
+      return;
+    }
+    setPlayer((prev) => ({
+      ...prev,
+      ytId: playlist[currentIndex - 1].ytId,
+      isPlaying: true,
+      isPaused: false,
+    }));
+    setSelectedMusic(playlist[currentIndex - 1]);
+  };
+
   return (
     <PlayBarWrapper>
       <PlayBarTimeline
         type="range"
         value={timeline}
-        max={ytPlayerState.duration}
+        max={player.duration}
         onChange={timelineChange}
       />
       <PlayBarContentContainer>
         <PlayBarContentControlContainer>
           <PlayBarContentControlButtons>
-            <PlayBarContentControlMoveButton>
+            <PlayBarContentControlMoveButton onClick={clickPrevMusic}>
               <svg
                 fill="none"
                 strokeWidth={1.5}
@@ -356,7 +406,7 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
               </svg>
             </PlayBarContentControlMoveButton>
             <PlayBarContentControlPlayButton onClick={handlePlayPauseToggle}>
-              {isPlay ? (
+              {/* {isPlay ? (
                 <svg
                   fill="none"
                   strokeWidth={1.5}
@@ -369,6 +419,21 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     d="M15.75 5.25v13.5m-7.5-13.5v13.5"
+                  />
+                </svg>
+              ) : isEnd ? (
+                <svg
+                  fill="none"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z"
                   />
                 </svg>
               ) : (
@@ -386,24 +451,55 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
                     d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
                   />
                 </svg>
+              )} */}
+              {player?.isPlaying ? (
+                <svg
+                  fill="none"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 5.25v13.5m-7.5-13.5v13.5"
+                  />
+                </svg>
+              ) : player?.isPaused ? (
+                <svg
+                  fill="none"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  fill="none"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z"
+                  />
+                </svg>
               )}
-
-              {/* <svg
-            fill="none"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z"
-            />
-          </svg> */}
             </PlayBarContentControlPlayButton>
-            <PlayBarContentControlMoveButton>
+            <PlayBarContentControlMoveButton onClick={clickNextMusic}>
               <svg
                 fill="none"
                 strokeWidth={1.5}
@@ -538,7 +634,10 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
               onChange={changeVolume}
             />
           </PlayBarContentUtilVolumeButton>
-          <PlayBarContentUtilButton>
+          <PlayBarContentRepeatButton
+            onClick={() => setIsRepeat(true)}
+            $isRepeat={isRepeat}
+          >
             <svg
               fill="none"
               strokeWidth={1.5}
@@ -553,7 +652,7 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
                 d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3"
               />
             </svg>
-          </PlayBarContentUtilButton>
+          </PlayBarContentRepeatButton>
           <PlayBarContentUtilButton>
             <svg
               fill="none"
@@ -570,35 +669,38 @@ const Player = ({ isPlay, setIsPlay, playerRef }) => {
               />
             </svg>
           </PlayBarContentUtilButton>
-          <PlayBarContentUtilButton onClick={gotoWatchMusic}>
-            <svg
-              fill="none"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m4.5 15.75 7.5-7.5 7.5 7.5"
-              />
-            </svg>
-            {/* <svg
-          fill="none"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="m19.5 8.25-7.5 7.5-7.5-7.5"
-          />
-        </svg> */}
+          <PlayBarContentUtilButton onClick={toggleWatchMusic}>
+            {isWatch ? (
+              <svg
+                fill="none"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                />
+              </svg>
+            ) : (
+              <svg
+                fill="none"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                />
+              </svg>
+            )}
           </PlayBarContentUtilButton>
         </PlayBarContentUtilContainer>
       </PlayBarContentContainer>

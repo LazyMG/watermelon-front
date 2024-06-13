@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import useOnClickOutSide from "../hooks/useOnClickOutSide";
 import CreatePlaylistForm from "./CreatePlaylistForm";
+import { useRecoilValue } from "recoil";
+import { authState } from "../atom";
 
 const Wrapper = styled.div`
   z-index: 1200;
@@ -31,7 +33,7 @@ const Modal = styled.div`
   width: 400px;
   height: 700px;
 
-  border: 1px solid blue;
+  border: 1px solid #414141;
   display: flex;
   flex-direction: column;
 `;
@@ -120,7 +122,8 @@ const ModalPlaylistLength = styled.div`
 
 const CreateFormBottomButton = styled.div`
   position: absolute;
-  background-color: red;
+  background-color: white;
+  color: black;
   padding: 10px 15px;
   border-radius: 15px;
   right: 10px;
@@ -132,6 +135,7 @@ const AddMusicPlaylistForm = ({ setAddModalOpen, isLogin, music }) => {
   const ref = useRef();
   const [playlists, setPlaylists] = useState([]);
   const [createPlaylist, setCreatePlaylist] = useState(false);
+  const auth = useRecoilValue(authState);
 
   // useOnClickOutSide(ref, () => {
   //   setAddModalOpen(false);
@@ -145,20 +149,21 @@ const AddMusicPlaylistForm = ({ setAddModalOpen, isLogin, music }) => {
     }
   });
 
-  useEffect(() => {
-    getUserPlaylist();
-  }, []);
-
-  const getUserPlaylist = async () => {
+  const getUserPlaylist = useCallback(async () => {
     if (!isLogin) return;
-    const userData = JSON.parse(localStorage.getItem("userData"));
+    const userId = auth.user?.userId;
+    if (!userId) return;
     const result = await fetch(
-      `http://localhost:3000/user/${userData._id}/playlist`
+      `http://localhost:3000/user/${userId}/playlist`
     ).then((res) => res.json());
     if (result?.playlists) {
       setPlaylists(result.playlists);
     }
-  };
+  }, [auth, isLogin]);
+
+  useEffect(() => {
+    getUserPlaylist();
+  }, [getUserPlaylist]);
 
   const clickAddMusicPlaylist = async (playlistId) => {
     const result = await fetch(`http://localhost:3000/playlist/${playlistId}`, {

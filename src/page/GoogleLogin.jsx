@@ -1,10 +1,14 @@
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { authState } from "../atom";
 
 const GoogleLogin = () => {
   const parsedHash = new URLSearchParams(window.location.hash.substring(1));
   const accessToken = parsedHash.get("access_token");
   const navigate = useNavigate();
+  const setAuth = useSetRecoilState(authState);
+  console.log(accessToken);
 
   const fetchLoginData = useCallback(async () => {
     const result = await fetch("http://localhost:3000/google-login", {
@@ -15,6 +19,7 @@ const GoogleLogin = () => {
       body: JSON.stringify({
         accessToken: accessToken,
       }),
+      credentials: "include",
     })
       .then((response) => {
         const statusCode = response.status;
@@ -29,11 +34,19 @@ const GoogleLogin = () => {
         console.error("Error:", error);
         navigate("/login");
       });
-    if (result?.user) {
-      localStorage.setItem("userData", JSON.stringify(result.user));
+    if (result?.ok) {
+      setAuth({
+        isAuthenticated: true,
+        user: result.user,
+        loading: false,
+      });
+      localStorage.setItem(
+        "ytMusicAuth",
+        JSON.stringify({ isAuthenticated: true })
+      );
       navigate("/");
     }
-  }, [accessToken]);
+  }, [accessToken, setAuth, navigate]);
 
   useEffect(() => {
     fetchLoginData();

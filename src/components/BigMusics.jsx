@@ -1,6 +1,6 @@
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { playerState, selectedMusicState } from "../atom";
+import { authState, playerState, selectedMusicState } from "../atom";
 import { useNavigate } from "react-router-dom";
 
 const BigMusicsContainer = styled.div`
@@ -173,6 +173,7 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
   const setPlayerState = useSetRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
   const navigate = useNavigate();
+  const auth = useRecoilValue(authState);
 
   const handleClick = (music) => {
     setPlayerState((prev) => ({
@@ -189,9 +190,10 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
   };
 
   const gotoMyChannel = () => {
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    if (!userData._id) return;
-    navigate(`/channel/${userData._id}`);
+    console.log(auth);
+    const userId = auth.user?.userId;
+    if (!userId) return;
+    navigate(`/channel/${userId}`);
   };
 
   return (
@@ -216,7 +218,9 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
           )}
           <BigMusicsHeaderText>
             {isCustom && (
-              <BigMusicsHeaderSubText>이마가</BigMusicsHeaderSubText>
+              <BigMusicsHeaderSubText>
+                {auth?.user?.username}
+              </BigMusicsHeaderSubText>
             )}
             <BigMusicsHeaderTitle>{title}</BigMusicsHeaderTitle>
           </BigMusicsHeaderText>

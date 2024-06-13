@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const ChannelContentRepeatHeader = styled.div`
@@ -59,6 +60,8 @@ const ChannelContentRepeatArtistInfo = styled.div`
 const ChannelContentRepeatArtistName = styled.div`
   font-size: 15px;
   font-weight: bold;
+
+  cursor: pointer;
 `;
 
 const ChannelContentRepeatArtistTime = styled.div`
@@ -66,6 +69,12 @@ const ChannelContentRepeatArtistTime = styled.div`
 `;
 
 const CircleMusics = ({ albumList, title, subtext, isAlbum }) => {
+  const navigate = useNavigate();
+
+  const clickAlbumTitle = (albumId) => {
+    navigate(`/playlist?list=${albumId}`);
+  };
+
   return (
     <ChannelContentRepeatArtistContainer>
       <ChannelContentRepeatHeader>
@@ -82,7 +91,9 @@ const CircleMusics = ({ albumList, title, subtext, isAlbum }) => {
               $isAlbum={isAlbum}
             />
             <ChannelContentRepeatArtistInfo>
-              <ChannelContentRepeatArtistName>
+              <ChannelContentRepeatArtistName
+                onClick={() => clickAlbumTitle(album._id)}
+              >
                 {album.title}
               </ChannelContentRepeatArtistName>
               <ChannelContentRepeatArtistTime>

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { authState } from "../atom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -42,17 +44,19 @@ const Loading = styled.div`
 const AdminLayout = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const auth = useRecoilValue(authState);
 
   useEffect(() => {
-    const userData = localStorage.getItem("userData")
-      ? JSON.parse(localStorage.getItem("userData"))
+    const localAuth = localStorage.getItem("ytMusicAuth")
+      ? JSON.parse(localStorage.getItem("ytMusicAuth"))
       : null;
 
-    if (!userData || userData?.admin === false) {
+    if (!localAuth || !auth.user?.admin) {
       navigate("/");
     }
+
     setIsLoading(false);
-  }, [navigate]);
+  }, [navigate, auth]);
 
   return (
     <Wrapper>

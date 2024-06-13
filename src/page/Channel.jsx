@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import CircleMusics from "../components/CircleMusics";
 import RowMusics from "../components/RowMusics";
+import { useRecoilValue } from "recoil";
+import { authState } from "../atom";
 
 const ChannelWrapper = styled.div`
   margin-top: 70px;
@@ -63,96 +65,75 @@ const ChannelContentProfileUtils = styled.div`
 const ChannelContentProfileButton = styled.div`
   padding: 10px 15px;
   border-radius: 15px;
-  background-color: red;
+  background-color: white;
+  color: black;
 
   cursor: pointer;
 `;
 
 const Channel = () => {
   const { channelId } = useParams();
-  const userData = localStorage.getItem("userData")
-    ? JSON.parse(localStorage.getItem("userData"))
-    : {};
   const [channel, setChannel] = useState();
   const [isArtist, setIsArtist] = useState();
+  const auth = useRecoilValue(authState);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    getChannelData();
-  }, []);
-
-  const getChannelData = async () => {
+  const getChannelData = useCallback(async () => {
     const result = await fetch(
       `http://localhost:3000/user/${channelId}`
     ).then((res) => res.json());
-    console.log(result.channel.albumList);
     setChannel(result.channel);
     setIsArtist(result.isArtist);
-  };
+  }, [channelId]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    getChannelData();
+    setIsLoading(false);
+  }, [getChannelData]);
 
   return (
     <ChannelWrapper>
       <ChannelContentContainer>
         <ChannelContentProfileContainer>
-          <ChannelContentProfileImg $imgUrl={isArtist ? channel?.imgUrl : ""}>
-            {!isArtist && (
-              <svg
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  clipRule="evenodd"
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
-                />
-              </svg>
-            )}
-          </ChannelContentProfileImg>
-          <ChannelContentProfileInfo>
-            <ChannelContentProfileName>
-              {channel?.artistName || userData.username}
-            </ChannelContentProfileName>
-            <ChannelContentProfileUtils>
-              {channelId === userData._id && (
-                <ChannelContentProfileButton>수정</ChannelContentProfileButton>
+          {!isLoading && (
+            <ChannelContentProfileImg $imgUrl={isArtist ? channel?.imgUrl : ""}>
+              {!isArtist && (
+                <svg
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    clipRule="evenodd"
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
+                  />
+                </svg>
               )}
-              <ChannelContentProfileButton>공유</ChannelContentProfileButton>
-            </ChannelContentProfileUtils>
+            </ChannelContentProfileImg>
+          )}
+          <ChannelContentProfileInfo>
+            {!isLoading && (
+              <>
+                <ChannelContentProfileName>
+                  {channel?.artistName || auth?.user?.username}
+                </ChannelContentProfileName>
+                <ChannelContentProfileUtils>
+                  {channelId === auth?.user?.userId && (
+                    <ChannelContentProfileButton>
+                      수정
+                    </ChannelContentProfileButton>
+                  )}
+                  <ChannelContentProfileButton>
+                    공유
+                  </ChannelContentProfileButton>
+                </ChannelContentProfileUtils>
+              </>
+            )}
           </ChannelContentProfileInfo>
         </ChannelContentProfileContainer>
-        {/* <ChannelContentRepeatMusicContainer>
-          <ChannelContentRepeatHeader>
-            <ChannelContentRepeatHeaderSmall>
-              최근 • 비공개
-            </ChannelContentRepeatHeaderSmall>
-            <ChannelContentRepeatHeaderBig>
-              반복 감상한 곡
-            </ChannelContentRepeatHeaderBig>
-          </ChannelContentRepeatHeader>
-          <ChannelContentRepeatMusicList>
-            {channel?.musicList?.map((music) => (
-              <ChannelContentRepeatMusicItem key={music._id}>
-                <ChannelContentRepeatMusicImg>
-                  <div />
-                </ChannelContentRepeatMusicImg>
-                <ChannelContentRepeatMusicTitle
-                  onClick={() => handleClick(music)}
-                >
-                  {music.title}
-                </ChannelContentRepeatMusicTitle>
-                <ChannelContentRepeatMusicPlays>
-                  {channel.artistName} | 241만회 재생
-                </ChannelContentRepeatMusicPlays>
-                <ChannelContentRepeatMusicAlbum
-                  onClick={() => clickAlbumTitle(music.album?._id)}
-                >
-                  {music.album?.title}
-                </ChannelContentRepeatMusicAlbum>
-              </ChannelContentRepeatMusicItem>
-            ))}
-          </ChannelContentRepeatMusicList>
-        </ChannelContentRepeatMusicContainer> */}
         <RowMusics
           musicList={channel?.musicList}
           title={isArtist ? "노래" : "반복 감상한 곡"}

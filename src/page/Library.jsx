@@ -1,4 +1,8 @@
+import { useCallback, useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { authState } from "../atom";
+import { useNavigate } from "react-router-dom";
 
 const LibraryWrapper = styled.div`
   margin-top: 50px;
@@ -22,7 +26,9 @@ const LibraryCategoryContainer = styled.div`
 
 const LibraryCategoryItem = styled.div`
   padding: 20px 0;
-  border-bottom: 2px solid #fff;
+
+  ${({ $category }) => $category && `border-bottom: 2px solid #fff;`}
+  opacity: ${({ $category }) => ($category ? "1" : "0.6")};
   //height: 50px;
 
   cursor: pointer;
@@ -54,8 +60,6 @@ const LibraryNavItem = styled.div`
   }
 `;
 
-const LibraryNavOption = styled.select``;
-
 const LibraryContentContainer = styled.div`
   width: 100%;
   /* height: 600px; */
@@ -75,7 +79,9 @@ const LibraryContentItem = styled.div`
 const LibraryContentItemImg = styled.div`
   border-radius: 5px;
   height: 145px;
-  background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
+  background: ${({ $imgUrl }) => ($imgUrl ? `url(${$imgUrl})` : "")};
+  //background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
+  background-color: #949494;
   background-size: contain;
   background-repeat: no-repeat;
   //flex-shrink: 0;
@@ -92,6 +98,8 @@ const LibraryContentItemInfo = styled.div`
 const LibraryContentItemTitle = styled.div`
   font-size: 14px;
   font-weight: bold;
+
+  cursor: pointer;
 `;
 
 const LibraryContentItemOverview = styled.div`
@@ -99,11 +107,52 @@ const LibraryContentItemOverview = styled.div`
 `;
 
 const Library = () => {
+  const [category, setCategory] = useState("STORAGE");
+  const auth = useRecoilValue(authState);
+  const isLogin = localStorage.getItem("ytMusicAuth") ? true : false;
+  const [playlists, setPlaylists] = useState([]);
+  const navigate = useNavigate();
+  const [totalList, setTotalList] = useState([]);
+  const [albumlist, setAlbumlist] = useState([]);
+
+  const getUserPlaylist = useCallback(async () => {
+    if (!isLogin) return;
+    const userId = auth?.user?.userId;
+    if (!userId) return;
+    const result = await fetch(
+      `http://localhost:3000/user/${userId}/playlist`
+    ).then((res) => res.json());
+    console.log(result);
+    if (result.ok) {
+      setPlaylists(result.playlists);
+      setAlbumlist(result.albums);
+      setTotalList([...result.playlists, ...result.albums]);
+    }
+  }, [isLogin, auth]);
+
+  useEffect(() => {
+    getUserPlaylist();
+  }, [getUserPlaylist]);
+
+  const gotoPlayList = (playlistId) => {
+    navigate(`/playlist?list=${playlistId}`);
+  };
+
   return (
     <LibraryWrapper>
       <LibraryCategoryContainer>
-        <LibraryCategoryItem>보관함</LibraryCategoryItem>
-        <LibraryCategoryItem>오프라인 저장</LibraryCategoryItem>
+        <LibraryCategoryItem
+          onClick={() => setCategory("STORAGE")}
+          $category={category === "STORAGE"}
+        >
+          보관함
+        </LibraryCategoryItem>
+        <LibraryCategoryItem
+          onClick={() => setCategory("OFFLINE")}
+          $category={category === "OFFLINE"}
+        >
+          오프라인 저장
+        </LibraryCategoryItem>
       </LibraryCategoryContainer>
       <LibraryNavContainer>
         <LibraryNavItemContainer>
@@ -112,10 +161,9 @@ const Library = () => {
           <LibraryNavItem>앨범</LibraryNavItem>
           <LibraryNavItem>아티스트</LibraryNavItem>
         </LibraryNavItemContainer>
-        <LibraryNavOption />
       </LibraryNavContainer>
       <LibraryContentContainer>
-        {Array.from({ length: 11 }).map((_, idx) => (
+        {/* {Array.from({ length: 11 }).map((_, idx) => (
           <LibraryContentItem key={idx}>
             <LibraryContentItemImg />
             <LibraryContentItemInfo>
@@ -124,6 +172,51 @@ const Library = () => {
               </LibraryContentItemTitle>
               <LibraryContentItemOverview>
                 자동 재생목록
+              </LibraryContentItemOverview>
+            </LibraryContentItemInfo>
+          </LibraryContentItem>
+        ))} */}
+        {/* {totalList?.map((listItem) => (
+          <LibraryContentItem key={listItem._id}>
+            <LibraryContentItemImg />
+            <LibraryContentItemInfo>
+              <LibraryContentItemTitle
+                onClick={() => gotoPlayList(listItem._id)}
+              >
+                {listItem.title}
+              </LibraryContentItemTitle>
+              <LibraryContentItemOverview>
+                {listItem.overview || listItem.artist.artistName}
+              </LibraryContentItemOverview>
+            </LibraryContentItemInfo>
+          </LibraryContentItem>
+        ))} */}
+        {playlists?.map((listItem) => (
+          <LibraryContentItem key={listItem._id}>
+            <LibraryContentItemImg />
+            <LibraryContentItemInfo>
+              <LibraryContentItemTitle
+                onClick={() => gotoPlayList(listItem._id)}
+              >
+                {listItem.title}
+              </LibraryContentItemTitle>
+              <LibraryContentItemOverview>
+                {listItem.overview || listItem.artist.artistName}
+              </LibraryContentItemOverview>
+            </LibraryContentItemInfo>
+          </LibraryContentItem>
+        ))}
+        {albumlist?.map((listItem) => (
+          <LibraryContentItem key={listItem._id}>
+            <LibraryContentItemImg $imgUrl={listItem.coverImg} />
+            <LibraryContentItemInfo>
+              <LibraryContentItemTitle
+                onClick={() => gotoPlayList(listItem._id)}
+              >
+                {listItem.title}
+              </LibraryContentItemTitle>
+              <LibraryContentItemOverview>
+                {listItem.overview || listItem.artist.artistName}
               </LibraryContentItemOverview>
             </LibraryContentItemInfo>
           </LibraryContentItem>

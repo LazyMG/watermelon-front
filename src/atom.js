@@ -1,5 +1,15 @@
 import { atom } from "recoil";
 
+export const userPlaylistsState = atom({
+  key: "userPlaylistsState",
+  default: [],
+});
+
+export const playlistState = atom({
+  key: "playlistState",
+  default: [],
+});
+
 export const authState = atom({
   key: "authState",
   default: {
@@ -20,6 +30,8 @@ export const playerState = atom({
     isLoading: false,
     isMuted: false,
     volume: 50,
+    isEnd: false,
+    timestamp: Date.now(),
   },
 });
 

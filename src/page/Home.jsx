@@ -52,11 +52,8 @@ const HomeRecommandContainer = styled.div`
 const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [musics, setMusics] = useState([]);
-  const userData = localStorage.getItem("userData")
-    ? JSON.parse(localStorage.getItem("userData"))
-    : null;
-
   const auth = useRecoilValue(authState);
+  const localAuth = JSON.parse(localStorage.getItem("ytMusicAuth"));
 
   //data fetch
   const getMusics = async () => {
@@ -93,11 +90,11 @@ const Home = () => {
           <HomeContentContainer>
             <SamllMusics musics={musics} />
           </HomeContentContainer>
-          {userData && (
+          {localAuth?.isAuthenticated || auth.isAuthenticated ? (
             <HomeContentContainer>
               <BigMusics musics={musics} isCustom={true} title={"다시듣기"} />
             </HomeContentContainer>
-          )}
+          ) : null}
           {/* <HomeContentContainer>Home</HomeContentContainer> */}
           <HomeContentContainer>
             <BigMusics musics={musics} title={"추천음악"} />

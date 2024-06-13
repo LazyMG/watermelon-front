@@ -1,8 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { playerState, selectedMusicState } from "../atom";
-import { useSetRecoilState } from "recoil";
+import {
+  authState,
+  playerState,
+  playlistState,
+  selectedMusicState,
+  userPlaylistsState,
+} from "../atom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 const PlayListWrapper = styled.div`
   margin-top: 70px;
@@ -75,7 +81,8 @@ const PlayListContentHeaderUtils = styled.div`
 
 const PlayListContentHeaderButton = styled.div`
   padding: 10px 15px;
-  background-color: blue;
+  background-color: white;
+  color: black;
   border-radius: 15px;
 
   cursor: pointer;
@@ -120,24 +127,29 @@ const PlayListContentListItemTime = styled.div`
 
 const PlayList = () => {
   const data = new URLSearchParams(useLocation().search);
-  const currentList = data.get("list");
-  const [playlist, setPlaylist] = useState();
+  const playlistId = data.get("list");
+
+  const [pagePlaylist, setPagePlaylist] = useState();
+  const [isAlbum, setIsAlbum] = useState();
+  const [isUserHasPlaylist, setIsUserHasPlaylist] = useState(false);
+
   const setPlayerState = useSetRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
-  const userData = localStorage.getItem("userData")
-    ? JSON.parse(localStorage.getItem("userData"))
-    : {};
+  const auth = useRecoilValue(authState);
+  const isLogin = localStorage.getItem("ytMusicAuth") ? true : false;
+  const setPlaylist = useSetRecoilState(playlistState);
+  const setUserPlaylists = useSetRecoilState(userPlaylistsState);
+
   const navigate = useNavigate();
-  const [isAlbum, setIsAlbum] = useState();
 
   const getPlaylist = useCallback(async () => {
-    const result = await fetch(
-      `http://localhost:3000/playlist/${currentList}`
-    ).then((res) => res.json());
-    //console.log(result.playlist);
-    setPlaylist(result.playlist);
+    const result = await fetch(`http://localhost:3000/playlist/${playlistId}`, {
+      credentials: "include",
+    }).then((res) => res.json());
+    setPagePlaylist(result.playlist);
     setIsAlbum(result.isAlbum);
-  }, [currentList]);
+    setIsUserHasPlaylist(result.isUserHasPlaylist);
+  }, [playlistId]);
 
   useEffect(() => {
     getPlaylist();
@@ -154,11 +166,13 @@ const PlayList = () => {
     setSelectedMusic(music);
   };
 
+  useEffect(() => {}, [isUserHasPlaylist]);
+
   const clickDeletePlaylist = async () => {
     if (confirm("삭제하시겠습니까?")) {
-      const userId = userData?._id;
+      const userId = auth?.user?.userId;
       const result = await fetch(
-        `http://localhost:3000/playlist/delete/${currentList}`,
+        `http://localhost:3000/playlist/delete/${playlistId}`,
         {
           method: "POST",
           headers: {
@@ -181,13 +195,80 @@ const PlayList = () => {
     }
   };
 
+  const gotoAritstPage = (data) => {
+    const id = data?.artist?._id || data.owner;
+    navigate(`/channel/${id}`);
+  };
+
+  const clickAddPlaylist = () => {
+    //console.log(pagePlaylist?.list);
+    if (
+      pagePlaylist?.list?.length === 0 ||
+      pagePlaylist?.musicList?.length === 0
+    ) {
+      return;
+    }
+    setPlaylist(pagePlaylist?.musicList || pagePlaylist?.list);
+    if (pagePlaylist?.list) {
+      handleClick(pagePlaylist?.list[0]);
+    }
+    if (pagePlaylist?.musicList) {
+      handleClick(pagePlaylist?.musicList[0]);
+    }
+  };
+
+  const clickAddUserPlaylist = async () => {
+    const userId = auth?.user?.userId;
+    if (!userId) return;
+    const result = await fetch(
+      `http://localhost:3000/user/${userId}/addPlaylist`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ playlistId }),
+      }
+    )
+      .then((response) => {
+        const statusCode = response.status;
+        if (statusCode === 200) {
+          return response.json();
+        } else alert("falied!");
+      })
+      .catch((error) => console.error("Error:", error));
+    setIsUserHasPlaylist(result.isUserHasPlaylist);
+  };
+
+  const clickDeleteUserPlaylist = async () => {
+    const userId = auth?.user?.userId;
+    const result = await fetch(
+      `http://localhost:3000/user/${userId}/deletePlaylist`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ playlistId }),
+      }
+    )
+      .then((response) => {
+        const statusCode = response.status;
+        if (statusCode === 200) {
+          return response.json();
+        } else alert("falied!");
+      })
+      .catch((error) => console.error("Error:", error));
+    setIsUserHasPlaylist(result.isUserHasPlaylist);
+  };
+
   return (
     <PlayListWrapper>
-      {playlist && (
+      {pagePlaylist && (
         <PlayListContentContainer>
           <PlayListContentHeader>
-            {playlist.coverImg ? (
-              <PlayListContentHeaderImg $imgUrl={playlist.coverImg} />
+            {pagePlaylist.coverImg ? (
+              <PlayListContentHeaderImg $imgUrl={pagePlaylist.coverImg} />
             ) : (
               <PlayListContentHeaderDefaultImg>
                 <svg
@@ -208,21 +289,37 @@ const PlayList = () => {
             )}
             <PlayListContentHeaderInfo>
               <PlayListContentHeaderTitle>
-                {playlist.title}
+                {pagePlaylist.title}
               </PlayListContentHeaderTitle>
               <PlayListContentHeaderOverview>
                 EP •
-                <PlayListContentHeaderArtist>
-                  {playlist.artist?.artistName || userData.username}
+                <PlayListContentHeaderArtist
+                  onClick={() => gotoAritstPage(pagePlaylist)}
+                >
+                  {pagePlaylist.artist?.artistName || auth?.user?.username}
                 </PlayListContentHeaderArtist>
                 • 2015
               </PlayListContentHeaderOverview>
               <PlayListContentHeaderUtils>
-                <PlayListContentHeaderButton>재생</PlayListContentHeaderButton>
-                {playlist.owner === userData?._id ? (
-                  <PlayListContentHeaderButton onClick={clickDeletePlaylist}>
-                    보관함에서 삭제
-                  </PlayListContentHeaderButton>
+                <PlayListContentHeaderButton onClick={clickAddPlaylist}>
+                  재생
+                </PlayListContentHeaderButton>
+                {auth.user?.userId ? (
+                  pagePlaylist.owner === auth.user?.userId ? (
+                    <PlayListContentHeaderButton onClick={clickDeletePlaylist}>
+                      목록에서 삭제
+                    </PlayListContentHeaderButton>
+                  ) : isUserHasPlaylist ? (
+                    <PlayListContentHeaderButton
+                      onClick={clickDeleteUserPlaylist}
+                    >
+                      보관함에서 삭제
+                    </PlayListContentHeaderButton>
+                  ) : (
+                    <PlayListContentHeaderButton onClick={clickAddUserPlaylist}>
+                      보관함에 추가
+                    </PlayListContentHeaderButton>
+                  )
                 ) : null}
               </PlayListContentHeaderUtils>
             </PlayListContentHeaderInfo>
@@ -241,7 +338,7 @@ const PlayList = () => {
               </PlayListContentListItem>
             ))} */}
             {isAlbum
-              ? playlist.musicList?.map((music, idx) => (
+              ? pagePlaylist.musicList?.map((music, idx) => (
                   <PlayListContentListItem key={music._id}>
                     <PlayListContentListItemNum>
                       {idx + 1}
@@ -259,7 +356,7 @@ const PlayList = () => {
                     </PlayListContentListItemTime>
                   </PlayListContentListItem>
                 ))
-              : playlist.list?.map((music) => (
+              : pagePlaylist.list?.map((music) => (
                   <PlayListContentListItem key={music._id}>
                     <PlayListContentListItemNum>1</PlayListContentListItemNum>
                     <PlayListContentListItemTitle

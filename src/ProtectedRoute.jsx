@@ -6,7 +6,7 @@ const Wrapper = styled.div`
 `;
 
 const ProtectedRoute = () => {
-  const isLogin = localStorage.getItem("userData") ? true : false;
+  const isLogin = localStorage.getItem("ytMusicAuth") ? true : false;
 
   return (
     <Wrapper>

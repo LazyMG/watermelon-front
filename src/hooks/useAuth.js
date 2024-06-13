@@ -6,6 +6,7 @@ const useAuth = () => {
   const setAuth = useSetRecoilState(authState);
 
   useEffect(() => {
+    //if (localStorage.getItem("ytMusicAuth")) return;
     const checkSession = async () => {
       console.log("auth");
       try {
@@ -13,14 +14,19 @@ const useAuth = () => {
           method: "GET",
           credentials: "include", // 쿠키를 포함하여 요청
         }).then((result) => result.json());
-
+        console.log(response);
         if (response.ok) {
-          const userId = response.userId;
+          const user = response.user;
           setAuth({
             isAuthenticated: true,
-            user: userId,
+            user,
             loading: false,
           });
+          if (!localStorage.getItem("ytMusicAuth"))
+            localStorage.setItem(
+              "ytMusicAuth",
+              JSON.stringify({ isAuthenticated: true })
+            );
         } else {
           setAuth({
             isAuthenticated: false,
