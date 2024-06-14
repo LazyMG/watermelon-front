@@ -9,7 +9,6 @@ import Explore from "./page/Explore";
 import Watch from "./page/Watch";
 import Login from "./page/Login";
 import CreateAccount from "./page/CreateAccount";
-import ProtectedRoute from "./ProtectedRoute";
 import Library from "./page/Library";
 import PlayList from "./page/PlayList";
 import Channel from "./page/Channel";
@@ -22,7 +21,6 @@ import ConnectArtist from "./page/connect/ConnectArtist";
 import ConnectAlbum from "./page/connect/ConnectAlbum";
 import AlbumMusic from "./page/connect/AlbumMusic";
 import AdminLayout from "./components/AdminLayout";
-import TempHome from "./page/TempHome";
 import { useEffect } from "react";
 import useAuth from "./hooks/useAuth";
 import { useRecoilValue } from "recoil";
@@ -125,10 +123,6 @@ const router = createBrowserRouter([
     element: <GoogleLogin />,
   },
   {
-    path: "/test",
-    element: <TempHome />,
-  },
-  {
     path: "*",
     element: "",
   },
@@ -167,14 +161,14 @@ const Wrapper = styled.div`
 `;
 
 function App() {
-  const auth = useRecoilValue(authState);
+  //const auth = useRecoilValue(authState);
   useAuth();
 
-  useEffect(() => {
-    const localAuth = JSON.parse(localStorage.getItem("ytMusicAuth"));
-    //console.log("localstorage", localAuth);
-    //console.log("recoil", auth);
-  }, [auth]);
+  // useEffect(() => {
+  //   const localAuth = JSON.parse(localStorage.getItem("ytMusicAuth"));
+  //   //console.log("localstorage", localAuth);
+  //   //console.log("recoil", auth);
+  // }, [auth]);
 
   return (
     <>

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import SamllMusics from "../components/SamllMusics";
+import SmallMusics from "../components/SmallMusics";
 import BigMusics from "../components/BigMusics";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
@@ -8,7 +8,6 @@ import { authState } from "../atom";
 const HomeWrapper = styled.div`
   margin-top: 70px;
   //padding-top: 500px;
-  //background-color: yellow;
   display: flex;
   flex-direction: column;
   gap: 50px;
@@ -40,13 +39,6 @@ const HomeNavItem = styled.div`
 const HomeContentContainer = styled.div`
   width: 100%;
   //height: 600px;
-  //background-color: blue;
-`;
-
-const HomeRecommandContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  background-color: yellow;
 `;
 
 const Home = () => {
@@ -58,13 +50,13 @@ const Home = () => {
   //data fetch
   const getMusics = async () => {
     const result = await fetch(
-      "http://localhost:3000/music/allMusic"
+      `${import.meta.env.VITE_BACK_ADDRESS}/music/allMusic`
     ).then((res) => res.json());
     setMusics(result);
   };
 
   useEffect(() => {
-    console.log("render");
+    //console.log("render");
     setIsLoading(true);
     getMusics();
     setIsLoading(false);
@@ -75,27 +67,17 @@ const Home = () => {
       {isLoading ? null : (
         <>
           <HomeNavContainer>
-            <HomeNavItem
-              onClick={async () => {
-                await fetch("http://localhost:3000/user/userCheck", {
-                  method: "GET",
-                  credentials: "include", // 쿠키를 포함하여 요청
-                });
-              }}
-            >
-              집중
-            </HomeNavItem>
+            <HomeNavItem>집중</HomeNavItem>
             <HomeNavItem>운동</HomeNavItem>
           </HomeNavContainer>
           <HomeContentContainer>
-            <SamllMusics musics={musics} />
+            <SmallMusics musics={musics} />
           </HomeContentContainer>
           {localAuth?.isAuthenticated || auth.isAuthenticated ? (
             <HomeContentContainer>
               <BigMusics musics={musics} isCustom={true} title={"다시듣기"} />
             </HomeContentContainer>
           ) : null}
-          {/* <HomeContentContainer>Home</HomeContentContainer> */}
           <HomeContentContainer>
             <BigMusics musics={musics} title={"추천음악"} />
           </HomeContentContainer>

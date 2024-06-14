@@ -25,7 +25,6 @@ const WatchWrapper = styled.div`
 const WatchContentContainer = styled.div`
   //top: 0;
   //bottom: 0;
-  //background-color: blue;
   width: 100%;
   height: 100%;
 
@@ -45,8 +44,6 @@ const WatchContentDisplay = styled.div`
   padding: 0 60px;
   padding-top: 60px;
   box-sizing: border-box;
-
-  //background-color: green;
 `;
 
 const WatchContentDisplayHeader = styled.div`
@@ -72,7 +69,6 @@ const WatchContentImg = styled.div`
   width: 630px;
   height: 630px;
   background: ${({ $imgUrl }) => `url(${$imgUrl})`};
-  //background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
   background-size: cover;
   border-radius: 5px;
   //margin-bottom: 70px;
@@ -83,7 +79,6 @@ const WatchContentInfo = styled.div`
   flex-direction: column;
   gap: 15px;
   padding-top: 60px;
-  //background-color: green;
 `;
 
 const WatchContentInfoHeader = styled.div`
@@ -108,7 +103,6 @@ const WatchContentInfoContentContainer = styled.div`
   gap: 20px;
   height: 100%;
 
-  //background-color: red;
   overflow-y: scroll;
 `;
 
@@ -191,7 +185,6 @@ const WatchContentInfoContentListItemInfo = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  //background-color: purple;
 `;
 
 const WatchContentInfoContentListItemInfoText = styled.div`
@@ -217,14 +210,14 @@ const Watch = () => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const isLogin = localStorage.getItem("ytMusicAuth") ? true : false;
   const [category, setCategory] = useState("NEXT_TRACK");
-  const setPlayerState = useSetRecoilState(playerState);
+  const setPlayer = useSetRecoilState(playerState);
   const [selectedMusic, setSelectedMusic] = useRecoilState(selectedMusicState);
 
   const playlist = useRecoilValue(playlistState);
 
   const getMusic = useCallback(async () => {
     const result = await fetch(
-      `http://localhost:3000/music/${currentList}`
+      `${import.meta.env.VITE_BACK_ADDRESS}/music/${currentList}`
     ).then((res) => res.json());
     setMusic(result);
   }, [currentList]);
@@ -240,11 +233,13 @@ const Watch = () => {
   }, [getMusic]);
 
   const handleClick = (music) => {
-    setPlayerState((prev) => ({
+    setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
       isPlaying: true,
       isPaused: false,
+      isEnd: false,
+      timestamp: Date.now(),
     }));
     setSelectedMusic(music);
   };
@@ -310,24 +305,6 @@ const Watch = () => {
                 </WatchContentInfoContentNavItem>
               </WatchContentInfoContentNav>
               <WatchContentInfoContentList>
-                {/* {Array.from({ length: 20 }).map((_, idx) => (
-                  <WatchContentInfoContentListItem key={idx}>
-                    <WatchContentInfoContentListItemImg />
-                    <WatchContentInfoContentListItemInfo>
-                      <WatchContentInfoContentListItemInfoText>
-                        <WatchContentInfoContentListItemInfoTitle>
-                          Accendio
-                        </WatchContentInfoContentListItemInfoTitle>
-                        <WatchContentInfoContentListItemInfoSinger>
-                          IVE (아이브)
-                        </WatchContentInfoContentListItemInfoSinger>
-                      </WatchContentInfoContentListItemInfoText>
-                      <WatchContentInfoContentListItemInfoTime>
-                        3:13
-                      </WatchContentInfoContentListItemInfoTime>
-                    </WatchContentInfoContentListItemInfo>
-                  </WatchContentInfoContentListItem>
-                ))} */}
                 {playlist?.map((listItem) => (
                   <WatchContentInfoContentListItem
                     onClick={() => handleClick(listItem)}

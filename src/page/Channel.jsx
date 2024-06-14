@@ -8,7 +8,6 @@ import { authState } from "../atom";
 
 const ChannelWrapper = styled.div`
   margin-top: 70px;
-  //background-color: yellow;
   display: flex;
   flex-direction: column;
   gap: 50px;
@@ -80,7 +79,7 @@ const Channel = () => {
 
   const getChannelData = useCallback(async () => {
     const result = await fetch(
-      `http://localhost:3000/user/${channelId}`
+      `${import.meta.env.VITE_BACK_ADDRESS}/user/${channelId}`
     ).then((res) => res.json());
     setChannel(result.channel);
     setIsArtist(result.isArtist);

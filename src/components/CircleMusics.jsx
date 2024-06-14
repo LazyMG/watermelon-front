@@ -34,16 +34,13 @@ const ChannelContentRepeatArtistItem = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 15px;
-  //background-color: beige;
   //width: 200px;
   padding: 0;
 `;
 
 const ChannelContentRepeatArtistImg = styled.div`
   background: ${({ $imgUrl }) => ($imgUrl ? `url(${$imgUrl})` : `url('')`)};
-  //background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
   border-radius: ${({ $isAlbum }) => ($isAlbum ? "5px" : "50%")};
-  //border-radius: 50%;
   background-size: cover;
 
   width: 200px;

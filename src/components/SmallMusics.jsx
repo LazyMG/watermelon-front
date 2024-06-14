@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { playerState, playlistState, selectedMusicState } from "../atom";
 
 const SmallMusicsContainer = styled.div`
   width: 100%;
   //height: 100%;
-  //background-color: yellow;
 `;
 
 const SmallMusicsHeader = styled.div`
@@ -67,7 +66,6 @@ const SmallMusicsSliderButton = styled.div`
 `;
 
 const SmallMusicsContent = styled.div`
-  //background-color: yellow;
   //height: 200px;
   width: calc(400px * 3 + 15px * 2);
   //height: calc(50px * 4 + 15px * 3);
@@ -100,7 +98,6 @@ const SmallMusicsContentScroll = styled.div`
 const SmallMusic = styled.div`
   width: 400px;
   height: 50px;
-  //background-color: blue;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -111,7 +108,6 @@ const SmallMusicImgContainer = styled.div`
   width: 50px;
   height: 50px;
   background: ${({ $imgUrl }) => `url(${$imgUrl})`};
-  //background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
   background-size: cover;
   flex-shrink: 0;
 
@@ -153,20 +149,10 @@ const SmallMusicDescription = styled.div`
   }
 `;
 
-const SamllMusics = ({ musics }) => {
-  //const setPlayerState = useSetRecoilState(playerState);
-  const [player, setPlayer] = useRecoilState(playerState);
+const SmallMusics = ({ musics }) => {
+  const setPlayer = useSetRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
   const setPlaylist = useSetRecoilState(playlistState);
-
-  // const setYtId = (ytId) => {
-  //   setPlayerState({
-  //     ...playerState,
-  //     videoId: ytId,
-  //     isPlaying: true,
-  //     isPaused: false,
-  //   });
-  // };
 
   const handleClick = (music) => {
     setPlayer((prev) => ({
@@ -174,6 +160,7 @@ const SamllMusics = ({ musics }) => {
       ytId: music.ytId,
       isPlaying: true,
       isPaused: false,
+      isEnd: false,
       timestamp: Date.now(),
     }));
     setSelectedMusic(music);
@@ -182,7 +169,7 @@ const SamllMusics = ({ musics }) => {
 
   const clickAddPlaylist = () => {
     setPlaylist(musics);
-    console.log(musics);
+    //console.log(musics);
   };
 
   return (
@@ -231,17 +218,6 @@ const SamllMusics = ({ musics }) => {
         </SmallMusicsButtons>
       </SmallMusicsHeader>
       <SmallMusicsContent>
-        {/* {Array.from({ length: 20 }).map((_, idx) => (
-          <SmallMusic key={idx}>
-            <SmallMusicImgContainer />
-            <SmallMusicText>
-              <SmallMusicTitle>Accendio</SmallMusicTitle>
-              <SmallMusicDescription>
-                IVE(아이브) | IVE SWITCH
-              </SmallMusicDescription>
-            </SmallMusicText>
-          </SmallMusic>
-        ))} */}
         {musics?.map((music) => (
           <SmallMusic key={music._id}>
             <SmallMusicImgContainer $imgUrl={music.coverImg} />
@@ -271,4 +247,4 @@ const SamllMusics = ({ musics }) => {
   );
 };
 
-export default SamllMusics;
+export default SmallMusics;

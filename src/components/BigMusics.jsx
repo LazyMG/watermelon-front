@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 const BigMusicsContainer = styled.div`
   width: 100%;
-  //height: 100%;
-  //background-color: yellow;
 `;
 
 const BigMusicsHeader = styled.div`
@@ -84,7 +82,6 @@ const BigMusicsHeaderSliderButton = styled.div`
 `;
 
 const BigMusicsContent = styled.div`
-  //background-color: blue;
   //height: 300px;
   width: calc(190px * 6 + 20px * 5);
   margin: 20px 0;
@@ -124,7 +121,6 @@ const BigMusicImgContainer = styled.div`
   width: 190px;
   height: 190px;
   background: ${({ $imgUrl }) => `url(${$imgUrl})`};
-  //background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
   background-size: cover;
   flex-shrink: 0;
 
@@ -170,17 +166,19 @@ const BigMusicDescriptionArtist = styled.span`
 `;
 
 const BigMusics = ({ musics, isCustom = false, title }) => {
-  const setPlayerState = useSetRecoilState(playerState);
+  const setPlayer = useSetRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
   const navigate = useNavigate();
   const auth = useRecoilValue(authState);
 
   const handleClick = (music) => {
-    setPlayerState((prev) => ({
+    setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
       isPlaying: true,
       isPaused: false,
+      isEnd: false,
+      timestamp: Date.now(),
     }));
     setSelectedMusic(music);
   };
@@ -190,7 +188,7 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
   };
 
   const gotoMyChannel = () => {
-    console.log(auth);
+    //console.log(auth);
     const userId = auth.user?.userId;
     if (!userId) return;
     navigate(`/channel/${userId}`);
@@ -278,15 +276,6 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
             </BigMusicInfo>
           </BigMusic>
         ))}
-        {/* {Array.from({ length: 20 }).map((_, idx) => (
-          <BigMusic key={idx}>
-            <BigMusicImgContainer />
-            <BigMusicInfo>
-              <BigMusicTitle>Accendio</BigMusicTitle>
-              <BigMusicDescription>노래 | IVE(아이브)</BigMusicDescription>
-            </BigMusicInfo>
-          </BigMusic>
-        ))} */}
         <BigMusicsContentScroll />
       </BigMusicsContent>
     </BigMusicsContainer>

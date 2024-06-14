@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 
 const LibraryWrapper = styled.div`
   margin-top: 50px;
-  //background-color: yellow;
   display: flex;
   flex-direction: column;
   gap: 50px;
@@ -18,7 +17,6 @@ const LibraryCategoryContainer = styled.div`
   display: flex;
   gap: 30px;
   width: calc(100% - 20px);
-  //background-color: blue;
   margin: 0 10px;
   //padding: 20px 0;
   border-bottom: 1px solid #c9c9c91b;
@@ -63,14 +61,12 @@ const LibraryNavItem = styled.div`
 const LibraryContentContainer = styled.div`
   width: 100%;
   /* height: 600px; */
-  //background-color: blue;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   gap: 20px;
 `;
 
 const LibraryContentItem = styled.div`
-  //background-color: green;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -80,7 +76,6 @@ const LibraryContentItemImg = styled.div`
   border-radius: 5px;
   height: 145px;
   background: ${({ $imgUrl }) => ($imgUrl ? `url(${$imgUrl})` : "")};
-  //background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
   background-color: #949494;
   background-size: contain;
   background-repeat: no-repeat;
@@ -120,9 +115,9 @@ const Library = () => {
     const userId = auth?.user?.userId;
     if (!userId) return;
     const result = await fetch(
-      `http://localhost:3000/user/${userId}/playlist`
+      `${import.meta.env.VITE_BACK_ADDRESS}/user/${userId}/playlist`
     ).then((res) => res.json());
-    console.log(result);
+    //console.log(result);
     if (result.ok) {
       setPlaylists(result.playlists);
       setAlbumlist(result.albums);
@@ -163,34 +158,6 @@ const Library = () => {
         </LibraryNavItemContainer>
       </LibraryNavContainer>
       <LibraryContentContainer>
-        {/* {Array.from({ length: 11 }).map((_, idx) => (
-          <LibraryContentItem key={idx}>
-            <LibraryContentItemImg />
-            <LibraryContentItemInfo>
-              <LibraryContentItemTitle>
-                좋아요 표시한 음악
-              </LibraryContentItemTitle>
-              <LibraryContentItemOverview>
-                자동 재생목록
-              </LibraryContentItemOverview>
-            </LibraryContentItemInfo>
-          </LibraryContentItem>
-        ))} */}
-        {/* {totalList?.map((listItem) => (
-          <LibraryContentItem key={listItem._id}>
-            <LibraryContentItemImg />
-            <LibraryContentItemInfo>
-              <LibraryContentItemTitle
-                onClick={() => gotoPlayList(listItem._id)}
-              >
-                {listItem.title}
-              </LibraryContentItemTitle>
-              <LibraryContentItemOverview>
-                {listItem.overview || listItem.artist.artistName}
-              </LibraryContentItemOverview>
-            </LibraryContentItemInfo>
-          </LibraryContentItem>
-        ))} */}
         {playlists?.map((listItem) => (
           <LibraryContentItem key={listItem._id}>
             <LibraryContentItemImg />

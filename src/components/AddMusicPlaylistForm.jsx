@@ -48,7 +48,6 @@ const ModalContent = styled.div`
   flex-direction: column;
   gap: 20px;
   overflow: hidden;
-  //background-color: gray;
 `;
 
 const ModalHeader = styled.div`
@@ -75,7 +74,6 @@ const ModalPlaylistContainer = styled.div`
   flex-direction: column;
   overflow-y: auto;
   gap: 10px;
-  //background-color: wheat;
 `;
 
 const ModalPlaylistHeader = styled.div``;
@@ -83,7 +81,6 @@ const ModalPlaylistHeader = styled.div``;
 const ModalPlaylistItem = styled.div`
   width: 100%;
   //min-height: 100px;
-  //background-color: blue;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -154,7 +151,7 @@ const AddMusicPlaylistForm = ({ setAddModalOpen, isLogin, music }) => {
     const userId = auth.user?.userId;
     if (!userId) return;
     const result = await fetch(
-      `http://localhost:3000/user/${userId}/playlist`
+      `${import.meta.env.VITE_BACK_ADDRESS}/user/${userId}/playlist`
     ).then((res) => res.json());
     if (result?.playlists) {
       setPlaylists(result.playlists);
@@ -166,13 +163,16 @@ const AddMusicPlaylistForm = ({ setAddModalOpen, isLogin, music }) => {
   }, [getUserPlaylist]);
 
   const clickAddMusicPlaylist = async (playlistId) => {
-    const result = await fetch(`http://localhost:3000/playlist/${playlistId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ musicId: music._id }),
-    })
+    const result = await fetch(
+      `${import.meta.env.VITE_BACK_ADDRESS}/playlist/${playlistId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ musicId: music._id }),
+      }
+    )
       .then((response) => {
         const statusCode = response.status;
         if (statusCode === 200) {

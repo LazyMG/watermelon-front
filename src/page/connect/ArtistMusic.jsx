@@ -5,7 +5,6 @@ import styled from "styled-components";
 const Wrapper = styled.div`
   width: 100%;
   height: 100vh;
-  //background-color: blue;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,7 +16,6 @@ const Wrapper = styled.div`
 const ListContainer = styled.div`
   width: 100%;
   height: 100%;
-  //background-color: red;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -64,22 +62,12 @@ const ArtistMusic = () => {
     setArtist(result);
   }, [artistId]);
 
-  // const getMusics = async () => {
-  //   const result = await fetch("http://localhost:3000/connect/artistMusic").then((res) => res.json());
-  //   setMusics((prevMusics) => (JSON.stringify(prevMusics) !== JSON.stringify(result) ? result : prevMusics));
-  // };
-
-  // const getArtist = useCallback(async () => {
-  //   const result = await fetch(`http://localhost:3000/artist/${artistId}`).then((res) => res.json());
-  //   setArtist((prevArtist) => (JSON.stringify(prevArtist) !== JSON.stringify(result) ? result : prevArtist));
-  // }, [artistId]);
-
   useEffect(() => {
     setIsLoading(true);
     getMusics();
     getArtist();
     setIsLoading(false);
-    console.log("render");
+    //console.log("render");
   }, [artistId]);
 
   const postMusicToArtist = async (musicId) => {
@@ -87,8 +75,7 @@ const ArtistMusic = () => {
       artistId,
       musicId,
     };
-    //setIsUpdate(true)
-    fetch("http://localhost:3000/connect/artistMusic", {
+    fetch(`${import.meta.env.VITE_BACK_ADDRESS}/connect/artistMusic`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -110,7 +97,7 @@ const ArtistMusic = () => {
       confirm(`${music.title}을(를) ${artist.artistName}에 추가하시겠습니까?`)
     ) {
       postMusicToArtist(music._id);
-      console.log("ok");
+      //console.log("ok");
     } else return;
   };
 

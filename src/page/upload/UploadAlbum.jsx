@@ -4,7 +4,6 @@ import styled from "styled-components";
 const UploadWrapper = styled.div`
   width: 100%;
   height: 100vh;
-  //background-color: blue;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,7 +16,6 @@ const UploadFormContainer = styled.div`
   align-items: center;
   gap: 15px;
   width: 70%;
-  //background-color: green;
 `;
 
 const UploadForm = styled.form`
@@ -29,7 +27,6 @@ const UploadForm = styled.form`
 const UploadInputContainer = styled.div`
   display: flex;
   gap: 20px;
-  //background-color: red;
   justify-content: space-between;
   font-size: 20px;
 `;
@@ -69,9 +66,9 @@ const UploadAlbum = () => {
   const { register, handleSubmit, reset } = useForm();
 
   const onValid = (data) => {
-    console.log(data);
+    //console.log(data);
 
-    fetch("http://localhost:3000/upload/album", {
+    fetch(`${import.meta.env.VITE_BACK_ADDRESS}/upload/album`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

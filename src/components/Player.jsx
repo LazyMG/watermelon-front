@@ -211,9 +211,13 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
 
   //노래 재생될 때
   useEffect(() => {
+    const ytPlayer = playerRef.current?.internalPlayer;
+    console.log(ytPlayer);
+    ytPlayer.stopVideo();
+    ytPlayer.playVideo();
     setTime("00:00");
     setTimeline(0);
-  }, [player.ytId, player.timestamp]);
+  }, [player.ytId, player.timestamp, playerRef]);
 
   useEffect(() => {
     const ytPlayer = playerRef.current?.internalPlayer;

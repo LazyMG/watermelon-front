@@ -6,7 +6,6 @@ import { useSetRecoilState } from "recoil";
 
 const LoginWrapper = styled.div`
   margin-top: 140px;
-  //background-color: blue;
   display: flex;
   flex-direction: column;
   gap: 50px;
@@ -21,8 +20,6 @@ const LoginFormContainer = styled.div`
   flex-direction: column;
   gap: 100px;
   width: 50%;
-
-  //background-color: green;
 `;
 
 const LoginFormHeader = styled.div`
@@ -94,10 +91,11 @@ const LoginBottom = styled.div`
   }
 `;
 
-const googleId =
-  "160948580580-q23l6mhjes0pqcto03d45quvmfr8sj9l.apps.googleusercontent.com";
-const googleRedirectionUrl = "http://localhost:5173/google-login";
-const url = `https://accounts.google.com/o/oauth2/auth?client_id=${googleId}&redirect_uri=${googleRedirectionUrl}&response_type=token&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
+const url = `https://accounts.google.com/o/oauth2/auth?client_id=${
+  import.meta.env.VITE_GOOGLE_ID
+}&redirect_uri=${
+  import.meta.env.VITE_REDIRECT_URL
+}&response_type=token&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
 
 const Login = () => {
   const { register, handleSubmit, reset } = useForm();
@@ -107,7 +105,7 @@ const Login = () => {
   const onValid = async ({ email, password }) => {
     //유효성 검사
     //백엔드로 로그인 정보 전달
-    const result = await fetch("http://localhost:3000/login", {
+    const result = await fetch(`${import.meta.env.VITE_BACK_ADDRESS}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -117,7 +115,7 @@ const Login = () => {
     }).then((response) => {
       const statusCode = response.status;
       if (statusCode === 200) {
-        console.log("완료되었습니다.");
+        //console.log("완료되었습니다.");
       } else {
         reset();
         //에러 세팅
@@ -134,7 +132,6 @@ const Login = () => {
         "ytMusicAuth",
         JSON.stringify({ isAuthenticated: true })
       );
-      //localStorage.setItem("userData", JSON.stringify(result.user));
       navigate("/");
     }
   };

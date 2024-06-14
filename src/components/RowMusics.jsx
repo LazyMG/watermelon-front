@@ -30,7 +30,6 @@ const ChannelContentRowMusicList = styled.div`
 `;
 
 const ChannelContentRowMusicItem = styled.div`
-  //background-color: blue;
   padding: 10px 0;
   border-bottom: 1px solid #2a2a2a;
   display: flex;
@@ -94,17 +93,19 @@ const ChannelContentRowMusicButton = styled.div`
 `;
 
 const RowMusics = ({ musicList, title, subtext, isArtist }) => {
-  const setPlayerState = useSetRecoilState(playerState);
+  const setPlayer = useSetRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
 
   const navigate = useNavigate();
 
   const handleClick = (music) => {
-    setPlayerState((prev) => ({
+    setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
       isPlaying: true,
       isPaused: false,
+      isEnd: false,
+      timestamp: Date.now(),
     }));
     setSelectedMusic(music);
   };

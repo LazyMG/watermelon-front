@@ -40,7 +40,6 @@ const NavWrapper = styled.div`
 `;
 
 const NavMenu = styled.div`
-  //background-color: blue;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -80,7 +79,6 @@ const NavTitle = styled.div`
 `;
 
 const NavContentContainer = styled.div`
-  //background-color: red;
   width: calc(100% - ${({ $menuOpen }) => ($menuOpen ? "230px" : "100px")});
   padding-left: 100px;
   display: flex;
@@ -89,7 +87,6 @@ const NavContentContainer = styled.div`
 `;
 
 const NavSearchContainer = styled.form`
-  //background-color: red;
   display: flex;
   justify-content: start;
   align-items: center;
@@ -99,7 +96,6 @@ const NavSearchContainer = styled.form`
 
 const NavSearchButtonContainer = styled.button`
   //width: 100px;
-  //background-color: blue;
   background-color: transparent;
   height: 45px;
   border: 1px solid #4d4d4d;
@@ -137,10 +133,17 @@ const NavSearch = styled.input`
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   color: white;
+  caret-color: white;
 
   /* 포커스 시 스타일 */
   &:focus {
     background-color: black;
+  }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: white;
   }
 `;
 
@@ -150,7 +153,6 @@ const NavProfileContainer = styled.div`
   display: ${({ $authLoading }) => ($authLoading ? "none" : "flex")};
   align-items: center;
   justify-content: end;
-  //background-color: purple;
 
   svg {
     width: 40px;
@@ -160,7 +162,6 @@ const NavProfileContainer = styled.div`
 
 const ContentWrapper = styled.div`
   flex: 1;
-  //background-color: red;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -281,7 +282,6 @@ const Layout = () => {
   const isLogin = localStorage.getItem("ytMusicAuth") ? true : false;
   const localAuth = JSON.parse(localStorage.getItem("ytMusicAuth"));
 
-  //const [isLogin, setIsLogin] = useState(initialIsLogin);
   const [isPlay, setIsPlay] = useState(false);
   const [isEnd, setIsEnd] = useState(false);
   const [isRepeat, setIsRepeat] = useState(false);
@@ -317,7 +317,6 @@ const Layout = () => {
   }, [isLogin, auth]);
 
   useEffect(() => {
-    //console.log("get playlist");
     getUserPlaylist();
   }, [getUserPlaylist, params]);
 
@@ -374,11 +373,12 @@ const Layout = () => {
         return;
       }
       if (playlist?.length !== 0) {
-        console.log("real", playlist);
+        //console.log("real", playlist);
         //setSelectedMusic(); //음악 선택
         const currentIndex = playlist.findIndex(
           (item) => item.ytId === ytPlayerState.ytId
         );
+        //마지막 곡일 때
         if (currentIndex === playlist.length - 1) {
           setIsEnd(true);
           setYtPlayerState((prev) => ({
@@ -389,7 +389,7 @@ const Layout = () => {
           }));
         }
       } else {
-        console.log("end | No music");
+        //console.log("end | No music");
         setIsEnd(true);
         setYtPlayerState((prev) => ({
           ...prev,
@@ -414,7 +414,8 @@ const Layout = () => {
       <NavWrapper $navShow={navShow}>
         <NavMenu $menuOpen={menuOpen}>
           <NavButtonWrapper>
-            <NavButton onClick={handleClick}>
+            {/* <NavButton onClick={handleClick}> */}
+            <NavButton>
               <svg
                 fill="currentColor"
                 viewBox="0 0 20 20"

@@ -25,7 +25,6 @@ const PlayListWrapper = styled.div`
 
 const PlayListContentContainer = styled.div`
   //height: 900px;
-  //background-color: yellow;
   display: flex;
   flex-direction: column;
 
@@ -43,7 +42,6 @@ const PlayListContentHeaderImg = styled.div`
   height: 100%;
   width: 300px;
   background: ${({ $imgUrl }) => $imgUrl && `url(${$imgUrl})`};
-  //background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
 `;
 
 const PlayListContentHeaderDefaultImg = styled.div`
@@ -53,7 +51,6 @@ const PlayListContentHeaderDefaultImg = styled.div`
 `;
 
 const PlayListContentHeaderInfo = styled.div`
-  //background-color: green;
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -95,7 +92,6 @@ const PlayListContentList = styled.div`
 `;
 
 const PlayListContentListItem = styled.div`
-  //background-color: blue;
   padding: 20px 0;
   border-bottom: 1px solid #2a2a2a;
   display: flex;
@@ -133,7 +129,7 @@ const PlayList = () => {
   const [isAlbum, setIsAlbum] = useState();
   const [isUserHasPlaylist, setIsUserHasPlaylist] = useState(false);
 
-  const setPlayerState = useSetRecoilState(playerState);
+  const setPlayer = useSetRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
   const auth = useRecoilValue(authState);
   const isLogin = localStorage.getItem("ytMusicAuth") ? true : false;
@@ -143,9 +139,12 @@ const PlayList = () => {
   const navigate = useNavigate();
 
   const getPlaylist = useCallback(async () => {
-    const result = await fetch(`http://localhost:3000/playlist/${playlistId}`, {
-      credentials: "include",
-    }).then((res) => res.json());
+    const result = await fetch(
+      `${import.meta.env.VITE_BACK_ADDRESS}/playlist/${playlistId}`,
+      {
+        credentials: "include",
+      }
+    ).then((res) => res.json());
     setPagePlaylist(result.playlist);
     setIsAlbum(result.isAlbum);
     setIsUserHasPlaylist(result.isUserHasPlaylist);
@@ -156,23 +155,23 @@ const PlayList = () => {
   }, [getPlaylist]);
 
   const handleClick = (music) => {
-    console.log(music);
-    setPlayerState((prev) => ({
+    //console.log(music);
+    setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
       isPlaying: true,
       isPaused: false,
+      isEnd: false,
+      timestamp: Date.now(),
     }));
     setSelectedMusic(music);
   };
-
-  useEffect(() => {}, [isUserHasPlaylist]);
 
   const clickDeletePlaylist = async () => {
     if (confirm("삭제하시겠습니까?")) {
       const userId = auth?.user?.userId;
       const result = await fetch(
-        `http://localhost:3000/playlist/delete/${playlistId}`,
+        `${import.meta.env.VITE_BACK_ADDRESS}/playlist/delete/${playlistId}`,
         {
           method: "POST",
           headers: {
@@ -221,7 +220,7 @@ const PlayList = () => {
     const userId = auth?.user?.userId;
     if (!userId) return;
     const result = await fetch(
-      `http://localhost:3000/user/${userId}/addPlaylist`,
+      `${import.meta.env.VITE_BACK_ADDRESS}/user/${userId}/addPlaylist`,
       {
         method: "POST",
         headers: {
@@ -243,7 +242,7 @@ const PlayList = () => {
   const clickDeleteUserPlaylist = async () => {
     const userId = auth?.user?.userId;
     const result = await fetch(
-      `http://localhost:3000/user/${userId}/deletePlaylist`,
+      `${import.meta.env.VITE_BACK_ADDRESS}/user/${userId}/deletePlaylist`,
       {
         method: "POST",
         headers: {
@@ -325,18 +324,6 @@ const PlayList = () => {
             </PlayListContentHeaderInfo>
           </PlayListContentHeader>
           <PlayListContentList>
-            {/* {Array.from({ length: 10 }).map((_, idx) => (
-              <PlayListContentListItem key={idx}>
-                <PlayListContentListItemNum>1</PlayListContentListItemNum>
-                <PlayListContentListItemTitle>
-                  Blue
-                </PlayListContentListItemTitle>
-                <PlayListContentListItemPlays>
-                  241만회 재생
-                </PlayListContentListItemPlays>
-                <PlayListContentListItemTime>3:46</PlayListContentListItemTime>
-              </PlayListContentListItem>
-            ))} */}
             {isAlbum
               ? pagePlaylist.musicList?.map((music, idx) => (
                   <PlayListContentListItem key={music._id}>

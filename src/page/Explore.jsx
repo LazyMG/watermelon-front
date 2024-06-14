@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import BigMusics from "../components/BigMusics";
+import { useEffect, useState } from "react";
 
 const ExploreWrapper = styled.div`
   margin-top: 70px;
-  //background-color: yellow;
   display: flex;
   flex-direction: column;
   gap: 50px;
@@ -17,21 +17,41 @@ const ExploreWrapper = styled.div`
 const ExploreContentContainer = styled.div`
   width: 100%;
   //height: 600px;
-  //background-color: blue;
 `;
 
 const Explore = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [musics, setMusics] = useState([]);
+
+  const getMusics = async () => {
+    const result = await fetch(
+      `${import.meta.env.VITE_BACK_ADDRESS}/music/allMusic`
+    ).then((res) => res.json());
+    setMusics(result);
+  };
+
+  useEffect(() => {
+    //console.log("render");
+    setIsLoading(true);
+    getMusics();
+    setIsLoading(false);
+  }, []);
+
   return (
     <ExploreWrapper>
-      <ExploreContentContainer>
-        <BigMusics />
-      </ExploreContentContainer>
-      <ExploreContentContainer>
-        <BigMusics />
-      </ExploreContentContainer>
-      <ExploreContentContainer>
-        <BigMusics />
-      </ExploreContentContainer>
+      {isLoading ? null : (
+        <>
+          <ExploreContentContainer>
+            <BigMusics title={"최근 추가된 곡"} musics={musics} />
+          </ExploreContentContainer>
+          <ExploreContentContainer>
+            <BigMusics title={"가장 많이 듣는 곡"} musics={musics} />
+          </ExploreContentContainer>
+          <ExploreContentContainer>
+            <BigMusics title={"가장 인기 있는 곡"} musics={musics} />
+          </ExploreContentContainer>
+        </>
+      )}
     </ExploreWrapper>
   );
 };

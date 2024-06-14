@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 const Wrapper = styled.div`
   width: 100%;
   height: 100vh;
-  //background-color: blue;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -23,7 +22,6 @@ const Wrapper = styled.div`
 const ListContainer = styled.div`
   width: 100%;
   height: 100%;
-  //background-color: red;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -132,7 +130,6 @@ const ArtistModal = ({ setArtistModalOpen, selectedAritst }) => {
           <ModalClose
             onClick={() => {
               setArtistModalOpen(false);
-              //setData();
             }}
           >
             X
@@ -162,7 +159,7 @@ const ConnectArtist = () => {
 
   const getArtists = async () => {
     const result = await fetch(
-      "http://localhost:3000/connect/artist"
+      `${import.meta.env.VITE_BACK_ADDRESS}/connect/artist`
     ).then((res) => res.json());
     setArtists(result);
   };

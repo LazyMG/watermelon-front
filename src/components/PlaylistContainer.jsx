@@ -1,18 +1,17 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { authState, userPlaylistsState } from "../atom";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 
-const MenuBottomContainer = styled.div`
-  margin-top: 30px;
-  width: 100%;
+// const MenuBottomContainer = styled.div`
+//   margin-top: 30px;
+//   width: 100%;
 
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  background-color: blue;
-`;
+//   display: flex;
+//   flex-direction: column;
+//   gap: 10px;
+// `;
 
 const MenuBottomCreateContainer = styled.div`
   background-color: #232323;
@@ -46,7 +45,6 @@ const MenuBottomListContainer = styled.div`
 
   //조건부 height 조정 500px -> playbar 있을 때
   height: 500px;
-  //background-color: yellow;
   padding: 0 10px;
   padding-top: 5px;
   display: flex;
@@ -57,7 +55,6 @@ const MenuBottomListContainer = styled.div`
 
 const MenuBottomListItem = styled.div`
   width: 100%;
-  //background-color: blue;
   border-radius: 10px;
   display: flex;
   justify-content: space-around;
@@ -98,8 +95,6 @@ const MenuBottomListItemIcon = styled.div`
 const PlaylistContainer = ({ setCreatePlaylist }) => {
   const auth = useRecoilValue(authState);
   const isLogin = localStorage.getItem("ytMusicAuth") ? true : false;
-  //const localAuth = JSON.parse(localStorage.getItem("ytMusicAuth"));
-  //const [playlists, setPlaylists] = useState([]);
   const navigate = useNavigate();
   const params = useParams();
   const [userPlaylists, setUserPlaylists] = useRecoilState(userPlaylistsState);
@@ -117,7 +112,6 @@ const PlaylistContainer = ({ setCreatePlaylist }) => {
   }, [isLogin, auth, setUserPlaylists]);
 
   useEffect(() => {
-    //console.log("get playlist");
     getUserPlaylist();
   }, [getUserPlaylist, params]);
 
@@ -149,30 +143,6 @@ const PlaylistContainer = ({ setCreatePlaylist }) => {
         <MenuBottomCreateTitle>새 재생목록</MenuBottomCreateTitle>
       </MenuBottomCreateContainer>
       <MenuBottomListContainer>
-        {/* {Array.from({ length: 5 }).map((_, idx) => (
-    <MenuBottomListItem key={idx} onClick={gotoPlayList}>
-      <MenuBottomListItemText>
-        <MenuBottomListItemTitle>
-          좋아요 표시한 음악
-        </MenuBottomListItemTitle>
-        <MenuBottomListItemUser>이마가</MenuBottomListItemUser>
-      </MenuBottomListItemText>
-      <MenuBottomListItemIcon>
-        <svg
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <path
-            clipRule="evenodd"
-            fillRule="evenodd"
-            d="M2 10a8 8 0 1 1 16 0 8 8 0 0 1-16 0Zm6.39-2.908a.75.75 0 0 1 .766.027l3.5 2.25a.75.75 0 0 1 0 1.262l-3.5 2.25A.75.75 0 0 1 8 12.25v-4.5a.75.75 0 0 1 .39-.658Z"
-          />
-        </svg>
-      </MenuBottomListItemIcon>
-    </MenuBottomListItem>
-  ))} */}
         {userPlaylists?.map((playlist) => (
           <MenuBottomListItem
             key={playlist._id}

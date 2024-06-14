@@ -5,7 +5,6 @@ import styled from "styled-components";
 const Wrapper = styled.div`
   width: 100%;
   height: 100vh;
-  //background-color: blue;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,7 +16,6 @@ const Wrapper = styled.div`
 const ListContainer = styled.div`
   width: 100%;
   height: 100%;
-  //background-color: red;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -69,7 +67,7 @@ const ArtistAlbum = () => {
     getAlbums();
     getArtist();
     setIsLoading(false);
-    console.log("render");
+    //console.log("render");
   }, [artistId]);
 
   const postAlbumToArtist = async (albumId) => {
@@ -77,7 +75,7 @@ const ArtistAlbum = () => {
       artistId,
       albumId,
     };
-    fetch("http://localhost:3000/connect/artistAlbum", {
+    fetch(`${import.meta.env.VITE_BACK_ADDRESS}/connect/artistAlbum`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -99,7 +97,7 @@ const ArtistAlbum = () => {
       confirm(`${album.title}을(를) ${artist.artistName}에 추가하시겠습니까?`)
     ) {
       postAlbumToArtist(album._id);
-      console.log("ok");
+      //console.log("ok");
     } else return;
   };
 

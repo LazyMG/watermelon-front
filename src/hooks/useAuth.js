@@ -6,15 +6,17 @@ const useAuth = () => {
   const setAuth = useSetRecoilState(authState);
 
   useEffect(() => {
-    //if (localStorage.getItem("ytMusicAuth")) return;
     const checkSession = async () => {
-      console.log("auth");
+      //console.log("auth");
       try {
-        const response = await fetch("http://localhost:3000/user/session", {
-          method: "GET",
-          credentials: "include", // 쿠키를 포함하여 요청
-        }).then((result) => result.json());
-        console.log(response);
+        const response = await fetch(
+          `${import.meta.env.VITE_BACK_ADDRESS}/user/session`,
+          {
+            method: "GET",
+            credentials: "include", // 쿠키를 포함하여 요청
+          }
+        ).then((result) => result.json());
+        //console.log(response);
         if (response.ok) {
           const user = response.user;
           setAuth({
@@ -33,6 +35,8 @@ const useAuth = () => {
             user: null,
             loading: false,
           });
+          if (localStorage.getItem("ytMusicAuth"))
+            localStorage.removeItem("ytMusicAuth");
         }
       } catch (error) {
         console.error("Failed to check session:", error);
@@ -41,6 +45,8 @@ const useAuth = () => {
           user: null,
           loading: false,
         });
+        if (localStorage.getItem("ytMusicAuth"))
+          localStorage.removeItem("ytMusicAuth");
       }
     };
 

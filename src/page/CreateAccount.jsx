@@ -4,7 +4,6 @@ import styled from "styled-components";
 
 const CreateAccountWrapper = styled.div`
   margin-top: 140px;
-  //background-color: blue;
   display: flex;
   flex-direction: column;
   gap: 50px;
@@ -19,8 +18,6 @@ const CreateAccountFormContainer = styled.div`
   flex-direction: column;
   gap: 100px;
   width: 50%;
-
-  //background-color: green;
 `;
 
 const CreateAccountFormHeader = styled.div`
@@ -91,16 +88,19 @@ const CreateAccount = () => {
     if (password !== passwordConfirm)
       return setError("password", { message: "비밀번호를 확인해주세요." });
 
-    const result = await fetch("http://localhost:3000/create-account", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, username, password, passwordConfirm }),
-    }).then((response) => {
+    const result = await fetch(
+      `${import.meta.env.VITE_BACK_ADDRESS}/create-account`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, username, password, passwordConfirm }),
+      }
+    ).then((response) => {
       const statusCode = response.status;
       if (statusCode === 200) {
-        console.log("완료되었습니다.");
+        //console.log("완료되었습니다.");
       } else {
         reset();
       }

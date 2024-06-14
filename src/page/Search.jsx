@@ -6,7 +6,6 @@ import { playerState, selectedMusicState } from "../atom";
 
 const SeacrhWrapper = styled.div`
   margin-top: 30px;
-  //background-color: yellow;
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -18,7 +17,6 @@ const SeacrhCategoryContainer = styled.div`
   display: flex;
   gap: 30px;
   width: calc(100% - 20px);
-  //background-color: blue;
   margin: 0 10px;
   //padding: 20px 0;
   border-bottom: 1px solid #c9c9c91b;
@@ -36,7 +34,6 @@ const SearchNavContainer = styled.div`
   display: flex;
   gap: 15px;
   padding: 0 10px;
-  //background-color: yellow;
 `;
 
 const SearchNavItem = styled.div`
@@ -99,11 +96,7 @@ const SearchResultItemImg = styled.div`
   width: 55px;
   height: 55px;
   border-radius: 5px;
-  //background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
-  background: ${({ $imgUrl }) =>
-    $imgUrl
-      ? `url(${$imgUrl})`
-      : `url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989")`};
+  background: ${({ $imgUrl }) => ($imgUrl ? `url(${$imgUrl})` : ``)};
   background-size: cover;
 
   ${({ $isArtist }) => $isArtist && "border-radius:50%;"}
@@ -141,7 +134,6 @@ const SearchResultBottom = styled.div`
 
 const SearchResultButton = styled.div`
   border: 1px solid #c9c9c91b;
-  //background-color: blue;
   padding: 10px 15px;
   border-radius: 15px;
 
@@ -161,14 +153,14 @@ const Search = () => {
   const [albums, setAlbums] = useState([]);
 
   const [playlist, setPlaylist] = useState();
-  const setPlayerState = useSetRecoilState(playerState);
+  const setPlayer = useSetRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
 
   const navigate = useNavigate();
 
   const getResults = useCallback(async () => {
     const result = await fetch(
-      `http://localhost:3000/search?keyword=${keyword}`
+      `${import.meta.env.VITE_BACK_ADDRESS}/search?keyword=${keyword}`
     ).then((res) => res.json());
     console.log(result);
     setArtists(result.data.artists);
@@ -181,12 +173,14 @@ const Search = () => {
   }, []);
 
   const handleClick = (music) => {
-    setPlayerState({
-      ...playerState,
+    setPlayer((prev) => ({
+      ...prev,
       ytId: music.ytId,
       isPlaying: true,
       isPaused: false,
-    });
+      isEnd: false,
+      timestamp: Date.now(),
+    }));
     setSelectedMusic(music);
   };
 
@@ -238,17 +232,6 @@ const Search = () => {
         <SearchResultContainer>
           <SearchResultHeader>아티스트</SearchResultHeader>
           <SearchResultList>
-            {/* {Array.from({ length: 3 }).map((_, idx) => (
-            <SearchResultItem key={idx}>
-              <SearchResultItemImg $isArtist={true} />
-              <SearchResultItemInfo>
-                <SearchResultItemTitle>비와 당신</SearchResultItemTitle>
-                <SearchResultItemOverview>
-                  럼블피쉬 • Memory For You • 4:08 • 5808만회 재생
-                </SearchResultItemOverview>
-              </SearchResultItemInfo>
-            </SearchResultItem>
-          ))} */}
             {artists?.map((artist) => (
               <SearchResultItem
                 key={artist._id}
@@ -270,25 +253,6 @@ const Search = () => {
           </SearchResultBottom>
         </SearchResultContainer>
       )}
-      {/* <SearchResultContainer>
-        <SearchResultHeader>앨범</SearchResultHeader>
-        <SearchResultList>
-          {Array.from({ length: 3 }).map((_, idx) => (
-            <SearchResultItem key={idx}>
-              <SearchResultItemImg $isArtist={false} />
-              <SearchResultItemInfo>
-                <SearchResultItemTitle>비와 당신</SearchResultItemTitle>
-                <SearchResultItemOverview>
-                  럼블피쉬 • Memory For You • 4:08 • 5808만회 재생
-                </SearchResultItemOverview>
-              </SearchResultItemInfo>
-            </SearchResultItem>
-          ))}
-        </SearchResultList>
-        <SearchResultBottom>
-          <SearchResultButton>모두 표시</SearchResultButton>
-        </SearchResultBottom>
-      </SearchResultContainer> */}
     </SeacrhWrapper>
   );
 };

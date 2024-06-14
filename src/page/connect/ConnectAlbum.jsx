@@ -9,7 +9,6 @@ import styled from "styled-components";
 const Wrapper = styled.div`
   width: 100%;
   height: 100vh;
-  //background-color: blue;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,7 +20,6 @@ const Wrapper = styled.div`
 const ListContainer = styled.div`
   width: 100%;
   height: 100%;
-  //background-color: red;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -39,33 +37,6 @@ const ListItem = styled.div`
   cursor: pointer;
 `;
 
-const albumData = [
-  {
-    title: "새 앨범1",
-    releasedDate: "2024.06.05.1",
-    duration: "20:14",
-    overview: "새 앨범",
-    coverImg: "1234",
-    id: "1234",
-  },
-  {
-    title: "새 앨범2",
-    releasedDate: "2024.06.05.2",
-    duration: "20:14",
-    overview: "새 앨범",
-    coverImg: "1234",
-    id: "1235",
-  },
-  {
-    title: "새 앨범3",
-    releasedDate: "2024.06.05.3",
-    duration: "20:14",
-    overview: "새 앨범",
-    coverImg: "1237",
-    id: "1236",
-  },
-];
-
 const ConnectAlbum = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [albums, setAlbums] = useState();
@@ -73,7 +44,7 @@ const ConnectAlbum = () => {
 
   const getAlbums = async () => {
     const result = await fetch(
-      "http://localhost:3000/connect/album"
+      `${import.meta.env.VITE_BACK_ADDRESS}/connect/album`
     ).then((res) => res.json());
     setAlbums(result);
   };
@@ -92,11 +63,6 @@ const ConnectAlbum = () => {
     <Wrapper>
       {isLoading ? null : (
         <ListContainer>
-          {/* {albumData.map((data) => (
-          <ListItem onClick={() => gotoAlbumMusic(data.id)} key={data.id}>
-            {data.title}
-          </ListItem>
-        ))} */}
           {albums?.map((album) => (
             <ListItem onClick={() => gotoAlbumMusic(album._id)} key={album._id}>
               {album.title}

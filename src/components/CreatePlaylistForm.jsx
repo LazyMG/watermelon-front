@@ -29,7 +29,6 @@ const Modal = styled.div`
   overflow: hidden;
   border-radius: 8px;
   transition: all 400ms ease-in-out 2s;
-  //animation: fadeIn 400ms;
 
   width: 600px;
   height: 400px;
@@ -46,7 +45,6 @@ const ModalContent = styled.div`
   padding: 40px;
   width: 100%;
   color: white;
-  //background-color: yellow;
 `;
 
 const CreateForm = styled.form`
@@ -55,8 +53,6 @@ const CreateForm = styled.form`
   flex-direction: column;
   justify-content: space-between;
   gap: 50px;
-
-  //background-color: green;
 `;
 
 const CreateFormTitle = styled.div`
@@ -112,7 +108,7 @@ const CreatePlaylistForm = ({ setCreatePlaylist }) => {
     const userId = auth.user?.userId;
     if (!userId) return;
     const result = await fetch(
-      `http://localhost:3000/user/${userId}/create-playlist`,
+      `${import.meta.env.VITE_BACK_ADDRESS}/user/${userId}/create-playlist`,
       {
         method: "POST",
         headers: {
