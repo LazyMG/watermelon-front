@@ -195,6 +195,9 @@ const PlayList = () => {
         })
         .catch((error) => console.error("Error:", error));
       if (result?.ok) {
+        setUserPlaylists((prev) => {
+          return prev.filter((list) => list._id === playlistId);
+        });
         navigate("/");
       }
     }
