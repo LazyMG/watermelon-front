@@ -75,7 +75,7 @@ const Channel = () => {
   const [channel, setChannel] = useState();
   const [isArtist, setIsArtist] = useState();
   const auth = useRecoilValue(authState);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getChannelData = useCallback(async () => {
     const result = await fetch(
@@ -83,12 +83,12 @@ const Channel = () => {
     ).then((res) => res.json());
     setChannel(result.channel);
     setIsArtist(result.isArtist);
+    setIsLoading(false);
   }, [channelId]);
 
   useEffect(() => {
     setIsLoading(true);
     getChannelData();
-    setIsLoading(false);
   }, [getChannelData]);
 
   return (
@@ -117,7 +117,7 @@ const Channel = () => {
             {!isLoading && (
               <>
                 <ChannelContentProfileName>
-                  {channel?.artistName || auth?.user?.username}
+                  {isArtist ? channel?.artistName : auth?.user?.username}
                 </ChannelContentProfileName>
                 <ChannelContentProfileUtils>
                   {channelId === auth?.user?.userId && (
@@ -133,18 +133,22 @@ const Channel = () => {
             )}
           </ChannelContentProfileInfo>
         </ChannelContentProfileContainer>
-        <RowMusics
-          musicList={channel?.musicList}
-          title={isArtist ? "노래" : "반복 감상한 곡"}
-          subtext={isArtist ? "" : "최근"}
-          isArtist={isArtist}
-        />
-        <CircleMusics
-          albumList={channel?.albumList}
-          title={isArtist ? "앨범" : "반복 감상한 아티스트"}
-          subtext={isArtist ? "" : "최근"}
-          isAlbum={isArtist}
-        />
+        {!isLoading && (
+          <RowMusics
+            musicList={channel?.musicList}
+            title={isArtist ? "노래" : "반복 감상한 곡"}
+            subtext={isArtist ? "" : "최근"}
+            isArtist={isArtist}
+          />
+        )}
+        {!isLoading && (
+          <CircleMusics
+            albumList={channel?.albumList}
+            title={isArtist ? "앨범" : "반복 감상한 아티스트"}
+            subtext={isArtist ? "" : "최근"}
+            isAlbum={isArtist}
+          />
+        )}
       </ChannelContentContainer>
     </ChannelWrapper>
   );

@@ -309,7 +309,7 @@ const Layout = () => {
     const userId = auth?.user?.userId;
     if (!userId) return;
     const result = await fetch(
-      `http://localhost:3000/user/${userId}/playlist`
+      `${import.meta.env.VITE_BACK_ADDRESS}/user/${userId}/playlist`
     ).then((res) => res.json());
     if (result?.playlists) {
       setUserPlaylists(result.playlists);
@@ -336,10 +336,10 @@ const Layout = () => {
     }
   };
 
-  const handleClick = () => setMenuOpen(!menuOpen);
+  //const handleClick = () => setMenuOpen(!menuOpen);
 
   const gotoLogout = async () => {
-    const result = await fetch("http://localhost:3000/logout", {
+    const result = await fetch(`${import.meta.env.VITE_BACK_ADDRESS}/logout`, {
       credentials: "include",
     }).then((res) => res.json());
     if (result.action === "delete") {

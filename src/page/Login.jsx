@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { authState } from "../atom";
 import { useSetRecoilState } from "recoil";
+import { useState } from "react";
 
 const LoginWrapper = styled.div`
   margin-top: 140px;
@@ -98,9 +99,10 @@ const url = `https://accounts.google.com/o/oauth2/auth?client_id=${
 }&response_type=token&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
 
 const Login = () => {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, setError } = useForm();
   const navigate = useNavigate();
   const setAuth = useSetRecoilState(authState);
+  const [loginErorr, setLoginError] = useState("");
 
   const onValid = async ({ email, password }) => {
     //유효성 검사
@@ -133,6 +135,12 @@ const Login = () => {
         JSON.stringify({ isAuthenticated: true })
       );
       navigate("/");
+    } else {
+      if (result.type === "USER") {
+        setLoginError("입력을 확인해주세요.");
+      } else {
+        setLoginError("서버 오류 입니다. 잠시후 시도");
+      }
     }
   };
 
@@ -141,15 +149,22 @@ const Login = () => {
       <LoginFormContainer>
         <LoginFormHeader>Login to WaterMelon</LoginFormHeader>
         <LoginForm onSubmit={handleSubmit(onValid)}>
-          <LoginInput {...register("email")} placeholder="Email" type="email" />
           <LoginInput
-            {...register("password")}
+            {...register("email", { required: true })}
+            placeholder="Email"
+            type="email"
+            required
+          />
+          <LoginInput
+            {...register("password", { required: true })}
             placeholder="Password"
             type="password"
+            required
           />
           <LoginButtonContainer>
             <LoginButton>LOGIN</LoginButton>
           </LoginButtonContainer>
+          <span style={{ color: "red" }}>{loginErorr}</span>
         </LoginForm>
 
         <LoginBottomContainer>

@@ -69,7 +69,13 @@ const PlayListContentHeaderOverview = styled.div`
   font-weight: bold;
 `;
 
-const PlayListContentHeaderArtist = styled.span``;
+const PlayListContentHeaderArtist = styled.span`
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
 
 const PlayListContentHeaderUtils = styled.div`
   display: flex;

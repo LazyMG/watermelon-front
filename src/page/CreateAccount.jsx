@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -83,6 +84,7 @@ const CreateAccountBottom = styled.div`
 const CreateAccount = () => {
   const { register, handleSubmit, reset, setError } = useForm();
   const navigate = useNavigate();
+  const [accountError, setAccountError] = useState();
 
   const onValid = async ({ email, username, password, passwordConfirm }) => {
     if (password !== passwordConfirm)
@@ -98,16 +100,18 @@ const CreateAccount = () => {
         body: JSON.stringify({ email, username, password, passwordConfirm }),
       }
     ).then((response) => {
-      const statusCode = response.status;
-      if (statusCode === 200) {
-        //console.log("완료되었습니다.");
-      } else {
-        reset();
-      }
       return response.json();
     });
     if (result.ok) {
       navigate("/login");
+    } else {
+      if (result.type === "USER") {
+        setAccountError("입력을 확인해주세요.");
+      } else if (result.type === "EMAIL") {
+        setAccountError("이미 존재하는 이메일입니다.");
+      } else if (result.type === "DB") {
+        setAccountError("서버 오류입니다. 잠시후 시도");
+      }
     }
   };
 
@@ -139,6 +143,7 @@ const CreateAccount = () => {
           <CreateAccountButtonContainer>
             <CreateAccountButton>CREATE</CreateAccountButton>
           </CreateAccountButtonContainer>
+          <span style={{ color: "red" }}>{accountError}</span>
         </CreateAccountForm>
 
         <CreateAccountBottomContainer>
