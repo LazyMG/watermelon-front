@@ -50,14 +50,14 @@ const ArtistAlbum = () => {
 
   const getAlbums = async () => {
     const result = await fetch(
-      "http://localhost:3000/connect/artistAlbum"
+      `${import.meta.env.VITE_BACK_ADDRESS}/connect/artistAlbum`
     ).then((res) => res.json());
     setAlbums(result);
   };
 
   const getArtist = useCallback(async () => {
     const result = await fetch(
-      `http://localhost:3000/artist/${artistId}`
+      `${import.meta.env.VITE_BACK_ADDRESS}/artist/${artistId}`
     ).then((res) => res.json());
     setArtist(result);
   }, [artistId]);
