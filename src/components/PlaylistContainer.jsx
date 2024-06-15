@@ -104,7 +104,7 @@ const PlaylistContainer = ({ setCreatePlaylist }) => {
     const userId = auth?.user?.userId;
     if (!userId) return;
     const result = await fetch(
-      `http://localhost:3000/user/${userId}/playlist`
+      `${import.meta.env.VITE_BACK_ADDRESS}/user/${userId}/playlist`
     ).then((res) => res.json());
     if (result?.playlists) {
       setUserPlaylists(result.playlists);
