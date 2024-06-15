@@ -14,6 +14,9 @@ const useAuth = () => {
           {
             method: "GET",
             credentials: "include", // 쿠키를 포함하여 요청
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
         ).then((result) => result.json());
         console.log("useAuth 결과", response);

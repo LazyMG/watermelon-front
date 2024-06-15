@@ -341,6 +341,9 @@ const Layout = () => {
   const gotoLogout = async () => {
     const result = await fetch(`${import.meta.env.VITE_BACK_ADDRESS}/logout`, {
       credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
     }).then((res) => res.json());
     if (result.action === "delete") {
       localStorage.removeItem("ytMusicAuth");
