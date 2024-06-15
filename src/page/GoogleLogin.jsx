@@ -11,16 +11,19 @@ const GoogleLogin = () => {
   //console.log(accessToken);
 
   const fetchLoginData = useCallback(async () => {
-    const result = await fetch("http://localhost:3000/google-login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        accessToken: accessToken,
-      }),
-      credentials: "include",
-    })
+    const result = await fetch(
+      `${import.meta.env.VITE_BACK_ADDRESS}/google-login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          accessToken: accessToken,
+        }),
+        credentials: "include",
+      }
+    )
       .then((response) => {
         const statusCode = response.status;
         if (statusCode === 200) {

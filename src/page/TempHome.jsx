@@ -168,9 +168,9 @@ const TempHome = () => {
   }, [playerState]);
 
   const getMuscis = async () => {
-    const musics = await fetch("http://localhost:3000/").then((res) =>
-      res.json()
-    );
+    const musics = await fetch(
+      `${import.meta.env.VITE_BACK_ADDRESS}`
+    ).then((res) => res.json());
     console.log(musics);
   };
 
