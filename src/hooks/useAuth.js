@@ -16,7 +16,7 @@ const useAuth = () => {
             credentials: "include", // 쿠키를 포함하여 요청
           }
         ).then((result) => result.json());
-        //console.log(response);
+        console.log("useAuth 결과", response);
         if (response.ok) {
           const user = response.user;
           setAuth({
@@ -35,8 +35,8 @@ const useAuth = () => {
             user: null,
             loading: false,
           });
-          if (localStorage.getItem("ytMusicAuth"))
-            localStorage.removeItem("ytMusicAuth");
+          // if (localStorage.getItem("ytMusicAuth"))
+          //   localStorage.removeItem("ytMusicAuth");
         }
       } catch (error) {
         console.error("Failed to check session:", error);
@@ -45,8 +45,8 @@ const useAuth = () => {
           user: null,
           loading: false,
         });
-        if (localStorage.getItem("ytMusicAuth"))
-          localStorage.removeItem("ytMusicAuth");
+        // if (localStorage.getItem("ytMusicAuth"))
+        //   localStorage.removeItem("ytMusicAuth");
       }
     };
 
