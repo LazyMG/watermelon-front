@@ -38,8 +38,8 @@ const useAuth = () => {
             user: null,
             loading: false,
           });
-          // if (localStorage.getItem("ytMusicAuth"))
-          //   localStorage.removeItem("ytMusicAuth");
+          if (localStorage.getItem("ytMusicAuth"))
+            localStorage.removeItem("ytMusicAuth");
         }
       } catch (error) {
         console.error("Failed to check session:", error);
@@ -48,8 +48,8 @@ const useAuth = () => {
           user: null,
           loading: false,
         });
-        // if (localStorage.getItem("ytMusicAuth"))
-        //   localStorage.removeItem("ytMusicAuth");
+        if (localStorage.getItem("ytMusicAuth"))
+          localStorage.removeItem("ytMusicAuth");
       }
     };
 
