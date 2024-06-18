@@ -64,7 +64,7 @@ const Modal = styled.div`
   width: 600px;
   height: 200px;
 
-  border: 1px solid blue;
+  border: 1px solid #414141;
 `;
 
 const ModalClose = styled.div`
