@@ -133,7 +133,7 @@ const Channel = () => {
                   <ChannelContentProfileButton
                     onClick={auth?.user?.admin ? gotoAdminPage : null}
                   >
-                    {auth?.user?.admin ? "공유" : "관리자"}
+                    {auth?.user?.admin ? "관리자" : "공유"}
                   </ChannelContentProfileButton>
                 </ChannelContentProfileUtils>
               </>

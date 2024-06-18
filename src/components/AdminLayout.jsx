@@ -47,7 +47,6 @@ const AdminLayout = () => {
   const auth = useRecoilValue(authState);
 
   useEffect(() => {
-    console.log(auth);
     const localAuth = localStorage.getItem("ytMusicAuth")
       ? JSON.parse(localStorage.getItem("ytMusicAuth"))
       : null;
