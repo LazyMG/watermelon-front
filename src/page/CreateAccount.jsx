@@ -123,22 +123,22 @@ const CreateAccount = () => {
         <CreateAccountFormHeader>Create Account</CreateAccountFormHeader>
         <CreateAccountForm onSubmit={handleSubmit(onValid)}>
           <CreateAccountInput
-            {...register("email")}
+            {...register("email", { required: true })}
             type="email"
             placeholder="Email"
           />
           <CreateAccountInput
-            {...register("username")}
+            {...register("username", { required: true })}
             type="text"
             placeholder="Name"
           />
           <CreateAccountInput
-            {...register("password")}
+            {...register("password", { required: true })}
             type="password"
             placeholder="Password"
           />
           <CreateAccountInput
-            {...register("passwordConfirm")}
+            {...register("passwordConfirm", { required: true })}
             type="password"
             placeholder="Password Confirm"
           />
