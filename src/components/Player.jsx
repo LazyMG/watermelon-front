@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { playerState, playlistState, selectedMusicState } from "../atom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
@@ -196,13 +196,19 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
   const [isMusicMuted, setMusicIsMuted] = useState(false);
   const [musicVolume, setMusicVolume] = useState(50);
   const [isWatch, setIsWatch] = useState(false);
+  const [currentPage, setCurrentPage] = useState("/");
 
   const volumeRef = useRef();
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    setCurrentPage(pathname);
+  }, [pathname]);
 
   const toggleWatchMusic = () => {
     if (isWatch) {
       setIsWatch(false);
-      navigate("/");
+      navigate(currentPage);
     } else {
       setIsWatch(true);
       navigate(`/watch?v=${selectedMusic.ytId}&list=${selectedMusic._id}`);

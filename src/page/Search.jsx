@@ -131,10 +131,18 @@ const SearchResultItemOverview = styled.div`
 
 const SearchResultItemArtistName = styled.span`
   cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const SearchResultItemAlbumTitle = styled.span`
   cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const SearchResultBottom = styled.div`
@@ -200,7 +208,7 @@ const Search = () => {
   };
 
   const gotoAlbumPage = (albumId) => {
-    navigate(`/playlist/${albumId}`);
+    navigate(`/playlist?list=${albumId}`);
   };
 
   return (
