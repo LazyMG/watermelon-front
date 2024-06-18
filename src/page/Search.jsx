@@ -165,7 +165,7 @@ const Search = () => {
     const result = await fetch(
       `${import.meta.env.VITE_BACK_ADDRESS}/search?keyword=${keyword}`
     ).then((res) => res.json());
-    console.log(result);
+    //console.log(result);
     setArtists(result.data.artists);
     setMusics(result.data.musics);
     setAlbums(result.data.albums);

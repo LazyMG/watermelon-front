@@ -300,16 +300,16 @@ const Layout = () => {
 
   const navigate = useNavigate();
   const params = useParams();
-  const data = new URLSearchParams(useLocation().search);
-  const keyword = data.get("q");
+  // const data = new URLSearchParams(useLocation().search);
+  // const keyword = data.get("q");
 
   const playerRef = useRef(null);
 
   useEffect(() => {
-    if (searchMatch) {
-      setSearchKeyword(keyword);
+    if (!searchMatch) {
+      setSearchKeyword("");
     }
-  }, [searchMatch, keyword]);
+  }, [searchMatch]);
 
   useEffect(() => {
     window.scroll({ top: 0 });
