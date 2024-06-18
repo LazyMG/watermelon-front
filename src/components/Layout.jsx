@@ -306,7 +306,7 @@ const Layout = () => {
   const playerRef = useRef(null);
 
   useEffect(() => {
-    if (!searchMatch) {
+    if (searchMatch) {
       setSearchKeyword(keyword);
     } else {
       setSearchKeyword("");

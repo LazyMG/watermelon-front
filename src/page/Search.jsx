@@ -129,6 +129,14 @@ const SearchResultItemOverview = styled.div`
   font-size: 17px;
 `;
 
+const SearchResultItemArtistName = styled.span`
+  cursor: pointer;
+`;
+
+const SearchResultItemAlbumTitle = styled.span`
+  cursor: pointer;
+`;
+
 const SearchResultBottom = styled.div`
   margin-top: 10px;
   display: flex;
@@ -187,8 +195,12 @@ const Search = () => {
     setSelectedMusic(music);
   };
 
-  const clickArtist = (artistId) => {
+  const gotoArtistPage = (artistId) => {
     navigate(`/channel/${artistId}`);
+  };
+
+  const gotoAlbumPage = (albumId) => {
+    navigate(`/playlist/${albumId}`);
   };
 
   return (
@@ -229,8 +241,18 @@ const Search = () => {
                     {music.title}
                   </SearchResultMusicItemTitle>
                   <SearchResultItemOverview>
-                    {music.artist.artistName} • {music.album.title} •{" "}
-                    {music.duration} • 5808만회 재생
+                    <SearchResultItemArtistName
+                      onClick={() => gotoArtistPage(music.artist._id)}
+                    >
+                      {music.artist.artistName}
+                    </SearchResultItemArtistName>
+                    •
+                    <SearchResultItemAlbumTitle
+                      onClick={() => gotoAlbumPage(music.album._id)}
+                    >
+                      {music.album.title}
+                    </SearchResultItemAlbumTitle>{" "}
+                    • {music.duration} • 5808만회 재생
                   </SearchResultItemOverview>
                 </SearchResultItemInfo>
               </SearchResultMusicItem>
@@ -248,7 +270,7 @@ const Search = () => {
             {artists?.map((artist) => (
               <SearchResultItem
                 key={artist._id}
-                onClick={() => clickArtist(artist._id)}
+                onClick={() => gotoArtistPage(artist._id)}
                 $clickable={true}
               >
                 <SearchResultItemImg $isArtist={true} $imgUrl={artist.imgUrl} />

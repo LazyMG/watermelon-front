@@ -45,7 +45,10 @@ const ChannelContentRowMusicImg = styled.div`
   div {
     width: 30px;
     height: 30px;
-    background: url("https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989");
+    background: ${({ $imgUrl }) =>
+      $imgUrl
+        ? `url(${$imgUrl})`
+        : "url(`https://i.scdn.co/image/ab67616d00001e028bcb1a80720292aaffb35989`)"};
     background-size: cover;
 
     cursor: pointer;
@@ -123,7 +126,7 @@ const RowMusics = ({ musicList, title, subtext, isArtist }) => {
       <ChannelContentRowMusicList>
         {musicList?.map((music) => (
           <ChannelContentRowMusicItem key={music._id}>
-            <ChannelContentRowMusicImg>
+            <ChannelContentRowMusicImg $imgUrl={music.coverImg}>
               <div />
             </ChannelContentRowMusicImg>
             <ChannelContentRowMusicTitle onClick={() => handleClick(music)}>
