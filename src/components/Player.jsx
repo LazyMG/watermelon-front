@@ -203,7 +203,7 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
 
   useEffect(() => {
     console.log(pathname);
-    setCurrentPage(pathname);
+    if (pathname !== "/watch") setCurrentPage(pathname);
   }, [pathname]);
 
   const toggleWatchMusic = () => {
