@@ -200,10 +200,24 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
 
   const volumeRef = useRef();
   const { pathname } = useLocation();
+  const data = new URLSearchParams(useLocation().search);
+  const keyword = data.get("q");
+  const playlistId = data.get("list");
 
   useEffect(() => {
     console.log(pathname);
-    if (pathname !== "/watch") setCurrentPage(pathname);
+    switch (pathname) {
+      case "/watch":
+        return;
+      case "/playlist":
+        setCurrentPage(`${pathname}?list=${playlistId}`);
+        return;
+      case "/search":
+        setCurrentPage(`${pathname}?q=${keyword}`);
+        return;
+      default:
+        setCurrentPage(pathname);
+    }
   }, [pathname]);
 
   const toggleWatchMusic = () => {
