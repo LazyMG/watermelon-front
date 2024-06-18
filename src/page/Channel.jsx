@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import CircleMusics from "../components/CircleMusics";
 import RowMusics from "../components/RowMusics";
@@ -76,6 +76,7 @@ const Channel = () => {
   const [isArtist, setIsArtist] = useState();
   const auth = useRecoilValue(authState);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   const getChannelData = useCallback(async () => {
     const result = await fetch(
@@ -90,6 +91,10 @@ const Channel = () => {
     setIsLoading(true);
     getChannelData();
   }, [getChannelData]);
+
+  const gotoAdminPage = () => {
+    navigate("/admin/upload/music");
+  };
 
   return (
     <ChannelWrapper>
@@ -125,8 +130,10 @@ const Channel = () => {
                       수정
                     </ChannelContentProfileButton>
                   )}
-                  <ChannelContentProfileButton>
-                    공유
+                  <ChannelContentProfileButton
+                    onClick={auth?.user?.admin ? gotoAdminPage : null}
+                  >
+                    {auth?.user?.admin ? "공유" : "관리자"}
                   </ChannelContentProfileButton>
                 </ChannelContentProfileUtils>
               </>
