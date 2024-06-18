@@ -352,9 +352,11 @@ const PlayList = () => {
                     </PlayListContentListItemTime>
                   </PlayListContentListItem>
                 ))
-              : pagePlaylist.list?.map((music) => (
+              : pagePlaylist.list?.map((music, idx) => (
                   <PlayListContentListItem key={music._id}>
-                    <PlayListContentListItemNum>1</PlayListContentListItemNum>
+                    <PlayListContentListItemNum>
+                      {idx + 1}
+                    </PlayListContentListItemNum>
                     <PlayListContentListItemTitle
                       onClick={() => handleClick(music)}
                     >

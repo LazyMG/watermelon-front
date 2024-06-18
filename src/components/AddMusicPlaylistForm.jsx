@@ -163,6 +163,8 @@ const AddMusicPlaylistForm = ({ setAddModalOpen, isLogin, music }) => {
   }, [getUserPlaylist]);
 
   const clickAddMusicPlaylist = async (playlistId) => {
+    //해당 노래가 재생목록에 이미 존재하는지 확인
+
     const result = await fetch(
       `${import.meta.env.VITE_BACK_ADDRESS}/playlist/${playlistId}`,
       {

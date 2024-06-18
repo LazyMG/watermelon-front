@@ -201,21 +201,18 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
   const volumeRef = useRef();
   const { pathname } = useLocation();
   const data = new URLSearchParams(useLocation().search);
-  const keyword = data.get("q");
   const playlistId = data.get("list");
 
   useEffect(() => {
-    console.log(pathname);
     switch (pathname) {
       case "/watch":
         return;
       case "/playlist":
+        setIsWatch(false);
         setCurrentPage(`${pathname}?list=${playlistId}`);
         return;
-      case "/search":
-        setCurrentPage(`${pathname}?q=${keyword}`);
-        return;
       default:
+        setIsWatch(false);
         setCurrentPage(pathname);
     }
   }, [pathname]);

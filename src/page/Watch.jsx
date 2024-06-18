@@ -223,6 +223,10 @@ const Watch = () => {
   }, [currentList]);
 
   const clickAddMusicToPlaylist = () => {
+    if (!isLogin) {
+      alert("로그인 필요");
+      return;
+    }
     setAddModalOpen(true);
   };
 
