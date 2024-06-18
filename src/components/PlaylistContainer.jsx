@@ -79,10 +79,18 @@ const MenuBottomListItemText = styled.div`
 
 const MenuBottomListItemTitle = styled.div`
   font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
 `;
 
 const MenuBottomListItemUser = styled.div`
   font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
 `;
 
 const MenuBottomListItemIcon = styled.div`

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Link,
   Outlet,
+  useLocation,
   useMatch,
   useNavigate,
   useParams,
@@ -287,6 +288,7 @@ const Layout = () => {
   const [isRepeat, setIsRepeat] = useState(false);
   const [isPlayerOn, setIsPlayerOn] = useState(false);
   const [userPlaylists, setUserPlaylists] = useRecoilState(userPlaylistsState);
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   const [ytPlayerState, setYtPlayerState] = useRecoilState(playerState);
   const playlist = useRecoilValue(playlistState);
@@ -294,11 +296,20 @@ const Layout = () => {
   const homeMatch = useMatch("/");
   const exploreMatch = useMatch("/explore");
   const libraryMatch = useMatch("/library");
+  const searchMatch = useMatch("/search");
 
   const navigate = useNavigate();
   const params = useParams();
+  const data = new URLSearchParams(useLocation().search);
+  const keyword = data.get("q");
 
   const playerRef = useRef(null);
+
+  useEffect(() => {
+    if (searchMatch) {
+      setSearchKeyword(keyword);
+    }
+  }, [searchMatch, keyword]);
 
   useEffect(() => {
     window.scroll({ top: 0 });
@@ -455,6 +466,10 @@ const Layout = () => {
               name="q"
               type="text"
               placeholder="노래, 앨범, 아티스트, 팟캐스트 검색"
+              value={searchKeyword}
+              onChange={(event) => {
+                setSearchKeyword(event.target.value);
+              }}
             />
           </NavSearchContainer>
           <NavProfileContainer

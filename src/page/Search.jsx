@@ -24,7 +24,9 @@ const SeacrhCategoryContainer = styled.div`
 
 const SeacrhCategoryItem = styled.div`
   padding: 20px 0;
-  border-bottom: 2px solid #fff;
+  //border-bottom: 2px solid #fff;
+  ${({ $category }) => $category && `border-bottom: 2px solid #fff;`}
+  opacity: ${({ $category }) => ($category ? "1" : "0.6")};
   //height: 50px;
 
   cursor: pointer;
@@ -151,6 +153,7 @@ const Search = () => {
   const [artists, setArtists] = useState([]);
   const [musics, setMusics] = useState([]);
   const [albums, setAlbums] = useState([]);
+  const [category, setCategory] = useState("YTMUSIC");
 
   const [playlist, setPlaylist] = useState();
   const setPlayer = useSetRecoilState(playerState);
@@ -191,8 +194,18 @@ const Search = () => {
   return (
     <SeacrhWrapper>
       <SeacrhCategoryContainer>
-        <SeacrhCategoryItem>YT MUSIC</SeacrhCategoryItem>
-        <SeacrhCategoryItem>보관함</SeacrhCategoryItem>
+        <SeacrhCategoryItem
+          onClick={() => setCategory("YTMUSIC")}
+          $category={category === "YTMUSIC"}
+        >
+          YT MUSIC
+        </SeacrhCategoryItem>
+        <SeacrhCategoryItem
+          onClick={() => setCategory("STORAGE")}
+          $category={category === "STORAGE"}
+        >
+          보관함
+        </SeacrhCategoryItem>
       </SeacrhCategoryContainer>
       <SearchNavContainer>
         <SearchNavItem>노래</SearchNavItem>
