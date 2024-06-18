@@ -102,6 +102,7 @@ const CreateAccount = () => {
     ).then((response) => {
       return response.json();
     });
+    console.log(result);
     if (result.ok) {
       navigate("/login");
     } else {

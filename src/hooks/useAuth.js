@@ -19,7 +19,7 @@ const useAuth = () => {
             },
           }
         ).then((result) => result.json());
-        console.log("useAuth 결과", response);
+        //console.log("useAuth 결과", response);
         if (response.ok) {
           const user = response.user;
           setAuth({
