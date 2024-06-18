@@ -82,14 +82,13 @@ const CreateAccountBottom = styled.div`
 `;
 
 const CreateAccount = () => {
-  const { register, handleSubmit, reset, setError } = useForm();
+  const { register, handleSubmit, reset } = useForm();
   const navigate = useNavigate();
   const [accountError, setAccountError] = useState();
 
   const onValid = async ({ email, username, password, passwordConfirm }) => {
     if (password !== passwordConfirm)
-      return setError("password", { message: "비밀번호를 확인해주세요." });
-
+      return setAccountError("비밀번호를 확인해주세요.");
     const result = await fetch(
       `${import.meta.env.VITE_BACK_ADDRESS}/create-account`,
       {
