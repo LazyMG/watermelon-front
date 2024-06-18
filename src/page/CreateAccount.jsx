@@ -87,8 +87,11 @@ const CreateAccount = () => {
   const [accountError, setAccountError] = useState();
 
   const onValid = async ({ email, username, password, passwordConfirm }) => {
-    if (password !== passwordConfirm)
-      return setAccountError("비밀번호를 확인해주세요.");
+    if (password !== passwordConfirm) {
+      setAccountError("비밀번호를 확인해주세요.");
+      return;
+    }
+
     const result = await fetch(
       `${import.meta.env.VITE_BACK_ADDRESS}/create-account`,
       {
@@ -101,7 +104,6 @@ const CreateAccount = () => {
     ).then((response) => {
       return response.json();
     });
-    console.log(result);
     if (result.ok) {
       navigate("/login");
     } else {
