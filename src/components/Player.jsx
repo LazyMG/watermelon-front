@@ -202,6 +202,7 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
   const { pathname } = useLocation();
 
   useEffect(() => {
+    console.log(pathname);
     setCurrentPage(pathname);
   }, [pathname]);
 
