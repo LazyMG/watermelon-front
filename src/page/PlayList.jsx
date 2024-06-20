@@ -306,7 +306,7 @@ const PlayList = () => {
                 >
                   {pagePlaylist.artist?.artistName || auth?.user?.username}
                 </PlayListContentHeaderArtist>
-                • 2015
+                •
               </PlayListContentHeaderOverview>
               <PlayListContentHeaderUtils>
                 <PlayListContentHeaderButton onClick={clickAddPlaylist}>

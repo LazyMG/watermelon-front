@@ -354,7 +354,7 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
     const currentIndex = playlist.findIndex(
       (item) => item.ytId === player.ytId
     );
-    console.log("next", currentIndex);
+    //console.log("next", currentIndex);
     if (currentIndex === playlist.length - 1) {
       return;
     }
@@ -371,7 +371,7 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
     const ytPlayer = playerRef.current?.internalPlayer;
     const currentTime = await ytPlayer.getCurrentTime();
     if (currentTime < 3) {
-      console.log("short");
+      //console.log("short");
       setPlayer((prev) => ({
         ...prev,
         ytId: selectedMusic.ytId,
@@ -379,7 +379,7 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
         isPaused: false,
         timestamp: Date.now(),
       }));
-      console.log("setting");
+      //console.log("setting");
     }
     setSelectedMusic(selectedMusic);
     if (!playlist || playlist.length === 0) return;
@@ -560,7 +560,7 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
               >
                 {selectedMusic?.album.title}
               </PlayBarContentMainInfoOverviewAlbum>{" "}
-              • 2024
+              •
             </PlayBarContentMainInfoOverview>
           </PlayBarContentMainInfo>
           <PlayBarContentMainUtil>
