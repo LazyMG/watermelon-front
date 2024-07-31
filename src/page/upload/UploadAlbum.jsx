@@ -78,7 +78,7 @@ const UploadAlbum = () => {
       .then((response) => {
         const statusCode = response.status;
         if (statusCode === 200) reset();
-        else alert("falied!");
+        else alert("failed!");
       })
       .catch((error) => console.error("Error:", error));
   };

@@ -94,10 +94,6 @@ const CreatePlaylistForm = ({ setCreatePlaylist }) => {
   const auth = useRecoilValue(authState);
   const setUserPlaylists = useSetRecoilState(userPlaylistsState);
 
-  // useOnClickOutSide(ref, () => {
-  //   setCreatePlaylist(false);
-  // });
-
   useOnClickOutSide(ref, (event) => {
     setCreatePlaylist(false);
     event.stopPropagation(); // 이벤트 전파 중단
@@ -121,7 +117,7 @@ const CreatePlaylistForm = ({ setCreatePlaylist }) => {
         const statusCode = response.status;
         if (statusCode === 200) {
           return response.json();
-        } else alert("falied!");
+        } else alert("failed!");
       })
       .catch((error) => console.error("Error:", error));
     setUserPlaylists((prev) => [

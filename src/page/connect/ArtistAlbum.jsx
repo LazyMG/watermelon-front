@@ -87,7 +87,7 @@ const ArtistAlbum = () => {
         if (statusCode === 200) {
           alert("완료되었습니다.");
           getAlbums();
-        } else alert("falied!");
+        } else alert("failed!");
       })
       .catch((error) => console.error("Error:", error));
   };

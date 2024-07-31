@@ -280,16 +280,15 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
   //노래 끝났을 때 처리
   const timelineChange = (event) => {
     const ytPlayer = playerRef.current?.internalPlayer;
+
     const newTimeline = event.target.value;
     setTimeline(newTimeline);
-    // setYtPlayerState((prevState) => ({
-    //   ...prevState,
-    //   currentTime: event.target.value,
-    // }));
+
     const formatedTime = new Date(newTimeline * 1000)
       .toISOString()
       .substring(14, 19);
     setTime(formatedTime);
+
     ytPlayer.seekTo(newTimeline, true);
   };
 
@@ -303,8 +302,7 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
 
   const clickToggleMute = async () => {
     const ytPlayer = playerRef.current?.internalPlayer;
-    const volume = await ytPlayer.getVolume();
-    console.log(volume);
+
     const musicIsMuted = await ytPlayer.isMuted();
     if (musicIsMuted) {
       setMusicIsMuted(false);
@@ -330,13 +328,17 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
 
   const changeVolume = (event) => {
     const ytPlayer = playerRef.current?.internalPlayer;
+
     volumeRef.current = event.target.value;
     setMusicVolume(event.target.value);
+
     ytPlayer.setVolume(event.target.value);
+
     setPlayer((prev) => ({
       ...prev,
       volume: +event.target.value,
     }));
+
     if (+event.target.value === 0) {
       setMusicIsMuted(true);
       setPlayer((prev) => ({
@@ -351,27 +353,31 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
 
   const clickNextMusic = () => {
     if (!playlist || playlist.length === 0) return;
+
     const currentIndex = playlist.findIndex(
       (item) => item.ytId === player.ytId
     );
-    //console.log("next", currentIndex);
+
     if (currentIndex === playlist.length - 1) {
       return;
     }
+
     setPlayer((prev) => ({
       ...prev,
       ytId: playlist[currentIndex + 1].ytId,
       isPlaying: true,
       isPaused: false,
     }));
+
     setSelectedMusic(playlist[currentIndex + 1]);
   };
 
   const clickPrevMusic = async () => {
     const ytPlayer = playerRef.current?.internalPlayer;
+
     const currentTime = await ytPlayer.getCurrentTime();
+
     if (currentTime < 3) {
-      //console.log("short");
       setPlayer((prev) => ({
         ...prev,
         ytId: selectedMusic.ytId,
@@ -379,24 +385,27 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
         isPaused: false,
         timestamp: Date.now(),
       }));
-      //console.log("setting");
     }
+
     setSelectedMusic(selectedMusic);
+
     if (!playlist || playlist.length === 0) return;
 
     const currentIndex = playlist.findIndex(
       (item) => item.ytId === player.ytId
     );
-    console.log("prev", currentIndex);
+
     if (currentIndex === 0) {
       return;
     }
+
     setPlayer((prev) => ({
       ...prev,
       ytId: playlist[currentIndex - 1].ytId,
       isPlaying: true,
       isPaused: false,
     }));
+
     setSelectedMusic(playlist[currentIndex - 1]);
   };
 

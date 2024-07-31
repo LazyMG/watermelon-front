@@ -89,7 +89,7 @@ const AlbumMusic = () => {
         if (statusCode === 200) {
           alert("완료되었습니다.");
           getMusics();
-        } else alert("falied!");
+        } else alert("failed!");
       })
       .catch((error) => console.error("Error:", error));
   };

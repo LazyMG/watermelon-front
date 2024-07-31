@@ -181,7 +181,7 @@ const AddMusicPlaylistForm = ({ setAddModalOpen, isLogin, music }) => {
           alert("완료되었습니다.");
           setAddModalOpen(false);
           return response.json();
-        } else alert("falied!");
+        } else alert("failed!");
       })
       .catch((error) => console.error("Error:", error));
   };
