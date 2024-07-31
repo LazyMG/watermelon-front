@@ -5,7 +5,8 @@ import { playerState, playlistState, selectedMusicState } from "../atom";
 
 const SmallMusicsContent = styled.div`
   width: calc(400px * 3 + 15px * 2);
-  margin: 20px 0;
+  //margin: 20px 0;
+  margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   column-gap: 15px;
@@ -17,13 +18,13 @@ const SmallMusicsContent = styled.div`
 const SmallMusicsContainer = styled.div`
   width: 100%;
 
-  height: 350px;
-  overflow: hidden;
-  position: relative;
+  //height: 350px;
+  //overflow: hidden;
+  //position: relative;
 
-  &:hover ${SmallMusicsContent} {
+  /* &:hover ${SmallMusicsContent} {
     overflow-x: overlay;
-  }
+  } */
 `;
 
 const SmallMusicsHeader = styled.div`
@@ -147,6 +148,16 @@ const SmallMusicDescription = styled.div`
   }
 `;
 
+const SmallMusicsScrollContainer = styled.div`
+  overflow: hidden;
+  position: relative;
+  height: 285px;
+
+  &:hover ${SmallMusicsContent} {
+    overflow-x: overlay;
+  }
+`;
+
 const SmallMusics = ({ musics }) => {
   const setPlayer = useSetRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
@@ -167,7 +178,6 @@ const SmallMusics = ({ musics }) => {
 
   const clickAddPlaylist = () => {
     setPlaylist(musics);
-    //console.log(musics);
   };
 
   return (
@@ -215,33 +225,35 @@ const SmallMusics = ({ musics }) => {
           </SmallMusicsSliderButtonContainer>
         </SmallMusicsButtons>
       </SmallMusicsHeader>
-      <SmallMusicsContent>
-        {musics?.map((music) => (
-          <SmallMusic key={music._id}>
-            <SmallMusicImgContainer $imgUrl={music.coverImg} />
-            <SmallMusicText>
-              <SmallMusicTitle onClick={() => handleClick(music)}>
-                {music.title}
-              </SmallMusicTitle>
-              <SmallMusicDescription>
-                <Link to={`/channel/${music.artist._id}`}>
-                  {music.artist.artistName}
-                </Link>{" "}
-                |{" "}
-                <Link
-                  to={{
-                    pathname: "/playlist",
-                    search: `?list=${music.album._id}`,
-                  }}
-                >
-                  {music.album.title}
-                </Link>
-              </SmallMusicDescription>
-            </SmallMusicText>
-          </SmallMusic>
-        ))}
-        <SmallMusicsContentScroll />
-      </SmallMusicsContent>
+      <SmallMusicsScrollContainer>
+        <SmallMusicsContent>
+          {musics?.map((music) => (
+            <SmallMusic key={music._id}>
+              <SmallMusicImgContainer $imgUrl={music.coverImg} />
+              <SmallMusicText>
+                <SmallMusicTitle onClick={() => handleClick(music)}>
+                  {music.title}
+                </SmallMusicTitle>
+                <SmallMusicDescription>
+                  <Link to={`/channel/${music.artist._id}`}>
+                    {music.artist.artistName}
+                  </Link>{" "}
+                  |{" "}
+                  <Link
+                    to={{
+                      pathname: "/playlist",
+                      search: `?list=${music.album._id}`,
+                    }}
+                  >
+                    {music.album.title}
+                  </Link>
+                </SmallMusicDescription>
+              </SmallMusicText>
+            </SmallMusic>
+          ))}
+          <SmallMusicsContentScroll />
+        </SmallMusicsContent>
+      </SmallMusicsScrollContainer>
     </SmallMusicsContainer>
   );
 };

@@ -138,6 +138,7 @@ const GlobalStyles = createGlobalStyle`
 
   *{
     box-sizing: border-box;
+    scrollbar-color: #606060 #1c1c1c; /* 핸들 및 트랙 색상 */
     
   }
   body{
