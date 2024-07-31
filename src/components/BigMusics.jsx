@@ -82,7 +82,6 @@ const BigMusicsHeaderSliderButton = styled.div`
 `;
 
 const BigMusicsContent = styled.div`
-  //height: 300px;
   width: calc(190px * 6 + 20px * 5);
   margin: 20px 0;
   height: 280px;
@@ -106,8 +105,8 @@ const BigMusicsContentScroll = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none; /* 마우스 이벤트를 무시하여 컨텐츠와 상호작용 가능하도록 합니다 */
-  z-index: 1; /* 컨텐츠 위에 오도록 z-index를 설정합니다 */
+  pointer-events: none;
+  z-index: 1;
 `;
 
 const BigMusic = styled.div`

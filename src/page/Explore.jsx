@@ -16,7 +16,6 @@ const ExploreWrapper = styled.div`
 
 const ExploreContentContainer = styled.div`
   width: 100%;
-  //height: 600px;
 `;
 
 const Explore = () => {

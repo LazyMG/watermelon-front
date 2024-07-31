@@ -13,6 +13,7 @@ const HomeWrapper = styled.div`
   gap: 50px;
   overflow-x: hidden;
   width: 100%;
+  //height: 100vh;
 
   //플레이될 때 추가
   margin-bottom: 70px;
@@ -38,7 +39,6 @@ const HomeNavItem = styled.div`
 
 const HomeContentContainer = styled.div`
   width: 100%;
-  //height: 600px;
 `;
 
 const Home = () => {
@@ -56,7 +56,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    //console.log("render");
     setIsLoading(true);
     getMusics();
     setIsLoading(false);

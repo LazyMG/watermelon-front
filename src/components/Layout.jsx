@@ -171,9 +171,9 @@ const ContentWrapper = styled.div`
   width: calc(100% - ${({ $menuOpen }) => ($menuOpen ? "230px" : "100px")});
   margin-left: ${({ $menuOpen }) => ($menuOpen ? "230px" : "100px")};
   overflow: hidden;
-  //height: calc(100vh - 70px);
-  //box-sizing: border-box;
   height: 100vh;
+
+  overflow-y: hidden;
 `;
 
 const MenuWrapper = styled.div`

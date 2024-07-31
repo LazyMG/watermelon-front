@@ -3,9 +3,27 @@ import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { playerState, playlistState, selectedMusicState } from "../atom";
 
+const SmallMusicsContent = styled.div`
+  width: calc(400px * 3 + 15px * 2);
+  margin: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  column-gap: 15px;
+  grid-template-rows: repeat(4, 1fr);
+  row-gap: 15px;
+  overflow-x: hidden;
+`;
+
 const SmallMusicsContainer = styled.div`
   width: 100%;
-  //height: 100%;
+
+  height: 350px;
+  overflow: hidden;
+  position: relative;
+
+  &:hover ${SmallMusicsContent} {
+    overflow-x: overlay;
+  }
 `;
 
 const SmallMusicsHeader = styled.div`
@@ -62,26 +80,6 @@ const SmallMusicsSliderButton = styled.div`
 
   &:hover {
     background-color: #565656;
-  }
-`;
-
-const SmallMusicsContent = styled.div`
-  //height: 200px;
-  width: calc(400px * 3 + 15px * 2);
-  //height: calc(50px * 4 + 15px * 3);
-  margin: 20px 10px;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  column-gap: 15px;
-  grid-template-rows: repeat(4, 1fr);
-  row-gap: 15px;
-  overflow-x: hidden;
-
-  position: relative;
-
-  &:hover {
-    overflow-x: overlay; /* 스크롤바가 컴포넌트 위에 나타나도록 설정 */
-    overflow-y: hidden;
   }
 `;
 
@@ -242,6 +240,7 @@ const SmallMusics = ({ musics }) => {
             </SmallMusicText>
           </SmallMusic>
         ))}
+        <SmallMusicsContentScroll />
       </SmallMusicsContent>
     </SmallMusicsContainer>
   );

@@ -25,12 +25,17 @@ import { useEffect } from "react";
 import useAuth from "./hooks/useAuth";
 import { useRecoilValue } from "recoil";
 import { authState } from "./atom";
+import Test from "./page/Test";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
     children: [
+      {
+        path: "test",
+        element: <Test />,
+      },
       {
         path: "",
         element: <Home />,
@@ -133,6 +138,7 @@ const GlobalStyles = createGlobalStyle`
 
   *{
     box-sizing: border-box;
+    
   }
   body{
     background-color: #030303;

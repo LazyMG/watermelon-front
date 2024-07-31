@@ -9,7 +9,6 @@ const LibraryWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 50px;
-  //overflow-x: hidden;
   width: 100%;
 `;
 
@@ -18,7 +17,6 @@ const LibraryCategoryContainer = styled.div`
   gap: 30px;
   width: calc(100% - 20px);
   margin: 0 10px;
-  //padding: 20px 0;
   border-bottom: 1px solid #c9c9c91b;
 `;
 
@@ -27,7 +25,6 @@ const LibraryCategoryItem = styled.div`
 
   ${({ $category }) => $category && `border-bottom: 2px solid #fff;`}
   opacity: ${({ $category }) => ($category ? "1" : "0.6")};
-  //height: 50px;
 
   cursor: pointer;
 `;
@@ -60,7 +57,6 @@ const LibraryNavItem = styled.div`
 
 const LibraryContentContainer = styled.div`
   width: 100%;
-  /* height: 600px; */
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   gap: 20px;
@@ -79,7 +75,6 @@ const LibraryContentItemImg = styled.div`
   background-color: #949494;
   background-size: contain;
   background-repeat: no-repeat;
-  //flex-shrink: 0;
 
   cursor: pointer;
 `;
