@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const BigMusicsContainer = styled.div`
   width: 100%;
 
-  background-color: red;
+  //background-color: red;
 `;
 
 const BigMusicsHeader = styled.div`
@@ -99,7 +99,7 @@ const BigMusicsContent = styled.div`
 
   position: relative;
 
-  background-color: orange;
+  //background-color: orange;
 
   &:hover {
     overflow-x: overlay;
@@ -122,7 +122,7 @@ const BigMusic = styled.div`
   flex-direction: column;
   gap: 15px;
 
-  background-color: yellow;
+  //background-color: yellow;
 `;
 
 const BigMusicImgContainer = styled.div`
