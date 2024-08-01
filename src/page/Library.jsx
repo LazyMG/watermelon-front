@@ -11,6 +11,7 @@ const LibraryWrapper = styled.div`
   gap: 50px;
   width: 100%;
   padding: 0 100px;
+  margin-right: 10px;
 `;
 
 const LibraryCategoryContainer = styled.div`
