@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 const BigMusicsContainer = styled.div`
   width: 100%;
+
+  background-color: red;
 `;
 
 const BigMusicsHeader = styled.div`
@@ -86,7 +88,8 @@ const BigMusicsContent = styled.div`
   width: calc(190px * 6 + 20px * 5);
   margin: 20px 0;
   height: 280px;
-  padding: 0 100px;
+  //padding: 0 100px;
+  margin-left: 100px;
 
   display: grid;
   grid-template-columns: repeat(20, 1fr);
@@ -95,6 +98,8 @@ const BigMusicsContent = styled.div`
   overflow-x: hidden;
 
   position: relative;
+
+  background-color: orange;
 
   &:hover {
     overflow-x: overlay;
@@ -116,6 +121,8 @@ const BigMusic = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+
+  background-color: yellow;
 `;
 
 const BigMusicImgContainer = styled.div`
@@ -278,6 +285,9 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
             </BigMusicInfo>
           </BigMusic>
         ))}
+        {/* {Array.from({ length: 20 }).map((_, idx) => (
+          <BigMusic key={idx} />
+        ))} */}
         <BigMusicsContentScroll />
       </BigMusicsContent>
     </BigMusicsContainer>
