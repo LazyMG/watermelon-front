@@ -47,7 +47,6 @@ const Home = () => {
   const auth = useRecoilValue(authState);
   const localAuth = JSON.parse(localStorage.getItem("ytMusicAuth"));
 
-  //data fetch
   const getMusics = async () => {
     const result = await fetch(
       `${import.meta.env.VITE_BACK_ADDRESS}/music/allMusic`

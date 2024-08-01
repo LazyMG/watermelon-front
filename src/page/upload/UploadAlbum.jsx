@@ -127,6 +127,14 @@ const UploadAlbum = () => {
             />
           </UploadInputContainer>
           <UploadInputContainer>
+            <UploadInputLabel htmlFor="category">종류:</UploadInputLabel>
+            <UploadInput
+              id="category"
+              {...register("category")}
+              placeholder="종류"
+            />
+          </UploadInputContainer>
+          <UploadInputContainer>
             <UploadInputLabel htmlFor="totalMusic">곡 수:</UploadInputLabel>
             <UploadInput
               id="totalMusic"

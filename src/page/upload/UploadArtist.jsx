@@ -64,7 +64,6 @@ const UploadFormButton = styled.button`
 
 const UploadArtist = () => {
   const { register, handleSubmit, reset } = useForm();
-  //console.log("ok");
 
   const onValid = (data) => {
     fetch(`${import.meta.env.VITE_BACK_ADDRESS}/upload/artist`, {

@@ -67,7 +67,6 @@ const ArtistAlbum = () => {
     getAlbums();
     getArtist();
     setIsLoading(false);
-    //console.log("render");
   }, [artistId]);
 
   const postAlbumToArtist = async (albumId) => {
