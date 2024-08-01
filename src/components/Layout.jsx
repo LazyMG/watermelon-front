@@ -101,7 +101,7 @@ const NavContentContainer = styled.div`
   display: flex;
   padding-right: 100px;
   justify-content: space-between;
-  ${(props) => (props.$libraryMatch ? "padding-right:117px" : "")};
+  /* ${(props) => (props.$libraryMatch ? "padding-right:117px" : "")}; */
 `;
 
 const NavSearchContainer = styled.form`
