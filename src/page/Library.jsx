@@ -12,6 +12,8 @@ const LibraryWrapper = styled.div`
   width: 100%;
   padding: 0 100px;
   margin-right: 10px;
+
+  margin-bottom: 70px;
 `;
 
 const LibraryCategoryContainer = styled.div`

@@ -199,7 +199,7 @@ const PlayList = () => {
         setUserPlaylists((prev) => {
           return prev.filter((list) => list._id !== playlistId);
         });
-        navigate("/");
+        navigate("/library");
       }
     }
   };
