@@ -23,7 +23,7 @@ import PlaylistContainer from "./PlaylistContainer";
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  overflow-y: hidden;
+  //overflow-y: hidden;
   background: #030303;
   width: 100%;
   height: 100%;
