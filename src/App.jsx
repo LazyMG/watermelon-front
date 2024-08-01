@@ -163,8 +163,8 @@ input:-webkit-autofill:active {
 `;
 
 const Wrapper = styled.div`
-  width: 100%;
-  height: 100%;
+  /* width: 100%;
+  height: 100vh; */
 `;
 
 function App() {

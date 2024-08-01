@@ -78,9 +78,9 @@ const Home = () => {
               <BigMusics musics={musics} isCustom={true} title={"다시듣기"} />
             </HomeContentContainer>
           ) : null}
-          <HomeContentContainer>
+          {/* <HomeContentContainer>
             <BigMusics musics={musics} title={"추천음악"} />
-          </HomeContentContainer>
+          </HomeContentContainer> */}
         </>
       )}
     </HomeWrapper>
