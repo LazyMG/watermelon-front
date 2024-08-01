@@ -94,7 +94,8 @@ const SmallMusic = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  justify-content: space-between;
+
+  //background-color: yellow;
 `;
 
 const SmallMusicImgContainer = styled.div`
@@ -248,8 +249,7 @@ const SmallMusics = ({ musics }) => {
             </SmallMusic>
           ))}
           {/* {Array.from({ length: 20 }).map((_, idx) => (
-            <SmallMusic key={idx}>
-            </SmallMusic>
+            <SmallMusic key={idx}></SmallMusic>
           ))} */}
           <SmallMusicsContentScroll />
         </SmallMusicsContent>

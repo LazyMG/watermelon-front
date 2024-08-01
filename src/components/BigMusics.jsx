@@ -109,6 +109,7 @@ const BigMusicsContentScroll = styled.div`
   height: 100%;
   pointer-events: none;
   z-index: 1;
+  padding: 0 100px;
 `;
 
 const BigMusic = styled.div`
