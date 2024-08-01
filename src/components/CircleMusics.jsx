@@ -20,6 +20,7 @@ const ChannelContentRepeatArtistContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  padding: 0 100px;
 `;
 
 const ChannelContentRepeatArtistList = styled.div`

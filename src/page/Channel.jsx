@@ -31,6 +31,7 @@ const ChannelContentProfileContainer = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;
+  padding: 0 100px;
 `;
 
 const ChannelContentProfileImg = styled.div`

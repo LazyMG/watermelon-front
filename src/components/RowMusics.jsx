@@ -22,6 +22,7 @@ const ChannelContentRowMusicContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  padding: 0 100px;
 `;
 
 const ChannelContentRowMusicList = styled.div`
