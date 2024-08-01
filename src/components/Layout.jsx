@@ -174,6 +174,8 @@ const ContentWrapper = styled.div`
   height: 100vh;
 
   overflow-y: hidden;
+
+  background-color: red;
 `;
 
 const MenuWrapper = styled.div`

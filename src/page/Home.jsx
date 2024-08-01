@@ -7,16 +7,16 @@ import { authState } from "../atom";
 
 const HomeWrapper = styled.div`
   margin-top: 70px;
-  //padding-top: 500px;
   display: flex;
   flex-direction: column;
   gap: 50px;
   overflow-x: hidden;
   width: 100%;
-  //height: 100vh;
 
   //플레이될 때 추가
   margin-bottom: 70px;
+
+  background-color: blue;
 `;
 
 const HomeNavContainer = styled.div`

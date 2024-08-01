@@ -65,6 +65,7 @@ const UploadFormButton = styled.button`
 const UploadAlbum = () => {
   const { register, handleSubmit, reset } = useForm();
 
+  //유효성 검사 필요
   const onValid = (data) => {
     //console.log(data);
 
@@ -77,6 +78,7 @@ const UploadAlbum = () => {
     })
       .then((response) => {
         const statusCode = response.status;
+        //성공하면 메세지
         if (statusCode === 200) reset();
         else alert("failed!");
       })
@@ -90,7 +92,9 @@ const UploadAlbum = () => {
             <UploadInputLabel htmlFor="title">앨범명:</UploadInputLabel>
             <UploadInput
               id="title"
-              {...register("title")}
+              {...register("title", {
+                required: true,
+              })}
               placeholder="앨범명"
             />
           </UploadInputContainer>
@@ -98,7 +102,9 @@ const UploadAlbum = () => {
             <UploadInputLabel htmlFor="coverImg">이미지 주소:</UploadInputLabel>
             <UploadInput
               id="coverImg"
-              {...register("coverImg")}
+              {...register("coverImg", {
+                required: true,
+              })}
               placeholder="이미지 주소"
             />
           </UploadInputContainer>
@@ -106,7 +112,9 @@ const UploadAlbum = () => {
             <UploadInputLabel htmlFor="releasedDate">발매일:</UploadInputLabel>
             <UploadInput
               id="releasedDate"
-              {...register("releasedDate")}
+              {...register("releasedDate", {
+                required: true,
+              })}
               placeholder="발매일"
             />
           </UploadInputContainer>
@@ -114,7 +122,9 @@ const UploadAlbum = () => {
             <UploadInputLabel htmlFor="duration">길이:</UploadInputLabel>
             <UploadInput
               id="duration"
-              {...register("duration")}
+              {...register("duration", {
+                required: true,
+              })}
               placeholder="길이"
             />
           </UploadInputContainer>
@@ -130,7 +140,9 @@ const UploadAlbum = () => {
             <UploadInputLabel htmlFor="category">종류:</UploadInputLabel>
             <UploadInput
               id="category"
-              {...register("category")}
+              {...register("category", {
+                required: true,
+              })}
               placeholder="종류"
             />
           </UploadInputContainer>
@@ -139,7 +151,9 @@ const UploadAlbum = () => {
             <UploadInput
               id="totalMusic"
               type="number"
-              {...register("totalMusic")}
+              {...register("totalMusic", {
+                required: true,
+              })}
               placeholder="곡 수"
             />
           </UploadInputContainer>
