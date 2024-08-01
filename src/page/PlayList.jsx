@@ -35,6 +35,7 @@ const PlayListContentHeader = styled.div`
   display: flex;
   height: 300px;
   gap: 40px;
+  padding: 0 100px;
 `;
 
 const PlayListContentHeaderImg = styled.div`
@@ -92,7 +93,7 @@ const PlayListContentHeaderButton = styled.div`
 `;
 
 const PlayListContentList = styled.div`
-  padding: 0 20px;
+  padding: 0 120px;
   display: flex;
   flex-direction: column;
 `;
