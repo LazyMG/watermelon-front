@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { playerState, playlistState, selectedMusicState } from "../atom";
 
 const SmallMusicsContent = styled.div`
-  /* //width: calc(400px * 3 + 1vw * 2);
+  //width: calc(400px * 3 + 1vw * 2);
   width: calc(23vw * 3 + 1vw * 2);
   //margin: 20px 0;
   margin-top: 20px;
@@ -13,16 +13,9 @@ const SmallMusicsContent = styled.div`
   column-gap: 1vw;
   grid-template-rows: repeat(4, 1fr);
   row-gap: 15px;
-  overflow-x: hidden; */
+  overflow-x: hidden;
 
   //background-color: yellow;
-
-  display: grid;
-  grid-template-columns: repeat(5, minmax(200px, 1fr)); /* 5개 열 설정 */
-  grid-template-rows: repeat(4, 50px); /* 4개 행 설정 */
-  gap: 1vw; /* 아이템 사이의 간격 설정 */
-  width: max-content; /* 콘텐츠 너비가 자식 아이템에 맞춰 조정됨 */
-  height: 100%; /* 높이 설정 */
 `;
 
 const SmallMusicsContainer = styled.div`
@@ -97,20 +90,13 @@ const SmallMusicsContentScroll = styled.div`
 `;
 
 const SmallMusic = styled.div`
-  /* //width: 400px;
+  //width: 400px;
   width: 23vw;
   height: 50px;
   display: flex;
   align-items: center;
   gap: 10px;
-  background-color: orange; */
-
   //background-color: orange;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
 `;
 
 const SmallMusicImgContainer = styled.div`
