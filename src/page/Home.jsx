@@ -12,16 +12,18 @@ const HomeWrapper = styled.div`
   gap: 50px;
   overflow-x: hidden;
   width: 100%;
+  /* padding: 0 100px; */
 
   //플레이될 때 추가
   margin-bottom: 70px;
 
-  background-color: blue;
+  //background-color: blue;
 `;
 
 const HomeNavContainer = styled.div`
   display: flex;
   gap: 15px;
+  padding: 0 100px;
 `;
 
 const HomeNavItem = styled.div`

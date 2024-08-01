@@ -10,6 +10,7 @@ const LibraryWrapper = styled.div`
   flex-direction: column;
   gap: 50px;
   width: 100%;
+  padding: 0 100px;
 `;
 
 const LibraryCategoryContainer = styled.div`

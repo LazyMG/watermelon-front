@@ -10,6 +10,7 @@ const BigMusicsContainer = styled.div`
 const BigMusicsHeader = styled.div`
   display: flex;
   justify-content: space-between;
+  padding: 0 100px;
 `;
 
 const BigMusicsHeaderInfo = styled.div`
@@ -85,6 +86,7 @@ const BigMusicsContent = styled.div`
   width: calc(190px * 6 + 20px * 5);
   margin: 20px 0;
   height: 280px;
+  padding: 0 100px;
 
   display: grid;
   grid-template-columns: repeat(20, 1fr);

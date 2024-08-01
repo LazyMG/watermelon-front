@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 20px;
   overflow-x: hidden;
-  width: 100%;
+  width: 100vw;
   overflow: hidden;
 
   scrollbar-color: #606060 #1c1c1c; /* 핸들 및 트랙 색상 */
@@ -136,33 +136,60 @@ const ScrollOverlay = styled.div`
   z-index: 1;
 `;
 
+// 전체 그리드 컨테이너를 감싸는 스타일
+const GridWrapper = styled.div`
+  overflow-x: auto; /* 가로 스크롤 활성화 */
+  overflow-y: hidden; /* 세로 스크롤 비활성화 */
+  width: 100%; /* 화면 전체 너비를 사용 */
+  padding: 10px 0; /* 상하 패딩 설정 */
+  box-sizing: border-box; /* 패딩을 포함하여 전체 너비를 설정 */
+`;
+
+// 그리드 컨테이너 스타일
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(
+    5,
+    minmax(calc((100vw - 40px) / 5), 1fr)
+  ); /* 5열로 설정, 유동적인 열 설정 */
+  grid-template-rows: repeat(4, minmax(150px, auto)); /* 4행으로 설정 */
+  gap: 10px;
+  //width: fit-content; /* 컨테이너 너비를 아이템 너비에 맞게 설정 */
+  width: 100px;
+  box-sizing: border-box; /* 패딩을 포함하여 전체 너비를 설정 */
+`;
+
+// 개별 그리드 아이템 스타일
+const GridItem = styled.div`
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-width: calc((100vw - 40px) / 5); /* 최소 너비를 화면 너비에 맞게 설정 */
+  height: 150px; /* 아이템의 높이 설정 */
+`;
+
 const Test = () => {
   return (
     <Wrapper>
       <Component>
-        <SmallMusicsContainer>
-          <SmallMusicsContent>
-            {Array.from({ length: 20 }).map((item, idx) => (
-              <SmallMusic key={idx} />
-            ))}
-            <SmallMusicsContentScroll />
-          </SmallMusicsContent>
-        </SmallMusicsContainer>
-        <BigMusicsContainer>
-          <BigMusicsContent>
-            {Array.from({ length: 20 }).map((item, idx) => (
-              <BigMusic key={idx} />
-            ))}
-            <BigMusicsContentScroll />
-          </BigMusicsContent>
-        </BigMusicsContainer>
-        <ScrollContainer>
+        {/* <ScrollContainer>
           <ScrollOverlay />
           <ScrollContent>
             이 내용은 매우 길어서 가로 스크롤이 필요합니다. 이 내용은 매우
             길어서 가로 스크롤이 필요합니다.
           </ScrollContent>
-        </ScrollContainer>
+        </ScrollContainer> */}
+        <GridWrapper>
+          <GridContainer>
+            {Array.from({ length: 20 }).map((_, index) => (
+              <GridItem key={index}>aaaaaaa</GridItem>
+            ))}
+          </GridContainer>
+        </GridWrapper>
       </Component>
     </Wrapper>
   );

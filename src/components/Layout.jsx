@@ -166,7 +166,7 @@ const ContentWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 100px;
+  //padding: 0 100px;
   padding-top: 40px;
   width: calc(100% - ${({ $menuOpen }) => ($menuOpen ? "230px" : "100px")});
   margin-left: ${({ $menuOpen }) => ($menuOpen ? "230px" : "100px")};
@@ -175,7 +175,7 @@ const ContentWrapper = styled.div`
 
   overflow-y: hidden;
 
-  background-color: red;
+  //background-color: red;
 `;
 
 const MenuWrapper = styled.div`

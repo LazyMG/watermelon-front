@@ -4,18 +4,16 @@ import styled from "styled-components";
 import { playerState, playlistState, selectedMusicState } from "../atom";
 
 const SmallMusicsContent = styled.div`
-  //width: calc(400px * 3 + 1vw * 2);
-  width: calc(23vw * 3 + 1vw * 2);
+  width: calc(410px * 3 + 15px * 2);
+  width: 100%;
   //margin: 20px 0;
   margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  column-gap: 1vw;
+  column-gap: 15px;
   grid-template-rows: repeat(4, 1fr);
   row-gap: 15px;
   overflow-x: hidden;
-
-  //background-color: yellow;
 `;
 
 const SmallMusicsContainer = styled.div`
@@ -25,6 +23,7 @@ const SmallMusicsContainer = styled.div`
 const SmallMusicsHeader = styled.div`
   display: flex;
   justify-content: space-between;
+  padding: 0 100px;
 `;
 
 const SmallMusicsText = styled.div`
@@ -90,13 +89,12 @@ const SmallMusicsContentScroll = styled.div`
 `;
 
 const SmallMusic = styled.div`
-  //width: 400px;
-  width: 23vw;
+  width: 410px;
   height: 50px;
   display: flex;
   align-items: center;
   gap: 10px;
-  //background-color: orange;
+  justify-content: space-between;
 `;
 
 const SmallMusicImgContainer = styled.div`
@@ -149,6 +147,7 @@ const SmallMusicsScrollContainer = styled.div`
   overflow: hidden;
   position: relative;
   height: 285px;
+  margin: 0 100px;
 
   &:hover ${SmallMusicsContent} {
     overflow-x: overlay;
@@ -249,7 +248,8 @@ const SmallMusics = ({ musics }) => {
             </SmallMusic>
           ))}
           {/* {Array.from({ length: 20 }).map((_, idx) => (
-            <SmallMusic key={idx}>aaaaaaa</SmallMusic>
+            <SmallMusic key={idx}>
+            </SmallMusic>
           ))} */}
           <SmallMusicsContentScroll />
         </SmallMusicsContent>
