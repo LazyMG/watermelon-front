@@ -98,6 +98,7 @@ const LibraryContentItemTitle = styled.div`
 
 const LibraryContentItemOverview = styled.div`
   font-size: 14px;
+  line-height: 1.2;
 `;
 
 const Library = () => {
@@ -119,6 +120,7 @@ const Library = () => {
     if (!result.ok) {
       console.log(result.message);
     } else {
+      console.log(result.playlists);
       setPlaylists(result.playlists);
       setAlbumlist(result.albums);
       setTotalList([...result.playlists, ...result.albums]);
@@ -185,7 +187,7 @@ const Library = () => {
               <LibraryContentItemOverview>
                 {`${listItem.category} • ${
                   listItem.artist.artistName
-                } • ${listItem.artist.artistName.substring(0, 4)}`}
+                } • ${listItem.artist.releasedDate.substring(0, 4)}`}
               </LibraryContentItemOverview>
             </LibraryContentItemInfo>
           </LibraryContentItem>
