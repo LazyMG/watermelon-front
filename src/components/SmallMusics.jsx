@@ -194,6 +194,8 @@ const Container = styled.div`
   .swiper-scrollbar {
     scrollbar-color: #606060 #1c1c1c; /* 핸들 및 트랙 색상 */
     scrollbar-width: thin; /* 스크롤바 두께를 'thin', 'auto', 'none' 중 선택 가능 */
+    margin: 0; /* 트랙과 컨테이너 간의 여백 제거 */
+    padding: 0; /* 트랙 내의 패딩 제거 */
   }
 `;
 
