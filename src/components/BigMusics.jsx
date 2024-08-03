@@ -2,6 +2,11 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { authState, playerState, selectedMusicState } from "../atom";
 import { useNavigate } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Scrollbar } from "swiper/modules";
+import { useRef, useState } from "react";
+import "swiper/swiper-bundle.css";
+import "swiper/css/scrollbar";
 
 const BigMusicsContainer = styled.div`
   width: 100%;
@@ -174,6 +179,35 @@ const BigMusicDescriptionArtist = styled.span`
   }
 `;
 
+// 전체 컨테이너
+const Container = styled.div`
+  width: 100%;
+  color: #fff;
+  //padding: 20px;
+  margin: 0 auto;
+  margin-top: 10px;
+  padding: 0 100px;
+
+  /* Custom Scrollbar Style */
+  .swiper-scrollbar {
+    background-color: #1c1c1c; /* 트랙 색상 */
+    height: 5px; /* 스크롤바의 높이 조정 */
+    border-radius: 0;
+  }
+
+  .swiper-scrollbar-drag {
+    background-color: #606060; /* 핸들 색상 */
+    height: 5px; /* 스크롤바의 높이 조정 */
+    border-radius: 0;
+  }
+
+  /* For browsers that support the standard scrollbar styling */
+  .swiper-scrollbar {
+    scrollbar-color: #606060 #1c1c1c; /* 핸들 및 트랙 색상 */
+    scrollbar-width: thin; /* 스크롤바 두께를 'thin', 'auto', 'none' 중 선택 가능 */
+  }
+`;
+
 const BigMusics = ({ musics, isCustom = false, title }) => {
   const setPlayer = useSetRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
@@ -266,7 +300,7 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
           </BigMusicsHeaderSliderButtonContainer>
         </BigMusicsHeaderButtons>
       </BigMusicsHeader>
-      <BigMusicsContent>
+      {/* <BigMusicsContent>
         {musics?.map((music) => (
           <BigMusic key={music._id}>
             <BigMusicImgContainer $imgUrl={music?.coverImg} />
@@ -285,11 +319,41 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
             </BigMusicInfo>
           </BigMusic>
         ))}
-        {/* {Array.from({ length: 20 }).map((_, idx) => (
-          <BigMusic key={idx} />
-        ))} */}
         <BigMusicsContentScroll />
-      </BigMusicsContent>
+      </BigMusicsContent> */}
+      <Container>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Swiper
+            modules={[Scrollbar]}
+            slidesPerView={6} // 한 번에 3개의 슬라이드 보이게 설정
+            spaceBetween={10} // 슬라이드 간의 간격 설정
+            // style={{ width: "600px" }} // 보이는 영역의 너비를 설정하여 3열이 보이도록 조절
+            allowTouchMove={false}
+            scrollbar={{ draggable: true }}
+          >
+            {musics?.map((music, index) => (
+              <SwiperSlide key={index}>
+                <BigMusic key={music._id}>
+                  <BigMusicImgContainer $imgUrl={music?.coverImg} />
+                  <BigMusicInfo>
+                    <BigMusicTitle onClick={() => handleClick(music)}>
+                      {music?.title}
+                    </BigMusicTitle>
+                    <BigMusicDescription>
+                      {music?.album.category} |{" "}
+                      <BigMusicDescriptionArtist
+                        onClick={() => clickArtistName(music.artist._id)}
+                      >
+                        {music?.artist.artistName}
+                      </BigMusicDescriptionArtist>
+                    </BigMusicDescription>
+                  </BigMusicInfo>
+                </BigMusic>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </Container>
     </BigMusicsContainer>
   );
 };
