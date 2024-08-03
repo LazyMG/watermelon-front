@@ -120,7 +120,7 @@ const Library = () => {
     if (!result.ok) {
       console.log(result.message);
     } else {
-      console.log(result.playlists);
+      console.log(result.albums);
       setPlaylists(result.playlists);
       setAlbumlist(result.albums);
       setTotalList([...result.playlists, ...result.albums]);
@@ -170,7 +170,7 @@ const Library = () => {
                 {listItem.title}
               </LibraryContentItemTitle>
               <LibraryContentItemOverview>
-                {`재생목록 • ${auth?.user?.username} • 트랙${listItem?.length}개`}
+                {`재생목록 • ${auth?.user?.username} • 트랙${listItem?.list.length}개`}
               </LibraryContentItemOverview>
             </LibraryContentItemInfo>
           </LibraryContentItem>
@@ -187,7 +187,7 @@ const Library = () => {
               <LibraryContentItemOverview>
                 {`${listItem.category} • ${
                   listItem.artist.artistName
-                } • ${listItem.artist.releasedDate.substring(0, 4)}`}
+                } • ${listItem.releasedDate.substring(0, 4)}`}
               </LibraryContentItemOverview>
             </LibraryContentItemInfo>
           </LibraryContentItem>
