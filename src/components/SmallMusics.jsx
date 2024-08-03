@@ -327,6 +327,7 @@ const SmallMusics = ({ musics }) => {
               setIsBeginning(false);
               setIsEnd(false);
             }}
+            style={{ paddingBottom: "30px" }}
           >
             {musics?.map((music, index) => (
               <SwiperSlide key={index}>
