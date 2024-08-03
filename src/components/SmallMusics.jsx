@@ -328,9 +328,30 @@ const SmallMusics = ({ musics }) => {
               setIsEnd(false);
             }}
           >
-            {[...Array(20)].map((_, index) => (
+            {musics?.map((music, index) => (
               <SwiperSlide key={index}>
-                <SmallMusic />
+                <SmallMusic key={music._id}>
+                  <SmallMusicImgContainer $imgUrl={music.coverImg} />
+                  <SmallMusicText>
+                    <SmallMusicTitle onClick={() => handleClick(music)}>
+                      {music.title}
+                    </SmallMusicTitle>
+                    <SmallMusicDescription>
+                      <Link to={`/channel/${music.artist._id}`}>
+                        {music.artist.artistName}
+                      </Link>{" "}
+                      |{" "}
+                      <Link
+                        to={{
+                          pathname: "/playlist",
+                          search: `?list=${music.album._id}`,
+                        }}
+                      >
+                        {music.album.title}
+                      </Link>
+                    </SmallMusicDescription>
+                  </SmallMusicText>
+                </SmallMusic>
               </SwiperSlide>
             ))}
           </Swiper>
