@@ -180,12 +180,12 @@ const Container = styled.div`
   /* Custom Scrollbar Style */
   .swiper-scrollbar {
     background-color: #1c1c1c; /* 트랙 색상 */
-    height: 12px; /* 스크롤바의 높이 조정 */
+    height: 8px; /* 스크롤바의 높이 조정 */
   }
 
   .swiper-scrollbar-drag {
     background-color: #606060; /* 핸들 색상 */
-    height: 12px; /* 스크롤바의 높이 조정 */
+    height: 8px; /* 스크롤바의 높이 조정 */
   }
 
   /* For browsers that support the standard scrollbar styling */
@@ -346,7 +346,7 @@ const SmallMusics = ({ musics }) => {
               setIsBeginning(false);
               setIsEnd(false);
             }}
-            style={{ paddingBottom: "30px" }}
+            style={{ paddingBottom: "15px" }}
           >
             {musics?.map((music, index) => (
               <SwiperSlide key={index}>
