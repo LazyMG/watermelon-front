@@ -351,6 +351,7 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
       <Container>
         <div style={{ display: "flex", alignItems: "center" }}>
           <Swiper
+            ref={swiperRef}
             modules={[Scrollbar]}
             slidesPerView={6} // 한 번에 3개의 슬라이드 보이게 설정
             spaceBetween={10} // 슬라이드 간의 간격 설정
