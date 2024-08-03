@@ -180,15 +180,18 @@ const Container = styled.div`
   /* Custom Scrollbar Style */
   .swiper-scrollbar {
     background-color: #1c1c1c; /* 트랙 색상 */
+    height: 12px; /* 스크롤바의 높이 조정 */
   }
 
   .swiper-scrollbar-drag {
     background-color: #606060; /* 핸들 색상 */
+    height: 12px; /* 스크롤바의 높이 조정 */
   }
 
   /* For browsers that support the standard scrollbar styling */
   .swiper-scrollbar {
     scrollbar-color: #606060 #1c1c1c; /* 핸들 및 트랙 색상 */
+    scrollbar-width: thin; /* 스크롤바 두께를 'thin', 'auto', 'none' 중 선택 가능 */
   }
 `;
 
