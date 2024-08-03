@@ -1,4 +1,8 @@
 import styled from "styled-components";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Grid, Scrollbar } from "swiper/modules";
+import "swiper/swiper-bundle.css";
+import { useRef } from "react";
 
 const Wrapper = styled.div`
   margin-top: 70px;
@@ -95,44 +99,162 @@ const ScrollVerticalOverlay = styled.div`
   z-index: 1;
 `;
 
+const SliderWrapper = styled.div`
+  margin-top: 70px;
+  margin-left: 270px;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+`;
+
+const SliderHeader = styled.div`
+  display: flex;
+`;
+
+const SliderContent = styled.div`
+  display: flex;
+  width: 100%;
+`;
+
+// 전체 컨테이너
+const Container = styled.div`
+  width: 100%;
+  max-width: 900px; /* 최대 너비를 설정하여 슬라이더 크기 조절 */
+  background-color: #000;
+  color: #fff;
+  padding: 20px;
+  margin: auto;
+`;
+
+// 슬라이더 네비게이션 버튼
+const NavButton = styled.button`
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  margin: 0 10px;
+`;
+
+// 노래 항목 스타일링
+const SongItem = styled.div`
+  display: flex;
+  align-items: center;
+  background-color: #1c1c1c;
+  padding: 10px;
+  border-radius: 8px;
+`;
+
+const AlbumCover = styled.img`
+  width: 50px;
+  height: 50px;
+  margin-right: 15px;
+  object-fit: cover;
+  border-radius: 8px;
+`;
+
+const SongInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const SongTitle = styled.div`
+  font-size: 14px;
+  font-weight: bold;
+`;
+
+const ArtistName = styled.div`
+  font-size: 12px;
+  color: #aaa;
+`;
+
 const Test = () => {
+  const swiperRef = useRef(null);
+
+  const goNext = () => {
+    if (swiperRef.current && swiperRef.current.swiper) {
+      swiperRef.current.swiper.slideNext();
+    }
+  };
+
+  const goPrev = () => {
+    if (swiperRef.current && swiperRef.current.swiper) {
+      swiperRef.current.swiper.slidePrev();
+    }
+  };
   return (
-    <Wrapper>
-      <Component>
-        <ScrollContainer>
-          <ScrollOverlay />
-          <ScrollContent>
-            이 내용은 매우 길어서 가로 스크롤이 필요합니다. 이 내용은 매우
-            길어서 가로 스크롤이 필요합니다.
-          </ScrollContent>
-        </ScrollContainer>
-        <ScrollContainer>
-          <ScrollContainer2>
-            이 내용은 매우 길어서 가로 스크롤이 필요합니다. 이 내용은 매우
-            길어서 가로 스크롤이 필요합니다.
-          </ScrollContainer2>
-        </ScrollContainer>
-        <ScrollVerticalContainer>
-          <ScrollVerticalOverlay />
-          <ScrollVerticalContent>
-            이 내용은 매우 길어서 세로 스크롤이 필요합니다. 스크롤이 생길 때
-            화면이 밀리지 않도록 하고 싶습니다.
-            <br /> 이 내용은 매우 길어서 세로 스크롤이 필요합니다.
-            <br /> 이 내용은 매우 길어서 세로 스크롤이 필요합니다.
-            <br /> 이 내용은 매우 길어서 세로 스크롤이 필요합니다.
-            <br /> 이 내용은 매우 길어서 세로 스크롤이 필요합니다.
-            <br /> 이 내용은 매우 길어서 세로 스크롤이 필요합니다.
-          </ScrollVerticalContent>
-        </ScrollVerticalContainer>
-        <ScrollVerticalContainer>
-          <ScrollVerticalOverlay />
-          <ScrollVerticalContent>
-            이 내용은 매우 길어서 세로 스크롤이 필요합니다. 스크롤이 생길 때
-            화면이 밀리지 않도록 하고 싶습니다.
-          </ScrollVerticalContent>
-        </ScrollVerticalContainer>
-      </Component>
-    </Wrapper>
+    // <Wrapper>
+    //   <Component>
+    //     {/* <ScrollContainer>
+    //       <ScrollOverlay />
+    //       <ScrollContent>
+    //         이 내용은 매우 길어서 가로 스크롤이 필요합니다. 이 내용은 매우
+    //         길어서 가로 스크롤이 필요합니다.
+    //       </ScrollContent>
+    //     </ScrollContainer>
+    //     <ScrollContainer>
+    //       <ScrollContainer2>
+    //         이 내용은 매우 길어서 가로 스크롤이 필요합니다. 이 내용은 매우
+    //         길어서 가로 스크롤이 필요합니다.
+    //       </ScrollContainer2>
+    //     </ScrollContainer>
+    //     <ScrollVerticalContainer>
+    //       <ScrollVerticalOverlay />
+    //       <ScrollVerticalContent>
+    //         이 내용은 매우 길어서 세로 스크롤이 필요합니다. 스크롤이 생길 때
+    //         화면이 밀리지 않도록 하고 싶습니다.
+    //         <br /> 이 내용은 매우 길어서 세로 스크롤이 필요합니다.
+    //         <br /> 이 내용은 매우 길어서 세로 스크롤이 필요합니다.
+    //         <br /> 이 내용은 매우 길어서 세로 스크롤이 필요합니다.
+    //         <br /> 이 내용은 매우 길어서 세로 스크롤이 필요합니다.
+    //         <br /> 이 내용은 매우 길어서 세로 스크롤이 필요합니다.
+    //       </ScrollVerticalContent>
+    //     </ScrollVerticalContainer>
+    //     <ScrollVerticalContainer>
+    //       <ScrollVerticalOverlay />
+    //       <ScrollVerticalContent>
+    //         이 내용은 매우 길어서 세로 스크롤이 필요합니다. 스크롤이 생길 때
+    //         화면이 밀리지 않도록 하고 싶습니다.
+    //       </ScrollVerticalContent>
+    //     </ScrollVerticalContainer> */}
+
+    //   </Component>
+    // </Wrapper>
+    <Container>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <NavButton onClick={goPrev}>{"<"}</NavButton>
+        <Swiper
+          ref={swiperRef}
+          modules={[Grid, Scrollbar]}
+          grid={{
+            rows: 4, // 4행 구성
+            fill: "row", // 열을 기준으로 그리드 채우기
+          }}
+          slidesPerView={3} // 한 번에 3개의 슬라이드 보이게 설정
+          spaceBetween={10} // 슬라이드 간의 간격 설정
+          // style={{ width: "600px" }} // 보이는 영역의 너비를 설정하여 3열이 보이도록 조절
+          allowTouchMove={false}
+          scrollbar={{ draggable: true }}
+        >
+          {[...Array(20)].map((_, index) => (
+            <SwiperSlide key={index}>
+              <SongItem>
+                {/* <AlbumCover
+                  src={`https://via.placeholder.com/50?text=${index + 1}`}
+                  alt={`Album ${index + 1}`}
+                />
+                <SongInfo>
+                  <SongTitle>곡 제목 {index + 1}</SongTitle>
+                  <ArtistName>아티스트 {index + 1}</ArtistName>
+                </SongInfo> */}
+              </SongItem>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        <NavButton onClick={goNext}>{">"}</NavButton>
+      </div>
+    </Container>
   );
 };
 

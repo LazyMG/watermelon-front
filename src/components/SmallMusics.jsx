@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { playerState, playlistState, selectedMusicState } from "../atom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Grid, Scrollbar } from "swiper/modules";
+import { useRef, useState } from "react";
 
 const SmallMusicsContent = styled.div`
   width: calc(410px * 3 + 15px * 2);
@@ -18,6 +21,7 @@ const SmallMusicsContent = styled.div`
 
 const SmallMusicsContainer = styled.div`
   width: 100%;
+  //background-color: orange;
 `;
 
 const SmallMusicsHeader = styled.div`
@@ -73,9 +77,16 @@ const SmallMusicsSliderButton = styled.div`
     width: 20px;
   }
 
-  &:hover {
+  /* &:hover {
     background-color: #565656;
-  }
+  } */
+
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      opacity: 0.3;
+      cursor: auto;
+    `}
 `;
 
 const SmallMusicsContentScroll = styled.div`
@@ -155,6 +166,35 @@ const SmallMusicsScrollContainer = styled.div`
   }
 `;
 
+// 전체 컨테이너
+const Container = styled.div`
+  width: 100%;
+  color: #fff;
+  //padding: 20px;
+  margin: 0 auto;
+  margin-top: 10px;
+  padding: 0 100px;
+`;
+
+// 슬라이더 네비게이션 버튼
+const NavButton = styled.button`
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  margin: 0 10px;
+`;
+
+// 노래 항목 스타일링
+const SongItem = styled.div`
+  display: flex;
+  align-items: center;
+  background-color: #1c1c1c;
+  padding: 10px;
+  border-radius: 8px;
+`;
+
 const SmallMusics = ({ musics }) => {
   const setPlayer = useSetRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
@@ -177,6 +217,22 @@ const SmallMusics = ({ musics }) => {
     setPlaylist(musics);
   };
 
+  const swiperRef = useRef(null);
+  const [isBeginning, setIsBeginning] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
+
+  const goNext = () => {
+    if (swiperRef.current && swiperRef.current.swiper) {
+      swiperRef.current.swiper.slideNext();
+    }
+  };
+
+  const goPrev = () => {
+    if (swiperRef.current && swiperRef.current.swiper) {
+      swiperRef.current.swiper.slidePrev();
+    }
+  };
+
   return (
     <SmallMusicsContainer>
       <SmallMusicsHeader>
@@ -191,7 +247,7 @@ const SmallMusics = ({ musics }) => {
             모두 재생
           </SmallMusicsPlayButton>
           <SmallMusicsSliderButtonContainer>
-            <SmallMusicsSliderButton>
+            <SmallMusicsSliderButton disabled={isBeginning} onClick={goPrev}>
               <svg
                 fill="currentColor"
                 viewBox="0 0 20 20"
@@ -205,7 +261,7 @@ const SmallMusics = ({ musics }) => {
                 />
               </svg>
             </SmallMusicsSliderButton>
-            <SmallMusicsSliderButton>
+            <SmallMusicsSliderButton disabled={isEnd} onClick={goNext}>
               <svg
                 fill="currentColor"
                 viewBox="0 0 20 20"
@@ -222,9 +278,9 @@ const SmallMusics = ({ musics }) => {
           </SmallMusicsSliderButtonContainer>
         </SmallMusicsButtons>
       </SmallMusicsHeader>
-      <SmallMusicsScrollContainer>
-        <SmallMusicsContent>
-          {musics?.map((music) => (
+      {/* <SmallMusicsScrollContainer>
+          <SmallMusicsContent>
+            {musics?.map((music) => (
             <SmallMusic key={music._id}>
               <SmallMusicImgContainer $imgUrl={music.coverImg} />
               <SmallMusicText>
@@ -248,12 +304,38 @@ const SmallMusics = ({ musics }) => {
               </SmallMusicText>
             </SmallMusic>
           ))}
-          {/* {Array.from({ length: 20 }).map((_, idx) => (
-            <SmallMusic key={idx}></SmallMusic>
-          ))} */}
-          <SmallMusicsContentScroll />
-        </SmallMusicsContent>
-      </SmallMusicsScrollContainer>
+            <SmallMusicsContentScroll />
+          </SmallMusicsContent>
+      </SmallMusicsScrollContainer> */}
+      <Container>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Swiper
+            ref={swiperRef}
+            modules={[Grid, Scrollbar]}
+            grid={{
+              rows: 4, // 4행 구성
+              fill: "row", // 열을 기준으로 그리드 채우기
+            }}
+            slidesPerView={3} // 한 번에 3개의 슬라이드 보이게 설정
+            spaceBetween={10} // 슬라이드 간의 간격 설정
+            // style={{ width: "600px" }} // 보이는 영역의 너비를 설정하여 3열이 보이도록 조절
+            allowTouchMove={false}
+            scrollbar={{ draggable: true }}
+            onReachBeginning={() => setIsBeginning(true)}
+            onReachEnd={() => setIsEnd(true)}
+            onFromEdge={() => {
+              setIsBeginning(false);
+              setIsEnd(false);
+            }}
+          >
+            {[...Array(20)].map((_, index) => (
+              <SwiperSlide key={index}>
+                <SmallMusic />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </Container>
     </SmallMusicsContainer>
   );
 };

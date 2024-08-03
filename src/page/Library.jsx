@@ -120,7 +120,6 @@ const Library = () => {
     if (!result.ok) {
       console.log(result.message);
     } else {
-      console.log(result.albums);
       setPlaylists(result.playlists);
       setAlbumlist(result.albums);
       setTotalList([...result.playlists, ...result.albums]);
