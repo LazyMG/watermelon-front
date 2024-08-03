@@ -569,7 +569,7 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
               >
                 {selectedMusic?.album.title}
               </PlayBarContentMainInfoOverviewAlbum>{" "}
-              •
+              •<span>{selectedMusic?.album.releasedDate.substring(0, 4)}</span>
             </PlayBarContentMainInfoOverview>
           </PlayBarContentMainInfo>
           <PlayBarContentMainUtil>
