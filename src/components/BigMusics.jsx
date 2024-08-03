@@ -355,7 +355,7 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
             modules={[Scrollbar]}
             slidesPerView={6} // 한 번에 3개의 슬라이드 보이게 설정
             spaceBetween={10} // 슬라이드 간의 간격 설정
-            // style={{ width: "600px" }} // 보이는 영역의 너비를 설정하여 3열이 보이도록 조절
+            slidesPerGroup={6} // 한 번에 2개의 슬라이드를 이동
             allowTouchMove={false}
             scrollbar={{ draggable: true }}
             onReachBeginning={() => setIsBeginning(true)}
