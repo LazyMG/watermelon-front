@@ -1,5 +1,5 @@
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { authState, playerState, selectedMusicState } from "../atom";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -84,9 +84,17 @@ const BigMusicsHeaderSliderButton = styled.div`
     width: 20px;
   }
 
-  &:hover {
-    background-color: #565656;
-  }
+  ${({ disabled }) =>
+    disabled
+      ? css`
+          opacity: 0.3;
+          cursor: auto;
+        `
+      : css`
+          &:hover {
+            background-color: #565656;
+          }
+        `}
 `;
 
 const BigMusicsContent = styled.div`
@@ -237,6 +245,22 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
     navigate(`/channel/${userId}`);
   };
 
+  const swiperRef = useRef(null);
+  const [isBeginning, setIsBeginning] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
+
+  const goNext = () => {
+    if (swiperRef.current && swiperRef.current.swiper) {
+      swiperRef.current.swiper.slideNext();
+    }
+  };
+
+  const goPrev = () => {
+    if (swiperRef.current && swiperRef.current.swiper) {
+      swiperRef.current.swiper.slidePrev();
+    }
+  };
+
   return (
     <BigMusicsContainer>
       <BigMusicsHeader>
@@ -269,7 +293,10 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
         <BigMusicsHeaderButtons>
           <BigMusicsHeaderPlayButton>더보기</BigMusicsHeaderPlayButton>
           <BigMusicsHeaderSliderButtonContainer>
-            <BigMusicsHeaderSliderButton>
+            <BigMusicsHeaderSliderButton
+              disabled={isBeginning}
+              onClick={goPrev}
+            >
               <svg
                 fill="currentColor"
                 viewBox="0 0 20 20"
@@ -283,7 +310,7 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
                 />
               </svg>
             </BigMusicsHeaderSliderButton>
-            <BigMusicsHeaderSliderButton>
+            <BigMusicsHeaderSliderButton disabled={isEnd} onClick={goNext}>
               <svg
                 fill="currentColor"
                 viewBox="0 0 20 20"
@@ -330,6 +357,13 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
             // style={{ width: "600px" }} // 보이는 영역의 너비를 설정하여 3열이 보이도록 조절
             allowTouchMove={false}
             scrollbar={{ draggable: true }}
+            onReachBeginning={() => setIsBeginning(true)}
+            onReachEnd={() => setIsEnd(true)}
+            onFromEdge={() => {
+              setIsBeginning(false);
+              setIsEnd(false);
+            }}
+            style={{ paddingBottom: "15px" }}
           >
             {musics?.map((music, index) => (
               <SwiperSlide key={index}>
