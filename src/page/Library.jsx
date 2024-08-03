@@ -168,7 +168,7 @@ const Library = () => {
                 {listItem.title}
               </LibraryContentItemTitle>
               <LibraryContentItemOverview>
-                {listItem.overview || listItem.artist.artistName}
+                {`재생목록 • ${auth?.user?.username} • 트랙${listItem?.length}개`}
               </LibraryContentItemOverview>
             </LibraryContentItemInfo>
           </LibraryContentItem>
@@ -183,7 +183,9 @@ const Library = () => {
                 {listItem.title}
               </LibraryContentItemTitle>
               <LibraryContentItemOverview>
-                {listItem.overview || listItem.artist.artistName}
+                {`${listItem.category} • ${
+                  listItem.artist.artistName
+                } • ${listItem.artist.artistName.substring(0, 4)}`}
               </LibraryContentItemOverview>
             </LibraryContentItemInfo>
           </LibraryContentItem>

@@ -301,13 +301,15 @@ const PlayList = () => {
                 {pagePlaylist.title}
               </PlayListContentHeaderTitle>
               <PlayListContentHeaderOverview>
-                {pagePlaylist.category} •
+                {pagePlaylist.category || "재생목록"} •
                 <PlayListContentHeaderArtist
                   onClick={() => gotoAritstPage(pagePlaylist)}
                 >
                   {pagePlaylist.artist?.artistName || auth?.user?.username}
-                </PlayListContentHeaderArtist>
-                • {pagePlaylist.releasedDate?.substring(0, 4)}
+                </PlayListContentHeaderArtist>{" "}
+                •{" "}
+                {pagePlaylist?.releasedDate?.substring(0, 4) ||
+                  pagePlaylist?.createdAt?.substring(0, 4)}
               </PlayListContentHeaderOverview>
               <PlayListContentHeaderUtils>
                 <PlayListContentHeaderButton onClick={clickAddPlaylist}>
