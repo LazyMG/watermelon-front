@@ -114,10 +114,11 @@ const Library = () => {
     const userId = auth?.user?.userId;
     if (!userId) return;
     const result = await fetch(
-      `${import.meta.env.VITE_BACK_ADDRESS}/user/${userId}/playlist`
+      `${import.meta.env.VITE_BACK_ADDRESS}/user/${userId}/all-playlists`
     ).then((res) => res.json());
-    //console.log(result);
-    if (result.ok) {
+    if (!result.ok) {
+      console.log(result.message);
+    } else {
       setPlaylists(result.playlists);
       setAlbumlist(result.albums);
       setTotalList([...result.playlists, ...result.albums]);

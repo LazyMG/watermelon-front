@@ -301,13 +301,13 @@ const PlayList = () => {
                 {pagePlaylist.title}
               </PlayListContentHeaderTitle>
               <PlayListContentHeaderOverview>
-                EP •
+                {pagePlaylist.category} •
                 <PlayListContentHeaderArtist
                   onClick={() => gotoAritstPage(pagePlaylist)}
                 >
                   {pagePlaylist.artist?.artistName || auth?.user?.username}
                 </PlayListContentHeaderArtist>
-                •
+                • {pagePlaylist.releasedDate?.substring(0, 4)}
               </PlayListContentHeaderOverview>
               <PlayListContentHeaderUtils>
                 <PlayListContentHeaderButton onClick={clickAddPlaylist}>
