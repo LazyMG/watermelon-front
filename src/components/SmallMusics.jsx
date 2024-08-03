@@ -178,8 +178,7 @@ const Container = styled.div`
   width: 100%;
   color: #fff;
   //padding: 20px;
-  margin: 0 auto;
-  margin-top: 10px;
+  margin: 15px auto 0px;
   padding: 0 100px;
 
   /* Custom Scrollbar Style */
