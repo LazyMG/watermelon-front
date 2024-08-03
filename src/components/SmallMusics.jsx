@@ -5,6 +5,8 @@ import { playerState, playlistState, selectedMusicState } from "../atom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Grid, Scrollbar } from "swiper/modules";
 import { useRef, useState } from "react";
+import "swiper/swiper-bundle.css";
+import "swiper/css/scrollbar";
 
 const SmallMusicsContent = styled.div`
   width: calc(410px * 3 + 15px * 2);
@@ -174,6 +176,20 @@ const Container = styled.div`
   margin: 0 auto;
   margin-top: 10px;
   padding: 0 100px;
+
+  /* Custom Scrollbar Style */
+  .swiper-scrollbar {
+    background-color: #1c1c1c; /* 트랙 색상 */
+  }
+
+  .swiper-scrollbar-drag {
+    background-color: #606060; /* 핸들 색상 */
+  }
+
+  /* For browsers that support the standard scrollbar styling */
+  .swiper-scrollbar {
+    scrollbar-color: #606060 #1c1c1c; /* 핸들 및 트랙 색상 */
+  }
 `;
 
 // 슬라이더 네비게이션 버튼
