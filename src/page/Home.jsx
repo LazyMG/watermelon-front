@@ -53,7 +53,11 @@ const Home = () => {
     const result = await fetch(
       `${import.meta.env.VITE_BACK_ADDRESS}/music/allMusic`
     ).then((res) => res.json());
-    setMusics(result);
+    if (!result.ok) {
+      console.log(result.message);
+    } else {
+      setMusics(result.musics);
+    }
   };
 
   useEffect(() => {
