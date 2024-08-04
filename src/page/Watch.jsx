@@ -4,6 +4,7 @@ import styled from "styled-components";
 import AddMusicPlaylistForm from "../components/AddMusicPlaylistForm";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { playerState, playlistState, selectedMusicState } from "../atom";
+import { musicsDB } from "../localDB/musicsDB";
 
 const WatchWrapper = styled.div`
   //margin-top: 70px;
@@ -232,7 +233,8 @@ const Watch = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    getMusic();
+    //getMusic();
+    setMusic(musicsDB[0]);
     setIsLoading(false);
   }, [getMusic]);
 

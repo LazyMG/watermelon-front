@@ -7,6 +7,7 @@ import { Grid, Scrollbar } from "swiper/modules";
 import { useRef, useState } from "react";
 import "swiper/swiper-bundle.css";
 import "swiper/css/scrollbar";
+import { musicsDB } from "../localDB/musicsDB";
 
 const SmallMusicsContent = styled.div`
   width: calc(410px * 3 + 15px * 2);
@@ -201,25 +202,6 @@ const Container = styled.div`
   }
 `;
 
-// 슬라이더 네비게이션 버튼
-const NavButton = styled.button`
-  background: transparent;
-  border: none;
-  color: #fff;
-  font-size: 24px;
-  cursor: pointer;
-  margin: 0 10px;
-`;
-
-// 노래 항목 스타일링
-const SongItem = styled.div`
-  display: flex;
-  align-items: center;
-  background-color: #1c1c1c;
-  padding: 10px;
-  border-radius: 8px;
-`;
-
 const SmallMusics = ({ musics }) => {
   const setPlayer = useSetRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
@@ -303,35 +285,6 @@ const SmallMusics = ({ musics }) => {
           </SmallMusicsSliderButtonContainer>
         </SmallMusicsButtons>
       </SmallMusicsHeader>
-      {/* <SmallMusicsScrollContainer>
-          <SmallMusicsContent>
-            {musics?.map((music) => (
-            <SmallMusic key={music._id}>
-              <SmallMusicImgContainer $imgUrl={music.coverImg} />
-              <SmallMusicText>
-                <SmallMusicTitle onClick={() => handleClick(music)}>
-                  {music.title}
-                </SmallMusicTitle>
-                <SmallMusicDescription>
-                  <Link to={`/channel/${music.artist._id}`}>
-                    {music.artist.artistName}
-                  </Link>{" "}
-                  |{" "}
-                  <Link
-                    to={{
-                      pathname: "/playlist",
-                      search: `?list=${music.album._id}`,
-                    }}
-                  >
-                    {music.album.title}
-                  </Link>
-                </SmallMusicDescription>
-              </SmallMusicText>
-            </SmallMusic>
-          ))}
-            <SmallMusicsContentScroll />
-          </SmallMusicsContent>
-      </SmallMusicsScrollContainer> */}
       <Container>
         <div style={{ display: "flex", alignItems: "center" }}>
           <Swiper
@@ -354,7 +307,33 @@ const SmallMusics = ({ musics }) => {
             }}
             style={{ paddingBottom: "15px" }}
           >
-            {musics?.map((music, index) => (
+            {/* {musics?.map((music, index) => (
+              <SwiperSlide key={index}>
+                <SmallMusic key={music._id}>
+                  <SmallMusicImgContainer $imgUrl={music.coverImg} />
+                  <SmallMusicText>
+                    <SmallMusicTitle onClick={() => handleClick(music)}>
+                      {music.title}
+                    </SmallMusicTitle>
+                    <SmallMusicDescription>
+                      <Link to={`/channel/${music.artist._id}`}>
+                        {music.artist.artistName}
+                      </Link>{" "}
+                      |{" "}
+                      <Link
+                        to={{
+                          pathname: "/playlist",
+                          search: `?list=${music.album._id}`,
+                        }}
+                      >
+                        {music.album.title}
+                      </Link>
+                    </SmallMusicDescription>
+                  </SmallMusicText>
+                </SmallMusic>
+              </SwiperSlide>
+            ))} */}
+            {musicsDB.map((music, index) => (
               <SwiperSlide key={index}>
                 <SmallMusic key={music._id}>
                   <SmallMusicImgContainer $imgUrl={music.coverImg} />

@@ -7,6 +7,7 @@ import { Scrollbar } from "swiper/modules";
 import { useRef, useState } from "react";
 import "swiper/swiper-bundle.css";
 import "swiper/css/scrollbar";
+import { musicsDB } from "../localDB/musicsDB";
 
 const BigMusicsContainer = styled.div`
   width: 100%;
@@ -95,39 +96,6 @@ const BigMusicsHeaderSliderButton = styled.div`
             background-color: #565656;
           }
         `}
-`;
-
-const BigMusicsContent = styled.div`
-  width: calc(190px * 6 + 20px * 5);
-  margin: 20px 0;
-  height: 280px;
-  //padding: 0 100px;
-  margin-left: 100px;
-
-  display: grid;
-  grid-template-columns: repeat(20, 1fr);
-  column-gap: 20px;
-
-  overflow-x: hidden;
-
-  position: relative;
-
-  //background-color: orange;
-
-  &:hover {
-    overflow-x: overlay;
-  }
-`;
-
-const BigMusicsContentScroll = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-  padding: 0 100px;
 `;
 
 const BigMusic = styled.div`
@@ -219,6 +187,8 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
   const navigate = useNavigate();
   const auth = useRecoilValue(authState);
+
+  console.log(window.innerWidth); //너비 계산 후 조정
 
   const handleClick = (music) => {
     setPlayer((prev) => ({
@@ -325,27 +295,6 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
           </BigMusicsHeaderSliderButtonContainer>
         </BigMusicsHeaderButtons>
       </BigMusicsHeader>
-      {/* <BigMusicsContent>
-        {musics?.map((music) => (
-          <BigMusic key={music._id}>
-            <BigMusicImgContainer $imgUrl={music?.coverImg} />
-            <BigMusicInfo>
-              <BigMusicTitle onClick={() => handleClick(music)}>
-                {music?.title}
-              </BigMusicTitle>
-              <BigMusicDescription>
-                {music?.album.category} |{" "}
-                <BigMusicDescriptionArtist
-                  onClick={() => clickArtistName(music.artist._id)}
-                >
-                  {music?.artist.artistName}
-                </BigMusicDescriptionArtist>
-              </BigMusicDescription>
-            </BigMusicInfo>
-          </BigMusic>
-        ))}
-        <BigMusicsContentScroll />
-      </BigMusicsContent> */}
       <Container>
         <div style={{ display: "flex", alignItems: "center" }}>
           <Swiper
@@ -364,7 +313,27 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
             }}
             style={{ paddingBottom: "15px" }}
           >
-            {musics?.map((music, index) => (
+            {/* {musics?.map((music, index) => (
+              <SwiperSlide key={index}>
+                <BigMusic key={music._id}>
+                  <BigMusicImgContainer $imgUrl={music?.coverImg} />
+                  <BigMusicInfo>
+                    <BigMusicTitle onClick={() => handleClick(music)}>
+                      {music?.title}
+                    </BigMusicTitle>
+                    <BigMusicDescription>
+                      {music?.album.category} |{" "}
+                      <BigMusicDescriptionArtist
+                        onClick={() => clickArtistName(music.artist._id)}
+                      >
+                        {music?.artist.artistName}
+                      </BigMusicDescriptionArtist>
+                    </BigMusicDescription>
+                  </BigMusicInfo>
+                </BigMusic>
+              </SwiperSlide>
+            ))} */}
+            {musicsDB.map((music, index) => (
               <SwiperSlide key={index}>
                 <BigMusic key={music._id}>
                   <BigMusicImgContainer $imgUrl={music?.coverImg} />
