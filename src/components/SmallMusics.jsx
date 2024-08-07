@@ -207,6 +207,7 @@ const SmallMusics = ({ musics }) => {
     setRecentPlaylist((prev) => [...prev, music]);
     //노래 조회수 추가
     //최근 음악에 추가 api 호출
+    console.log("small click play music", music); //id만 전달해도 될 듯
     const userId = auth?.user?.userId;
     if (!userId) return;
     const result = await fetch(
@@ -224,7 +225,7 @@ const SmallMusics = ({ musics }) => {
     if (!result.ok) {
       console.log(result.message);
     } else {
-      console.log("success");
+      console.log(result.message, "success");
     }
   };
 

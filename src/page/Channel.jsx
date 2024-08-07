@@ -86,6 +86,7 @@ const Channel = () => {
       `${import.meta.env.VITE_BACK_ADDRESS}/user/${channelId}`
     ).then((res) => res.json());
     setChannel(result.channel);
+    console.log(result.channel);
     setIsArtist(result.isArtist);
     setIsLoading(false);
   }, [channelId]);
@@ -155,7 +156,7 @@ const Channel = () => {
           musicList={artists[0].musicList}
           title={"노래"}
           subtext={""}
-          isArtist={true}
+          isArtist={isArtist}
         />
         {!isLoading && (
           <BigMusics
