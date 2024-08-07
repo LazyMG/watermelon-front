@@ -97,16 +97,6 @@ const SmallMusicsSliderButton = styled.div`
         `}
 `;
 
-const SmallMusicsContentScroll = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none; /* 마우스 이벤트를 무시하여 컨텐츠와 상호작용 가능하도록 합니다 */
-  z-index: 1; /* 컨텐츠 위에 오도록 z-index를 설정합니다 */
-`;
-
 const SmallMusic = styled.div`
   width: 410px;
   height: 50px;
@@ -160,17 +150,6 @@ const SmallMusicDescription = styled.div`
     &:hover {
       text-decoration: underline;
     }
-  }
-`;
-
-const SmallMusicsScrollContainer = styled.div`
-  overflow: hidden;
-  position: relative;
-  height: 285px;
-  margin: 0 100px;
-
-  &:hover ${SmallMusicsContent} {
-    overflow-x: overlay;
   }
 `;
 

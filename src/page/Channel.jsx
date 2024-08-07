@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import CircleMusics from "../components/CircleMusics";
 import RowMusics from "../components/RowMusics";
 import { useRecoilValue } from "recoil";
 import { authState } from "../atom";
+import { users } from "../localDB/userDB";
+import BigMusics from "../components/BigMusics";
+import { artists } from "../localDB/artistsDB";
 
 const ChannelWrapper = styled.div`
   margin-top: 70px;
@@ -149,12 +151,19 @@ const Channel = () => {
             isArtist={isArtist}
           />
         )}
+        <RowMusics
+          musicList={artists[0].musicList}
+          title={"노래"}
+          subtext={""}
+          isArtist={true}
+        />
         {!isLoading && (
-          <CircleMusics
-            albumList={channel?.albumList}
+          <BigMusics
+            contents={users[0].albums}
             title={isArtist ? "앨범" : "반복 감상한 아티스트"}
             subtext={isArtist ? "" : "최근"}
-            isAlbum={isArtist}
+            isCircle={true}
+            isAlbum={true}
           />
         )}
       </ChannelContentContainer>

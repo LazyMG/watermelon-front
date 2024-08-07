@@ -182,7 +182,65 @@ const Container = styled.div`
   }
 `;
 
-const BigMusics = ({ musics, isCustom = false, title }) => {
+const BigMusicCircleContentItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  //width: 200px;
+  padding: 0;
+`;
+
+const BigMusicCircleContentImg = styled.div`
+  background: ${({ $imgUrl }) => ($imgUrl ? `url(${$imgUrl})` : `url('')`)};
+  border-radius: ${({ $isAlbum }) => ($isAlbum ? "5px" : "50%")};
+  background-size: cover;
+
+  width: 200px;
+  height: 200px;
+`;
+
+const BigMusicCircleContentInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  align-items: center;
+`;
+
+const BigMusicCircleContentName = styled.div`
+  font-size: 15px;
+  font-weight: bold;
+
+  cursor: pointer;
+`;
+
+const BigMusicrCircleContentTime = styled.div`
+  font-size: 15px;
+`;
+
+const BigMusicCircleContentHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+`;
+
+const BigMusicCircleContentHeaderSmall = styled.div`
+  font-size: 16px;
+`;
+
+const BigMusicCircleContentHeaderBig = styled.div`
+  font-size: 20px;
+  font-weight: 800;
+`;
+
+const BigMusics = ({
+  contents,
+  isCustom = false,
+  title,
+  isCircle = false,
+  isAlbum = false,
+  subtext = "",
+}) => {
   const setPlayer = useSetRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
   const navigate = useNavigate();
@@ -229,35 +287,50 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
     }
   };
 
+  const clickAlbumTitle = (albumId) => {
+    navigate(`/playlist?list=${albumId}`);
+  };
+
   return (
     <BigMusicsContainer>
       <BigMusicsHeader>
-        <BigMusicsHeaderInfo>
-          {isCustom && (
-            <BigMusicsHeaderIcon onClick={gotoMyChannel}>
-              <svg
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  clipRule="evenodd"
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
-                />
-              </svg>
-            </BigMusicsHeaderIcon>
-          )}
-          <BigMusicsHeaderText>
+        {isCircle ? (
+          <BigMusicCircleContentHeader>
+            <BigMusicCircleContentHeaderSmall>
+              {subtext}
+            </BigMusicCircleContentHeaderSmall>
+            <BigMusicCircleContentHeaderBig>
+              {title}
+            </BigMusicCircleContentHeaderBig>
+          </BigMusicCircleContentHeader>
+        ) : (
+          <BigMusicsHeaderInfo>
             {isCustom && (
-              <BigMusicsHeaderSubText>
-                {auth?.user?.username}
-              </BigMusicsHeaderSubText>
+              <BigMusicsHeaderIcon onClick={gotoMyChannel}>
+                <svg
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    clipRule="evenodd"
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
+                  />
+                </svg>
+              </BigMusicsHeaderIcon>
             )}
-            <BigMusicsHeaderTitle>{title}</BigMusicsHeaderTitle>
-          </BigMusicsHeaderText>
-        </BigMusicsHeaderInfo>
+            <BigMusicsHeaderText>
+              {isCustom && (
+                <BigMusicsHeaderSubText>
+                  {auth?.user?.username}
+                </BigMusicsHeaderSubText>
+              )}
+              <BigMusicsHeaderTitle>{title}</BigMusicsHeaderTitle>
+            </BigMusicsHeaderText>
+          </BigMusicsHeaderInfo>
+        )}
         <BigMusicsHeaderButtons>
           <BigMusicsHeaderPlayButton>더보기</BigMusicsHeaderPlayButton>
           <BigMusicsHeaderSliderButtonContainer>
@@ -296,7 +369,7 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
         </BigMusicsHeaderButtons>
       </BigMusicsHeader>
       <Container>
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <div>
           <Swiper
             ref={swiperRef}
             modules={[Scrollbar]}
@@ -313,7 +386,7 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
             }}
             style={{ paddingBottom: "15px" }}
           >
-            {/* {musics?.map((music, index) => (
+            {/* {contents?.map((music, index) => (
               <SwiperSlide key={index}>
                 <BigMusic key={music._id}>
                   <BigMusicImgContainer $imgUrl={music?.coverImg} />
@@ -333,26 +406,47 @@ const BigMusics = ({ musics, isCustom = false, title }) => {
                 </BigMusic>
               </SwiperSlide>
             ))} */}
-            {musicsDB.map((music, index) => (
-              <SwiperSlide key={index}>
-                <BigMusic key={music._id}>
-                  <BigMusicImgContainer $imgUrl={music?.coverImg} />
-                  <BigMusicInfo>
-                    <BigMusicTitle onClick={() => handleClick(music)}>
-                      {music?.title}
-                    </BigMusicTitle>
-                    <BigMusicDescription>
-                      {music?.album.category} |{" "}
-                      <BigMusicDescriptionArtist
-                        onClick={() => clickArtistName(music.artist._id)}
-                      >
-                        {music?.artist.artistName}
-                      </BigMusicDescriptionArtist>
-                    </BigMusicDescription>
-                  </BigMusicInfo>
-                </BigMusic>
-              </SwiperSlide>
-            ))}
+            {isCircle
+              ? contents?.map((album, index) => (
+                  <SwiperSlide key={index}>
+                    <BigMusicCircleContentItem key={album._id}>
+                      <BigMusicCircleContentImg
+                        $imgUrl={album.coverImg}
+                        $isAlbum={isAlbum}
+                      />
+                      <BigMusicCircleContentInfo>
+                        <BigMusicCircleContentName
+                          onClick={() => clickAlbumTitle(album._id)}
+                        >
+                          {album.title}
+                        </BigMusicCircleContentName>
+                        <BigMusicrCircleContentTime>
+                          {album.duration}
+                        </BigMusicrCircleContentTime>
+                      </BigMusicCircleContentInfo>
+                    </BigMusicCircleContentItem>
+                  </SwiperSlide>
+                ))
+              : musicsDB.map((music, index) => (
+                  <SwiperSlide key={index}>
+                    <BigMusic key={music._id}>
+                      <BigMusicImgContainer $imgUrl={music?.coverImg} />
+                      <BigMusicInfo>
+                        <BigMusicTitle onClick={() => handleClick(music)}>
+                          {music?.title}
+                        </BigMusicTitle>
+                        <BigMusicDescription>
+                          {music?.album.category} |{" "}
+                          <BigMusicDescriptionArtist
+                            onClick={() => clickArtistName(music.artist._id)}
+                          >
+                            {music?.artist.artistName}
+                          </BigMusicDescriptionArtist>
+                        </BigMusicDescription>
+                      </BigMusicInfo>
+                    </BigMusic>
+                  </SwiperSlide>
+                ))}
           </Swiper>
         </div>
       </Container>

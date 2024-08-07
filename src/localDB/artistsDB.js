@@ -28,6 +28,10 @@ export const artists = [
         },
         genre: "여자,걸그룹,댄스",
         duration: "3:12",
+        artist: {
+          _id: "66616725dd4cf2b185a48762",
+          artistName: "아이브",
+        },
       },
       {
         _id: "66617683a17ddfd60ba88b7e",
@@ -41,6 +45,10 @@ export const artists = [
         },
         genre: "여자,걸그룹,댄스",
         duration: "3:09",
+        artist: {
+          _id: "66616725dd4cf2b185a48762",
+          artistName: "아이브",
+        },
       },
       {
         _id: "66617695a17ddfd60ba88b80",
@@ -54,6 +62,10 @@ export const artists = [
         },
         genre: "여자,걸그룹",
         duration: "3:08",
+        artist: {
+          _id: "66616725dd4cf2b185a48762",
+          artistName: "아이브",
+        },
       },
       {
         _id: "666176a6a17ddfd60ba88b82",
@@ -67,6 +79,10 @@ export const artists = [
         },
         genre: "여자,걸그룹",
         duration: "3:03",
+        artist: {
+          _id: "66616725dd4cf2b185a48762",
+          artistName: "아이브",
+        },
       },
       {
         _id: "666176b5a17ddfd60ba88b84",
@@ -80,6 +96,10 @@ export const artists = [
         },
         genre: "여자,걸그룹",
         duration: "2:58",
+        artist: {
+          _id: "66616725dd4cf2b185a48762",
+          artistName: "아이브",
+        },
       },
       {
         _id: "666176c4a17ddfd60ba88b86",
@@ -93,6 +113,10 @@ export const artists = [
         },
         genre: "여자,걸그룹",
         duration: "2:41",
+        artist: {
+          _id: "66616725dd4cf2b185a48762",
+          artistName: "아이브",
+        },
       },
     ],
     imgUrl:

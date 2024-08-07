@@ -9,13 +9,62 @@ const PlayBarWrapper = styled.div`
   height: 100%;
 `;
 
-//range로 변경
 const PlayBarTimeline = styled.input`
+  -webkit-appearance: none;
   position: absolute;
   top: 0;
   width: 100%;
   height: 2px;
-  background-color: red;
+  //background-color: red;
+
+  background: ${(props) => {
+    const percentage =
+      ((props.value - props.min) / (props.max - props.min)) * 100;
+    return `
+      linear-gradient(to right, 
+        red ${percentage}%, 
+        gray ${percentage}%)
+    `;
+  }};
+  transition: height 0.2s ease;
+
+  &:hover {
+    height: 4px;
+    &::-webkit-slider-thumb{
+      width:15px;
+      height:15px;
+    }
+    &::-moz-range-thumb{
+      width:15px;
+      height:15px;
+    }
+  }
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    //width: ${(props) => (props.showThumb ? "12px" : "0")};
+    //height: ${(props) => (props.showThumb ? "12px" : "0")};
+    width:12px;
+    height:12px;
+    border-radius: 50%;
+    background: red;
+    cursor: pointer;
+    transition: width 0.2s ease, height 0.2s ease;
+  }
+
+  &::-moz-range-thumb {
+    //width: ${(props) => (props.showThumb ? "12px" : "0")};
+    //height: ${(props) => (props.showThumb ? "12px" : "0")};
+    border-radius: 50%;
+    background: red;
+    width:12px;
+    height:12px;
+    cursor: pointer;
+    transition: width 0.2s ease, height 0.2s ease;
+  }
+
+  cursor: pointer;
 `;
 
 const PlayBarContentContainer = styled.div`
@@ -149,16 +198,56 @@ const PlayBarContentUtilVolumeButton = styled.div`
     }
   }
 
-  input {
-    position: absolute;
-    right: 30px;
-    top: 3px;
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-  }
-
   svg:hover {
     opacity: 0.6;
+  }
+`;
+
+const PlayBarContentUtilVolumeRange = styled.input`
+  position: absolute;
+  right: 30px;
+  top: 9px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  -webkit-appearance: none;
+  background: ${(props) => {
+    const percentage =
+      ((props.value - props.min) / (props.max - props.min)) * 100;
+    return `
+      linear-gradient(to right, 
+        white ${percentage}%, 
+        gray ${percentage}%)
+    `;
+  }};
+  outline: none;
+  transition: background 0.2s ease;
+  height: 4px;
+  width: 80px;
+
+  &:active {
+    &::-webkit-slider-thumb {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    transition: width height 0.2s ease;
+  }
+
+  &::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
   }
 `;
 
@@ -414,6 +503,7 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
       <PlayBarTimeline
         type="range"
         value={timeline}
+        min={0}
         max={player.duration}
         onChange={timelineChange}
       />
@@ -658,9 +748,10 @@ const Player = ({ setIsPlay, playerRef, isRepeat, setIsRepeat }) => {
                 />
               </svg>
             )}
-            <input
+            <PlayBarContentUtilVolumeRange
               type="range"
               value={musicVolume}
+              min={0}
               max={100}
               onChange={changeVolume}
             />

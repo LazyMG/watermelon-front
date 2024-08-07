@@ -79,7 +79,7 @@ const Home = () => {
           </HomeContentContainer>
           {localAuth?.isAuthenticated || auth.isAuthenticated ? (
             <HomeContentContainer>
-              <BigMusics musics={musics} isCustom={true} title={"다시듣기"} />
+              <BigMusics contents={musics} isCustom={true} title={"다시듣기"} />
             </HomeContentContainer>
           ) : null}
           <HomeContentContainer>
