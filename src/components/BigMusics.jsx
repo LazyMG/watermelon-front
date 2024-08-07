@@ -1,6 +1,11 @@
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled, { css } from "styled-components";
-import { authState, playerState, selectedMusicState } from "../atom";
+import {
+  authState,
+  playerState,
+  recentPlaylistState,
+  selectedMusicState,
+} from "../atom";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Scrollbar } from "swiper/modules";
@@ -247,10 +252,11 @@ const BigMusics = ({
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
   const navigate = useNavigate();
   const auth = useRecoilValue(authState);
+  const setRecentPlaylist = useSetRecoilState(recentPlaylistState);
 
   console.log(window.innerWidth); //너비 계산 후 조정
 
-  const clickPlayMusic = (music) => {
+  const clickPlayMusic = async (music) => {
     setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
@@ -260,7 +266,28 @@ const BigMusics = ({
       timestamp: Date.now(),
     }));
     setSelectedMusic(music);
-    //최근 음악에 추기
+    setRecentPlaylist((prev) => [...prev, music]);
+    //노래 조회수 추가
+    //최근 음악에 추가 api 호출
+    const userId = auth?.user?.userId;
+    if (!userId) return;
+    const result = await fetch(
+      `${import.meta.env.VITE_BACK_ADDRESS}/user/${userId}/add-recentMusic`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ music }),
+      }
+    )
+      .then((response) => response.json())
+      .catch((error) => console.error("Error:", error));
+    if (!result.ok) {
+      console.log(result.message);
+    } else {
+      console.log(result.message, "success");
+    }
   };
 
   const clickArtistName = (artistId) => {

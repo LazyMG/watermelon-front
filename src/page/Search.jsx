@@ -1,8 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { playerState, selectedMusicState } from "../atom";
+import {
+  authState,
+  playerState,
+  recentPlaylistState,
+  selectedMusicState,
+} from "../atom";
 
 const SeacrhWrapper = styled.div`
   margin-top: 30px;
@@ -175,6 +180,9 @@ const Search = () => {
   const setPlayer = useSetRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
 
+  const setRecentPlaylist = useSetRecoilState(recentPlaylistState);
+  const auth = useRecoilValue(authState);
+
   const navigate = useNavigate();
 
   const getResults = useCallback(async () => {
@@ -191,7 +199,7 @@ const Search = () => {
     getResults();
   }, []);
 
-  const clickPlayMusic = (music) => {
+  const clickPlayMusic = async (music) => {
     setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
@@ -201,7 +209,28 @@ const Search = () => {
       timestamp: Date.now(),
     }));
     setSelectedMusic(music);
-    //최근 음악에 추기
+    setRecentPlaylist((prev) => [...prev, music]);
+    //노래 조회수 추가
+    //최근 음악에 추가 api 호출
+    const userId = auth?.user?.userId;
+    if (!userId) return;
+    const result = await fetch(
+      `${import.meta.env.VITE_BACK_ADDRESS}/user/${userId}/add-recentMusic`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ music }),
+      }
+    )
+      .then((response) => response.json())
+      .catch((error) => console.error("Error:", error));
+    if (!result.ok) {
+      console.log(result.message);
+    } else {
+      console.log(result.message, "success");
+    }
   };
 
   const gotoArtistPage = (artistId) => {

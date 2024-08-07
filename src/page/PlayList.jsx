@@ -5,6 +5,7 @@ import {
   authState,
   playerState,
   playlistState,
+  recentPlaylistState,
   selectedMusicState,
   userPlaylistsState,
 } from "../atom";
@@ -151,6 +152,7 @@ const PlayList = () => {
   const isLogin = localStorage.getItem("ytMusicAuth") ? true : false;
   const setPlaylist = useSetRecoilState(playlistState);
   const setUserPlaylists = useSetRecoilState(userPlaylistsState);
+  const setRecentPlaylist = useSetRecoilState(recentPlaylistState);
 
   const navigate = useNavigate();
 
@@ -170,7 +172,7 @@ const PlayList = () => {
     getPlaylist();
   }, [getPlaylist]);
 
-  const clickPlayMusic = (music) => {
+  const clickPlayMusic = async (music) => {
     //console.log(music);
     setPlayer((prev) => ({
       ...prev,
@@ -181,7 +183,28 @@ const PlayList = () => {
       timestamp: Date.now(),
     }));
     setSelectedMusic(music);
-    //최근 음악에 추기
+    setRecentPlaylist((prev) => [...prev, music]);
+    //노래 조회수 추가
+    //최근 음악에 추가 api 호출
+    const userId = auth?.user?.userId;
+    if (!userId) return;
+    const result = await fetch(
+      `${import.meta.env.VITE_BACK_ADDRESS}/user/${userId}/add-recentMusic`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ music }),
+      }
+    )
+      .then((response) => response.json())
+      .catch((error) => console.error("Error:", error));
+    if (!result.ok) {
+      console.log(result.message);
+    } else {
+      console.log(result.message, "success");
+    }
   };
 
   const clickDeletePlaylist = async () => {
