@@ -248,7 +248,7 @@ const BigMusics = ({
 
   console.log(window.innerWidth); //너비 계산 후 조정
 
-  const handleClick = (music) => {
+  const clickPlayMusic = (music) => {
     setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
@@ -258,6 +258,7 @@ const BigMusics = ({
       timestamp: Date.now(),
     }));
     setSelectedMusic(music);
+    //최근 음악에 추기
   };
 
   const clickArtistName = (artistId) => {
@@ -391,7 +392,7 @@ const BigMusics = ({
                 <BigMusic key={music._id}>
                   <BigMusicImgContainer $imgUrl={music?.coverImg} />
                   <BigMusicInfo>
-                    <BigMusicTitle onClick={() => handleClick(music)}>
+                    <BigMusicTitle onClick={() => clickPlayMusic(music)}>
                       {music?.title}
                     </BigMusicTitle>
                     <BigMusicDescription>
@@ -432,7 +433,7 @@ const BigMusics = ({
                     <BigMusic key={music._id}>
                       <BigMusicImgContainer $imgUrl={music?.coverImg} />
                       <BigMusicInfo>
-                        <BigMusicTitle onClick={() => handleClick(music)}>
+                        <BigMusicTitle onClick={() => clickPlayMusic(music)}>
                           {music?.title}
                         </BigMusicTitle>
                         <BigMusicDescription>

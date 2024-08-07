@@ -114,7 +114,6 @@ const router = createBrowserRouter([
             path: "album",
             element: <ConnectAlbum />,
           },
-
           {
             path: "album/:albumId/albumMusic",
             element: <AlbumMusic />,
@@ -162,11 +161,6 @@ input:-webkit-autofill:active {
 }
 `;
 
-const Wrapper = styled.div`
-  /* width: 100%;
-  height: 100vh; */
-`;
-
 function App() {
   //const auth = useRecoilValue(authState);
   useAuth();
@@ -179,10 +173,8 @@ function App() {
 
   return (
     <>
-      <Wrapper>
-        <GlobalStyles />
-        <RouterProvider router={router} />
-      </Wrapper>
+      <GlobalStyles />
+      <RouterProvider router={router} />
     </>
   );
 }

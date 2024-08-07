@@ -238,7 +238,7 @@ const Watch = () => {
     setIsLoading(false);
   }, [getMusic]);
 
-  const handleClick = (music) => {
+  const clickPlayMusic = (music) => {
     setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
@@ -248,6 +248,7 @@ const Watch = () => {
       timestamp: Date.now(),
     }));
     setSelectedMusic(music);
+    //최근 음악에 추기
   };
 
   return (
@@ -313,7 +314,7 @@ const Watch = () => {
               <WatchContentInfoContentList>
                 {playlist?.map((listItem) => (
                   <WatchContentInfoContentListItem
-                    onClick={() => handleClick(listItem)}
+                    onClick={() => clickPlayMusic(listItem)}
                     key={listItem._id}
                     $isSelectedMusic={selectedMusic._id === listItem._id}
                   >

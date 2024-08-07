@@ -191,7 +191,7 @@ const Search = () => {
     getResults();
   }, []);
 
-  const handleClick = (music) => {
+  const clickPlayMusic = (music) => {
     setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
@@ -201,6 +201,7 @@ const Search = () => {
       timestamp: Date.now(),
     }));
     setSelectedMusic(music);
+    //최근 음악에 추기
   };
 
   const gotoArtistPage = (artistId) => {
@@ -244,7 +245,7 @@ const Search = () => {
                 />
                 <SearchResultItemInfo>
                   <SearchResultMusicItemTitle
-                    onClick={() => handleClick(music)}
+                    onClick={() => clickPlayMusic(music)}
                   >
                     {music.title}
                   </SearchResultMusicItemTitle>

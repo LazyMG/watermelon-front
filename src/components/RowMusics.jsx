@@ -102,7 +102,7 @@ const RowMusics = ({ musicList, title, subtext, isArtist }) => {
 
   const navigate = useNavigate();
 
-  const handleClick = (music) => {
+  const clickPlayMusic = (music) => {
     setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
@@ -112,6 +112,7 @@ const RowMusics = ({ musicList, title, subtext, isArtist }) => {
       timestamp: Date.now(),
     }));
     setSelectedMusic(music);
+    //최근 음악에 추기
   };
 
   const clickAlbumTitle = (albumId) => {
@@ -130,7 +131,7 @@ const RowMusics = ({ musicList, title, subtext, isArtist }) => {
             <ChannelContentRowMusicImg $imgUrl={music.coverImg}>
               <div />
             </ChannelContentRowMusicImg>
-            <ChannelContentRowMusicTitle onClick={() => handleClick(music)}>
+            <ChannelContentRowMusicTitle onClick={() => clickPlayMusic(music)}>
               {music.title}
             </ChannelContentRowMusicTitle>
             <ChannelContentRowMusicPlays>

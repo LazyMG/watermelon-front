@@ -161,7 +161,7 @@ const PlayList = () => {
     getPlaylist();
   }, [getPlaylist]);
 
-  const handleClick = (music) => {
+  const clickPlayMusic = (music) => {
     //console.log(music);
     setPlayer((prev) => ({
       ...prev,
@@ -172,6 +172,7 @@ const PlayList = () => {
       timestamp: Date.now(),
     }));
     setSelectedMusic(music);
+    //최근 음악에 추기
   };
 
   const clickDeletePlaylist = async () => {
@@ -219,10 +220,10 @@ const PlayList = () => {
     }
     setPlaylist(pagePlaylist?.musicList || pagePlaylist?.list);
     if (pagePlaylist?.list) {
-      handleClick(pagePlaylist?.list[0]);
+      clickPlayMusic(pagePlaylist?.list[0]);
     }
     if (pagePlaylist?.musicList) {
-      handleClick(pagePlaylist?.musicList[0]);
+      clickPlayMusic(pagePlaylist?.musicList[0]);
     }
   };
 
@@ -343,7 +344,7 @@ const PlayList = () => {
                       {idx + 1}
                     </PlayListContentListItemNum>
                     <PlayListContentListItemTitle
-                      onClick={() => handleClick(music)}
+                      onClick={() => clickPlayMusic(music)}
                     >
                       {music.title}
                     </PlayListContentListItemTitle>
@@ -361,7 +362,7 @@ const PlayList = () => {
                       {idx + 1}
                     </PlayListContentListItemNum>
                     <PlayListContentListItemTitle
-                      onClick={() => handleClick(music)}
+                      onClick={() => clickPlayMusic(music)}
                     >
                       {music.title}
                     </PlayListContentListItemTitle>

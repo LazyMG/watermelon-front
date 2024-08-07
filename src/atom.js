@@ -1,10 +1,17 @@
 import { atom } from "recoil";
 
+export const recentPlaylistState = atom({
+  key: "recentPlaylistState",
+  default: [],
+});
+
+//사용자의 저장된 플레이리스트 목록
 export const userPlaylistsState = atom({
   key: "userPlaylistsState",
   default: [],
 });
 
+//현재 플레이리스트
 export const playlistState = atom({
   key: "playlistState",
   default: [],

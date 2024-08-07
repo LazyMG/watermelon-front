@@ -1,7 +1,13 @@
 import { Link } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled, { css } from "styled-components";
-import { playerState, playlistState, selectedMusicState } from "../atom";
+import {
+  authState,
+  playerState,
+  playlistState,
+  recentPlaylistState,
+  selectedMusicState,
+} from "../atom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Grid, Scrollbar } from "swiper/modules";
 import { useRef, useState } from "react";
@@ -185,8 +191,10 @@ const SmallMusics = ({ musics }) => {
   const setPlayer = useSetRecoilState(playerState);
   const setSelectedMusic = useSetRecoilState(selectedMusicState);
   const setPlaylist = useSetRecoilState(playlistState);
+  const setRecentPlaylist = useSetRecoilState(recentPlaylistState);
+  const auth = useRecoilValue(authState);
 
-  const handleClick = (music) => {
+  const clickPlayMusic = async (music) => {
     setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
@@ -196,7 +204,25 @@ const SmallMusics = ({ musics }) => {
       timestamp: Date.now(),
     }));
     setSelectedMusic(music);
-    setPlaylist(musics);
+    setRecentPlaylist((prev) => [...prev, music]);
+    //최근 음악에 추가 api 호출
+    const userId = auth?.user?.userId;
+    if (!userId) return;
+    const result = await fetch(
+      `${import.meta.env.VITE_BACK_ADDRESS}/user/${userId}/add-recentMusic`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ music }),
+      }
+    ).catch((error) => console.error("Error:", error));
+    if (!result.ok) {
+      console.log(result.message);
+    } else {
+      console.log("success");
+    }
   };
 
   const clickAddPlaylist = () => {
@@ -291,7 +317,7 @@ const SmallMusics = ({ musics }) => {
                 <SmallMusic key={music._id}>
                   <SmallMusicImgContainer $imgUrl={music.coverImg} />
                   <SmallMusicText>
-                    <SmallMusicTitle onClick={() => handleClick(music)}>
+                    <SmallMusicTitle onClick={() => clickPlayMusic(music)}>
                       {music.title}
                     </SmallMusicTitle>
                     <SmallMusicDescription>
@@ -317,7 +343,7 @@ const SmallMusics = ({ musics }) => {
                 <SmallMusic key={music._id}>
                   <SmallMusicImgContainer $imgUrl={music.coverImg} />
                   <SmallMusicText>
-                    <SmallMusicTitle onClick={() => handleClick(music)}>
+                    <SmallMusicTitle onClick={() => clickPlayMusic(music)}>
                       {music.title}
                     </SmallMusicTitle>
                     <SmallMusicDescription>
