@@ -147,7 +147,7 @@ const Channel = () => {
         </ChannelContentProfileContainer>
         {!isLoading && (
           <RowMusics
-            musicList={channel?.recentMusic || channel?.musicList}
+            musicList={isArtist ? channel?.musicList : channel?.recentMusic}
             title={isArtist ? "노래" : "감상한 곡"}
             subtext={isArtist ? "" : "최근"}
             isArtist={isArtist}
@@ -155,7 +155,7 @@ const Channel = () => {
         )}
         {!isLoading && (
           <BigMusics
-            contents={users[0].albums}
+            contents={isArtist ? channel?.albumList : channel?.albums}
             title={isArtist ? "앨범" : "반복 감상한 아티스트"}
             subtext={isArtist ? "" : "최근"}
             isCircle={true}
