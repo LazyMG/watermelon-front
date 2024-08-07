@@ -146,7 +146,7 @@ const Channel = () => {
         </ChannelContentProfileContainer>
         {!isLoading && (
           <RowMusics
-            musicList={channel?.musicList?.recentMusic}
+            musicList={channel?.recentMusic}
             title={isArtist ? "노래" : "반복 감상한 곡"}
             subtext={isArtist ? "" : "최근"}
             isArtist={isArtist}
