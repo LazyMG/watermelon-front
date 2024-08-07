@@ -7,6 +7,7 @@ import { authState } from "../atom";
 import { users } from "../localDB/userDB";
 import BigMusics from "../components/BigMusics";
 import { artists } from "../localDB/artistsDB";
+import { musicsDB } from "../localDB/musicsDB";
 
 const ChannelWrapper = styled.div`
   margin-top: 70px;

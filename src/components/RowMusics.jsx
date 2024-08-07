@@ -1,7 +1,7 @@
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { playerState, selectedMusicState } from "../atom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ChannelContentRowHeader = styled.div`
   display: flex;
@@ -64,11 +64,23 @@ const ChannelContentRowMusicTitle = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
 
-  cursor: pointer;
+  display: flex; // 자식 요소를 왼쪽으로 배치
+  align-items: center; // 텍스트를 중앙 정렬
+
+  div {
+    cursor: pointer;
+    display: inline; // 자식 요소가 텍스트 크기만큼만 차지하도록 설정
+  }
 `;
 
 const ChannelContentRowMusicPlays = styled.div`
   flex: 4;
+
+  a {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
 const ChannelContentRowMusicAlbum = styled.div`
@@ -131,11 +143,14 @@ const RowMusics = ({ musicList, title, subtext, isArtist }) => {
             <ChannelContentRowMusicImg $imgUrl={music.coverImg}>
               <div />
             </ChannelContentRowMusicImg>
-            <ChannelContentRowMusicTitle onClick={() => clickPlayMusic(music)}>
-              {music.title}
+            <ChannelContentRowMusicTitle>
+              <div onClick={() => clickPlayMusic(music)}>{music.title}</div>
             </ChannelContentRowMusicTitle>
             <ChannelContentRowMusicPlays>
-              {`${music?.artist?.artistName}${` | 241만회 재생`}`}
+              <Link
+                to={`/channel/${music?.artist?._id}`}
+              >{`${music?.artist?.artistName}`}</Link>
+              {isArtist ? ` | 241만회 재생` : ""}
             </ChannelContentRowMusicPlays>
             <ChannelContentRowMusicAlbum
               onClick={() => clickAlbumTitle(music?.album?._id)}
