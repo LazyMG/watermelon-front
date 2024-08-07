@@ -316,7 +316,8 @@ const PlayList = () => {
                 <PlayListContentHeaderArtist
                   onClick={() => gotoAritstPage(pagePlaylist)}
                 >
-                  {pagePlaylist.artist?.artistName || auth?.user?.username}
+                  {` ${pagePlaylist.artist?.artistName} ` ||
+                    ` ${auth?.user?.username} `}
                 </PlayListContentHeaderArtist>
                 {" • "}
                 {pagePlaylist?.releasedDate?.substring(0, 4) ||
@@ -353,10 +354,10 @@ const PlayList = () => {
                     <PlayListContentListItemNum>
                       {idx + 1}
                     </PlayListContentListItemNum>
-                    <PlayListContentListItemTitle
-                      onClick={() => clickPlayMusic(music)}
-                    >
-                      {music.title}
+                    <PlayListContentListItemTitle>
+                      <div onClick={() => clickPlayMusic(music)}>
+                        {music.title}
+                      </div>
                     </PlayListContentListItemTitle>
                     <PlayListContentListItemPlays>
                       241만회 재생
