@@ -119,8 +119,6 @@ const RowMusics = ({ musicList, title, subtext, isArtist }) => {
     navigate(`/playlist?list=${albumId}`);
   };
 
-  console.log("rowmusics", musicList);
-
   return (
     <ChannelContentRowMusicContainer>
       <ChannelContentRowHeader>
@@ -137,7 +135,7 @@ const RowMusics = ({ musicList, title, subtext, isArtist }) => {
               {music.title}
             </ChannelContentRowMusicTitle>
             <ChannelContentRowMusicPlays>
-              {music?.artist?.artistName} | 241만회 재생
+              {`${music?.artist?.artistName}${` | 241만회 재생`}`}
             </ChannelContentRowMusicPlays>
             <ChannelContentRowMusicAlbum
               onClick={() => clickAlbumTitle(music?.album?._id)}

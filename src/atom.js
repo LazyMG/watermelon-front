@@ -1,5 +1,11 @@
 import { atom } from "recoil";
 
+export const likedMusicState = atom({
+  key: "likedMusicState",
+  default: [],
+});
+
+//이름 바꾸기
 export const recentPlaylistState = atom({
   key: "recentPlaylistState",
   default: [],
