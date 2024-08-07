@@ -115,8 +115,17 @@ const PlayListContentListItemTitle = styled.div`
   font-size: 15px;
   font-weight: bold;
   flex: 10;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
-  cursor: pointer;
+  display: flex; // 자식 요소를 왼쪽으로 배치
+  align-items: center; // 텍스트를 중앙 정렬
+
+  div {
+    cursor: pointer;
+    display: inline; // 자식 요소가 텍스트 크기만큼만 차지하도록 설정
+  }
 `;
 
 const PlayListContentListItemPlays = styled.div`
@@ -302,13 +311,14 @@ const PlayList = () => {
                 {pagePlaylist.title}
               </PlayListContentHeaderTitle>
               <PlayListContentHeaderOverview>
-                {pagePlaylist.category || "재생목록"} •
+                {pagePlaylist.category || "재생목록"}
+                {" • "}
                 <PlayListContentHeaderArtist
                   onClick={() => gotoAritstPage(pagePlaylist)}
                 >
                   {pagePlaylist.artist?.artistName || auth?.user?.username}
-                </PlayListContentHeaderArtist>{" "}
-                •{" "}
+                </PlayListContentHeaderArtist>
+                {" • "}
                 {pagePlaylist?.releasedDate?.substring(0, 4) ||
                   pagePlaylist?.createdAt?.substring(0, 4)}
               </PlayListContentHeaderOverview>
@@ -361,10 +371,10 @@ const PlayList = () => {
                     <PlayListContentListItemNum>
                       {idx + 1}
                     </PlayListContentListItemNum>
-                    <PlayListContentListItemTitle
-                      onClick={() => clickPlayMusic(music)}
-                    >
-                      {music.title}
+                    <PlayListContentListItemTitle>
+                      <div onClick={() => clickPlayMusic(music)}>
+                        {music.title}
+                      </div>
                     </PlayListContentListItemTitle>
                     <PlayListContentListItemPlays>
                       241만회 재생
