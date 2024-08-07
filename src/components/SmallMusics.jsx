@@ -205,6 +205,7 @@ const SmallMusics = ({ musics }) => {
     }));
     setSelectedMusic(music);
     setRecentPlaylist((prev) => [...prev, music]);
+    //노래 조회수 추가
     //최근 음악에 추가 api 호출
     const userId = auth?.user?.userId;
     if (!userId) return;
@@ -217,7 +218,9 @@ const SmallMusics = ({ musics }) => {
         },
         body: JSON.stringify({ music }),
       }
-    ).catch((error) => console.error("Error:", error));
+    )
+      .then((response) => response.json())
+      .catch((error) => console.error("Error:", error));
     if (!result.ok) {
       console.log(result.message);
     } else {
