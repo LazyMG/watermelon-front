@@ -138,7 +138,7 @@ const Channel = () => {
                   <ChannelContentProfileButton
                     onClick={auth?.user?.admin ? gotoAdminPage : null}
                   >
-                    {auth?.user?.admin ? "관리자" : "공유"}
+                    {auth?.user?.admin && !isArtist ? "관리자" : "공유"}
                   </ChannelContentProfileButton>
                 </ChannelContentProfileUtils>
               </>
@@ -147,7 +147,7 @@ const Channel = () => {
         </ChannelContentProfileContainer>
         {!isLoading && (
           <RowMusics
-            musicList={channel?.recentMusic}
+            musicList={channel?.recentMusic || channel?.musicList}
             title={isArtist ? "노래" : "감상한 곡"}
             subtext={isArtist ? "" : "최근"}
             isArtist={isArtist}
