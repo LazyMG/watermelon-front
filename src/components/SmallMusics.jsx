@@ -320,33 +320,7 @@ const SmallMusics = ({ musics }) => {
             }}
             style={{ paddingBottom: "15px" }}
           >
-            {/* {musics?.map((music, index) => (
-              <SwiperSlide key={index}>
-                <SmallMusic key={music._id}>
-                  <SmallMusicImgContainer $imgUrl={music.coverImg} />
-                  <SmallMusicText>
-                    <SmallMusicTitle onClick={() => clickPlayMusic(music)}>
-                      {music.title}
-                    </SmallMusicTitle>
-                    <SmallMusicDescription>
-                      <Link to={`/channel/${music.artist._id}`}>
-                        {music.artist.artistName}
-                      </Link>{" "}
-                      |{" "}
-                      <Link
-                        to={{
-                          pathname: "/playlist",
-                          search: `?list=${music.album._id}`,
-                        }}
-                      >
-                        {music.album.title}
-                      </Link>
-                    </SmallMusicDescription>
-                  </SmallMusicText>
-                </SmallMusic>
-              </SwiperSlide>
-            ))} */}
-            {musicsDB.slice(0, 2).map((music, index) => (
+            {musics?.map((music, index) => (
               <SwiperSlide key={index}>
                 <SmallMusic key={music._id}>
                   <SmallMusicImgContainer $imgUrl={music.coverImg} />
@@ -372,6 +346,32 @@ const SmallMusics = ({ musics }) => {
                 </SmallMusic>
               </SwiperSlide>
             ))}
+            {/* {musicsDB.map((music, index) => (
+              <SwiperSlide key={index}>
+                <SmallMusic key={music._id}>
+                  <SmallMusicImgContainer $imgUrl={music.coverImg} />
+                  <SmallMusicText>
+                    <SmallMusicTitle onClick={() => clickPlayMusic(music)}>
+                      {music.title}
+                    </SmallMusicTitle>
+                    <SmallMusicDescription>
+                      <Link to={`/channel/${music.artist._id}`}>
+                        {music.artist.artistName}
+                      </Link>{" "}
+                      |{" "}
+                      <Link
+                        to={{
+                          pathname: "/playlist",
+                          search: `?list=${music.album._id}`,
+                        }}
+                      >
+                        {music.album.title}
+                      </Link>
+                    </SmallMusicDescription>
+                  </SmallMusicText>
+                </SmallMusic>
+              </SwiperSlide>
+            ))} */}
           </Swiper>
         </div>
       </Container>

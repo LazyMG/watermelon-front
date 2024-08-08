@@ -416,27 +416,48 @@ const BigMusics = ({
             }}
             style={{ paddingBottom: "15px" }}
           >
-            {/* {contents?.map((music, index) => (
-              <SwiperSlide key={index}>
-                <BigMusic key={music._id}>
-                  <BigMusicImgContainer $imgUrl={music?.coverImg} />
-                  <BigMusicInfo>
-                    <BigMusicTitle onClick={() => clickPlayMusic(music)}>
-                      {music?.title}
-                    </BigMusicTitle>
-                    <BigMusicDescription>
-                      {music?.album.category} |{" "}
-                      <BigMusicDescriptionArtist
-                        onClick={() => clickArtistName(music.artist._id)}
-                      >
-                        {music?.artist.artistName}
-                      </BigMusicDescriptionArtist>
-                    </BigMusicDescription>
-                  </BigMusicInfo>
-                </BigMusic>
-              </SwiperSlide>
-            ))} */}
             {isCircle
+              ? contents?.map((album, index) => (
+                  <SwiperSlide key={index}>
+                    <BigMusicCircleContentItem key={album._id}>
+                      <BigMusicCircleContentImg
+                        $imgUrl={album.coverImg}
+                        $isAlbum={isAlbum}
+                      />
+                      <BigMusicCircleContentInfo>
+                        <BigMusicCircleContentName
+                          onClick={() => clickAlbumTitle(album._id)}
+                        >
+                          {album.title}
+                        </BigMusicCircleContentName>
+                        <BigMusicrCircleContentTime>
+                          {album.duration}
+                        </BigMusicrCircleContentTime>
+                      </BigMusicCircleContentInfo>
+                    </BigMusicCircleContentItem>
+                  </SwiperSlide>
+                ))
+              : contents?.map((music, index) => (
+                  <SwiperSlide key={index}>
+                    <BigMusic key={music._id}>
+                      <BigMusicImgContainer $imgUrl={music?.coverImg} />
+                      <BigMusicInfo>
+                        <BigMusicTitle onClick={() => clickPlayMusic(music)}>
+                          {music?.title}
+                        </BigMusicTitle>
+                        <BigMusicDescription>
+                          {music?.album.category} |{" "}
+                          <BigMusicDescriptionArtist
+                            onClick={() => clickArtistName(music.artist._id)}
+                          >
+                            {music?.artist.artistName}
+                          </BigMusicDescriptionArtist>
+                        </BigMusicDescription>
+                      </BigMusicInfo>
+                    </BigMusic>
+                  </SwiperSlide>
+                ))}
+            {/* {isCircle
               ? contents?.map((album, index) => (
                   <SwiperSlide key={index}>
                     <BigMusicCircleContentItem key={album._id}>
@@ -476,7 +497,7 @@ const BigMusics = ({
                       </BigMusicInfo>
                     </BigMusic>
                   </SwiperSlide>
-                ))}
+                ))} */}
           </Swiper>
         </div>
       </Container>
