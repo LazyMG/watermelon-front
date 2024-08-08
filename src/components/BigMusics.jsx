@@ -446,7 +446,7 @@ const BigMusics = ({
                           {music?.title}
                         </BigMusicTitle>
                         <BigMusicDescription>
-                          {music?.album.category} |{" "}
+                          {"노래"} |{" "}
                           <BigMusicDescriptionArtist
                             onClick={() => clickArtistName(music.artist._id)}
                           >
