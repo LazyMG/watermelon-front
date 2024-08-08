@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import SmallMusics from "../components/SmallMusics";
 import BigMusics from "../components/BigMusics";
-import { useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
-import { authState } from "../atom";
+import { useCallback, useEffect, useState } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { authState, recentPlaylistState } from "../atom";
 
 const HomeWrapper = styled.div`
   margin-top: 70px;
@@ -48,6 +48,7 @@ const Home = () => {
   const [musics, setMusics] = useState([]);
   const auth = useRecoilValue(authState);
   const localAuth = JSON.parse(localStorage.getItem("ytMusicAuth"));
+  const [recentMusic, setRecentMusic] = useRecoilState(recentPlaylistState);
 
   const getMusics = async () => {
     const result = await fetch(
@@ -60,11 +61,27 @@ const Home = () => {
     }
   };
 
+  //BigMovie로 보여주기
+  const getRecentMusics = useCallback(async () => {
+    const userId = auth?.user?.userId;
+    if (!userId) return;
+    const result = await fetch(
+      `${import.meta.env.VITE_BACK_ADDRESS}/user/${userId}/getRecentMusics`
+    ).then((res) => res.json());
+    if (!result.ok) {
+      console.log(result.message);
+    } else {
+      setRecentMusic(result.musics);
+    }
+    console.log("getRecentMusic");
+  }, [auth?.user?.userId, setRecentMusic]);
+
   useEffect(() => {
     setIsLoading(true);
     getMusics();
+    getRecentMusics();
     setIsLoading(false);
-  }, []);
+  }, [getRecentMusics]);
 
   return (
     <HomeWrapper>
@@ -79,7 +96,11 @@ const Home = () => {
           </HomeContentContainer>
           {localAuth?.isAuthenticated || auth.isAuthenticated ? (
             <HomeContentContainer>
-              <BigMusics contents={musics} isCustom={true} title={"다시듣기"} />
+              <BigMusics
+                contents={recentMusic}
+                isCustom={true}
+                title={"다시듣기"}
+              />
             </HomeContentContainer>
           ) : null}
           <HomeContentContainer>

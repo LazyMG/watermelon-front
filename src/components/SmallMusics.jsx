@@ -204,7 +204,12 @@ const SmallMusics = ({ musics }) => {
       timestamp: Date.now(),
     }));
     setSelectedMusic(music);
-    setRecentPlaylist((prev) => [...prev, music]);
+    setRecentPlaylist((prev) => {
+      if (prev.length >= 20) {
+        prev.shift();
+      }
+      return [...prev, music];
+    });
     //노래 조회수 추가
     //최근 음악에 추가 api 호출
     const userId = auth?.user?.userId;
@@ -341,7 +346,7 @@ const SmallMusics = ({ musics }) => {
                 </SmallMusic>
               </SwiperSlide>
             ))} */}
-            {musicsDB.map((music, index) => (
+            {musicsDB.slice(0, 2).map((music, index) => (
               <SwiperSlide key={index}>
                 <SmallMusic key={music._id}>
                   <SmallMusicImgContainer $imgUrl={music.coverImg} />
