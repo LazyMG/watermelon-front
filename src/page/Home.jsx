@@ -73,7 +73,7 @@ const Home = () => {
     } else {
       setRecentMusic(result.musics);
     }
-    console.log("getRecentMusic");
+    console.log("getRecentMusic", result.musics);
   }, [auth?.user?.userId, setRecentMusic]);
 
   useEffect(() => {
