@@ -205,6 +205,10 @@ const SmallMusics = ({ musics }) => {
     }));
     setSelectedMusic(music);
     setRecentPlaylist((prev) => {
+      console.log(
+        "prev has this music ",
+        prev.some((prevMusic) => prevMusic.ytId === music.ytId)
+      );
       if (prev.some((prevMusic) => prevMusic.ytId === music.ytId)) prev;
       if (prev.length >= 20) {
         prev.shift();
