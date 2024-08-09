@@ -198,7 +198,7 @@ const SmallMusics = ({ musics }) => {
   const clickPlayMusic = async (music) => {
     console.log("selectedMusic.ytId", selectedMusic.ytId);
     console.log("music.ytId", music.ytId);
-    if (selectedMusic && selectedMusic.ytId === music.ytId) return;
+    if (selectedMusic && selectedMusic?.ytId === music.ytId) return;
     setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
