@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import {
   authState,
@@ -178,7 +178,7 @@ const Search = () => {
 
   const [playlist, setPlaylist] = useState();
   const setPlayer = useSetRecoilState(playerState);
-  const setSelectedMusic = useSetRecoilState(selectedMusicState);
+  const [selectedMusic, setSelectedMusic] = useRecoilState(selectedMusicState);
 
   const setRecentPlaylist = useSetRecoilState(recentPlaylistState);
   const auth = useRecoilValue(authState);
@@ -200,6 +200,7 @@ const Search = () => {
   }, []);
 
   const clickPlayMusic = async (music) => {
+    if (selectedMusic && selectedMusic?.ytId === music?.ytId) return;
     setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
@@ -209,8 +210,13 @@ const Search = () => {
       timestamp: Date.now(),
     }));
     setSelectedMusic(music);
-    //중복 노래 없도록
-    setRecentPlaylist((prev) => [music, ...prev]);
+    setRecentPlaylist((prev) => {
+      if (prev.some((prevMusic) => prevMusic.ytId === music.ytId)) return prev;
+      if (prev.length >= 20) {
+        prev.shift();
+      }
+      return [music, ...prev];
+    });
     //노래 조회수 추가
     //최근 음악에 추가 api 호출
     const userId = auth?.user?.userId;

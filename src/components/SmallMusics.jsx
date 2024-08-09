@@ -189,15 +189,12 @@ const Container = styled.div`
 
 const SmallMusics = ({ musics }) => {
   const setPlayer = useSetRecoilState(playerState);
-  //const setSelectedMusic = useSetRecoilState(selectedMusicState);
   const [selectedMusic, setSelectedMusic] = useRecoilState(selectedMusicState);
   const setPlaylist = useSetRecoilState(playlistState);
   const setRecentPlaylist = useSetRecoilState(recentPlaylistState);
   const auth = useRecoilValue(authState);
 
   const clickPlayMusic = async (music) => {
-    console.log("selectedMusic.ytId", selectedMusic?.ytId);
-    console.log("music.ytId", music?.ytId);
     if (selectedMusic && selectedMusic?.ytId === music?.ytId) return;
     setPlayer((prev) => ({
       ...prev,

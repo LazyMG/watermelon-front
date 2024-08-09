@@ -248,6 +248,7 @@ const Watch = () => {
   }, [getMusic]);
 
   const clickPlayMusic = async (music) => {
+    if (selectedMusic && selectedMusic?.ytId === music?.ytId) return;
     setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
@@ -257,8 +258,13 @@ const Watch = () => {
       timestamp: Date.now(),
     }));
     setSelectedMusic(music);
-    //중복 노래 없도록
-    setRecentPlaylist((prev) => [music, ...prev]);
+    setRecentPlaylist((prev) => {
+      if (prev.some((prevMusic) => prevMusic.ytId === music.ytId)) return prev;
+      if (prev.length >= 20) {
+        prev.shift();
+      }
+      return [music, ...prev];
+    });
     //노래 조회수 추가
     //최근 음악에 추가 api 호출
     const userId = auth?.user?.userId;

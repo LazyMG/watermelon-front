@@ -1,4 +1,4 @@
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled, { css } from "styled-components";
 import {
   authState,
@@ -249,7 +249,7 @@ const BigMusics = ({
   subtext = "",
 }) => {
   const setPlayer = useSetRecoilState(playerState);
-  const setSelectedMusic = useSetRecoilState(selectedMusicState);
+  const [selectedMusic, setSelectedMusic] = useRecoilState(selectedMusicState);
   const navigate = useNavigate();
   const auth = useRecoilValue(authState);
   const setRecentPlaylist = useSetRecoilState(recentPlaylistState);
@@ -257,6 +257,7 @@ const BigMusics = ({
   console.log(window.innerWidth); //너비 계산 후 조정
 
   const clickPlayMusic = async (music) => {
+    if (selectedMusic && selectedMusic?.ytId === music?.ytId) return;
     setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
@@ -266,8 +267,13 @@ const BigMusics = ({
       timestamp: Date.now(),
     }));
     setSelectedMusic(music);
-    //중복 노래 없도록
-    setRecentPlaylist((prev) => [music, ...prev]);
+    setRecentPlaylist((prev) => {
+      if (prev.some((prevMusic) => prevMusic.ytId === music.ytId)) return prev;
+      if (prev.length >= 20) {
+        prev.shift();
+      }
+      return [music, ...prev];
+    });
     //노래 조회수 추가
     //최근 음악에 추가 api 호출
     const userId = auth?.user?.userId;
