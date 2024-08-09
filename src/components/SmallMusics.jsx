@@ -196,9 +196,9 @@ const SmallMusics = ({ musics }) => {
   const auth = useRecoilValue(authState);
 
   const clickPlayMusic = async (music) => {
-    console.log("selectedMusic.ytId", selectedMusic.ytId);
-    console.log("music.ytId", music.ytId);
-    if (selectedMusic && selectedMusic?.ytId === music.ytId) return;
+    console.log("selectedMusic.ytId", selectedMusic?.ytId);
+    console.log("music.ytId", music?.ytId);
+    if (selectedMusic && selectedMusic?.ytId === music?.ytId) return;
     setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
