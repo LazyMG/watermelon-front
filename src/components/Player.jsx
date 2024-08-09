@@ -12,7 +12,7 @@ const PlayBarWrapper = styled.div`
 const PlayBarTimeline = styled.input`
   -webkit-appearance: none;
   position: absolute;
-  top: -5px;
+  top: -2px;
   width: 100%;
   height: 2px;
   //background-color: red;

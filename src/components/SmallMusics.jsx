@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled, { css } from "styled-components";
 import {
   authState,
@@ -189,12 +189,16 @@ const Container = styled.div`
 
 const SmallMusics = ({ musics }) => {
   const setPlayer = useSetRecoilState(playerState);
-  const setSelectedMusic = useSetRecoilState(selectedMusicState);
+  //const setSelectedMusic = useSetRecoilState(selectedMusicState);
+  const [selectedMusic, setSelectedMusic] = useRecoilState(selectedMusicState);
   const setPlaylist = useSetRecoilState(playlistState);
   const setRecentPlaylist = useSetRecoilState(recentPlaylistState);
   const auth = useRecoilValue(authState);
 
   const clickPlayMusic = async (music) => {
+    console.log("selectedMusic.ytId", selectedMusic.ytId);
+    console.log("music.ytId", music.ytId);
+    if (selectedMusic.ytId === music.ytId) return;
     setPlayer((prev) => ({
       ...prev,
       ytId: music.ytId,
@@ -205,11 +209,7 @@ const SmallMusics = ({ musics }) => {
     }));
     setSelectedMusic(music);
     setRecentPlaylist((prev) => {
-      console.log(
-        "prev has this music ",
-        prev.some((prevMusic) => prevMusic.ytId === music.ytId)
-      );
-      if (prev.some((prevMusic) => prevMusic.ytId === music.ytId)) prev;
+      if (prev.some((prevMusic) => prevMusic.ytId === music.ytId)) return prev;
       if (prev.length >= 20) {
         prev.shift();
       }
