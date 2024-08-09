@@ -205,10 +205,12 @@ const SmallMusics = ({ musics }) => {
     }));
     setSelectedMusic(music);
     setRecentPlaylist((prev) => {
+      console.log("prev", prev);
+      if (prev.some((prevMusic) => prevMusic.ytId === music.ytId)) return;
       if (prev.length >= 20) {
         prev.shift();
       }
-      return [...prev, music];
+      return [music, ...prev];
     });
     //노래 조회수 추가
     //최근 음악에 추가 api 호출

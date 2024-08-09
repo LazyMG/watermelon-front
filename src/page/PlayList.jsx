@@ -183,7 +183,8 @@ const PlayList = () => {
       timestamp: Date.now(),
     }));
     setSelectedMusic(music);
-    setRecentPlaylist((prev) => [...prev, music]);
+    //중복 노래 없도록
+    setRecentPlaylist((prev) => [music, ...prev]);
     //노래 조회수 추가
     //최근 음악에 추가 api 호출
     const userId = auth?.user?.userId;
